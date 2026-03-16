@@ -1,0 +1,8 @@
+{
+  "name": "Achei Você",
+  "description": "Aplicativo para auxílio na localização de crianças desaparecidas e integração com autoridades e pontos de apoio.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ]
+}
