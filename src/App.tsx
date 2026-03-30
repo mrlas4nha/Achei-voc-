@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   Map as MapIcon,
   Heart,
+  Star,
   LogOut
 } from 'lucide-react';
 import QRCode from 'react-qr-code';
@@ -63,9 +64,8 @@ export default function App() {
     }
     return null;
   });
-  const [view, setView] = useState<'splash' | 'dashboard' | 'location' | 'qr_generator' | 'emergency' | 'register' | 'login' | 'settings' | 'manual_entry' | 'register_child' | 'child_details' | 'notifications' | 'authority_reports' | 'authority_alerts' | 'occurrence_details' | 'citizen_scan'>(() => {
-    const saved = localStorage.getItem('achei_voce_current_user');
-    return saved ? 'dashboard' : 'splash';
+  const [view, setView] = useState<'selection' | 'splash' | 'dashboard' | 'location' | 'qr_generator' | 'emergency' | 'register' | 'login' | 'settings' | 'manual_entry' | 'register_child' | 'child_details' | 'notifications' | 'authority_reports' | 'authority_alerts' | 'occurrence_details' | 'citizen_scan'>(() => {
+    return 'selection';
   });
   const [scannedChild, setScannedChild] = useState<Child | null>(null);
   const [citizenLocation, setCitizenLocation] = useState<{lat: number, lng: number, address: string} | null>(null);
@@ -278,23 +278,152 @@ export default function App() {
   return (
     <div className="app-container">
       <AnimatePresence mode="wait">
+        {view === 'selection' && (
+          <motion.div 
+            key="selection"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-1 bg-brand-gradient flex flex-col p-5 pt-10"
+          >
+            <div className="absolute top-10 right-5 z-10">
+              <button className="relative w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
+                <Bell className="w-5 h-5 text-brand-secondary fill-brand-secondary/20" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+              </button>
+            </div>
+
+            <div className="flex flex-col items-center gap-0.5 mb-3">
+              <h1 className="text-2xl text-white font-black tracking-tighter">
+                ACHEI <span className="text-brand-secondary">VOCÊ</span>
+              </h1>
+              <p className="text-blue-100 text-[8px] font-bold tracking-[0.2em] uppercase opacity-70">Segurança infantil e familiar</p>
+            </div>
+
+            <div className="text-center mb-3">
+              <h2 className="text-base text-white font-bold">Quem você quer proteger hoje?</h2>
+            </div>
+
+            <div className="space-y-2.5 flex-1 overflow-y-auto pb-2">
+              {/* Crianças Card */}
+              <motion.div 
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => {
+                  if (currentUser) {
+                    setView('dashboard');
+                  } else {
+                    setView('splash');
+                  }
+                }}
+                className="relative overflow-hidden rounded-[20px] p-3.5 cursor-pointer group shadow-[0_8px_24px_rgba(0,0,0,0.2)] border border-white/10"
+                style={{ background: 'linear-gradient(145deg, #2A9D5C 0%, #146B3A 100%)' }}
+              >
+                <div className="absolute top-2 right-3 bg-white/15 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center gap-1 border border-white/10">
+                  <Shield className="w-2 h-2 text-white" />
+                  <span className="text-[7px] text-white font-bold uppercase tracking-wider">Prioridade</span>
+                </div>
+                
+                <div className="flex flex-col items-center text-center gap-1">
+                  <div className="w-20 h-20 relative">
+                    <img 
+                      src="https://i.postimg.cc/8ThNw3rh/teste.png" 
+                      alt="Crianças" 
+                      className="w-full h-full object-contain drop-shadow-[0_8px_8px_rgba(0,0,0,0.3)] brightness-110"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div className="space-y-0">
+                    <h3 className="text-lg text-white font-black tracking-tight uppercase">CRIANÇAS</h3>
+                    <p className="text-white/80 text-[8px] font-medium leading-tight max-w-[150px] mx-auto">
+                      Localização rápida com pulseira QR Code
+                    </p>
+                  </div>
+                  <button className="mt-1 bg-white text-[#187A44] hover:bg-white/90 px-4 py-1 rounded-full font-extrabold text-[10px] flex items-center gap-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all">
+                    Acessar Crianças <ChevronLeft className="w-3 h-3 rotate-180" />
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Pets Card */}
+              <motion.div 
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => alert('Em breve: Funcionalidade de Pets em desenvolvimento!')}
+                className="relative overflow-hidden rounded-[20px] p-3.5 cursor-pointer group shadow-[0_8px_24px_rgba(0,0,0,0.2)] border border-white/10"
+                style={{ background: 'linear-gradient(145deg, #F5C518 0%, #C99300 100%)' }}
+              >
+                <div className="flex flex-col items-center text-center gap-1">
+                  <div className="w-20 h-20 relative">
+                    <img 
+                      src="https://picsum.photos/seed/pets_safety/400/400" 
+                      alt="Pets" 
+                      className="w-full h-full object-cover rounded-xl drop-shadow-[0_8px_8px_rgba(0,0,0,0.3)]"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div className="space-y-0">
+                    <h3 className="text-lg text-brand-dark font-black tracking-tight uppercase">PETS</h3>
+                    <p className="text-brand-dark/70 text-[8px] font-medium leading-tight max-w-[150px] mx-auto">
+                      Encontre seu pet com identificação segura
+                    </p>
+                  </div>
+                  <button className="mt-1 bg-brand-dark text-white hover:bg-brand-dark/90 px-4 py-1 rounded-full font-extrabold text-[10px] flex items-center gap-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all">
+                    Acessar Pets
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+
+            <div className="mt-auto pt-2 text-center space-y-3">
+              <p className="text-white/50 text-[9px] font-bold">Cada segundo importa. Comece agora.</p>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-[1px] flex-1 bg-white/5" />
+                  <p className="text-white/30 text-[7px] uppercase font-bold tracking-[0.4em]">Parceria</p>
+                  <div className="h-[1px] flex-1 bg-white/5" />
+                </div>
+                
+                <div className="bg-white/5 backdrop-blur-md rounded-lg p-2 border border-white/5 flex items-center justify-center gap-2 shadow-lg max-w-[200px] mx-auto">
+                  <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center p-0.5">
+                    <Building2 className="w-full h-full text-brand-primary" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white font-black text-[9px] leading-none">Prefeitura de Mendes/RJ</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {view === 'splash' && (
           <motion.div 
             key="splash"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 bg-brand-gradient flex flex-col p-8 pt-12"
+            className="flex-1 bg-brand-gradient flex flex-col p-6 pt-10"
           >
-            <div className="absolute top-12 right-6 z-10">
-              <button className="relative w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
-                <Bell className="w-6 h-6 text-brand-secondary fill-brand-secondary/20" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+            <div className="absolute top-10 left-5 z-10">
+              <button 
+                onClick={() => setView('selection')}
+                className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all"
+              >
+                <ChevronLeft className="w-5 h-5 text-white" />
               </button>
             </div>
 
-            <div className="flex flex-col items-center gap-2 mb-6">
-              <div className="w-72 h-72 bg-transparent flex items-center justify-center overflow-hidden relative logo-glow">
+            <div className="absolute top-10 right-5 z-10">
+              <button className="relative w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
+                <Bell className="w-5 h-5 text-brand-secondary fill-brand-secondary/20" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+              </button>
+            </div>
+
+            <div className="flex flex-col items-center gap-1.5 mb-4">
+              <div className="w-60 h-60 bg-transparent flex items-center justify-center overflow-hidden relative logo-glow">
                 <img 
                   src="https://i.postimg.cc/8ThNw3rh/teste.png" 
                   alt="Achei Você Logo" 
@@ -302,23 +431,23 @@ export default function App() {
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <div className="text-center space-y-1">
-                <h1 className="text-5xl text-white font-black tracking-tighter">
+              <div className="text-center space-y-0.5">
+                <h1 className="text-4xl text-white font-black tracking-tighter">
                   ACHEI <span className="text-brand-secondary">VOCÊ</span>
                 </h1>
-                <p className="text-blue-100 text-sm font-bold tracking-[0.2em] uppercase opacity-80">Segurança Infantil</p>
+                <p className="text-blue-100 text-xs font-bold tracking-[0.2em] uppercase opacity-80">Segurança Infantil</p>
               </div>
-              <div className="bg-brand-icon-green text-white px-6 py-2.5 rounded-full text-sm font-black flex items-center gap-2 mt-2 shadow-[0_0_20px_rgba(24,165,88,0.4)] border border-white/20 animate-pulse-subtle">
-                <CheckCircle2 className="w-5 h-5" /> Localização Rápida de Crianças
+              <div className="bg-brand-icon-green text-white px-5 py-2 rounded-full text-xs font-black flex items-center gap-2 mt-1 shadow-[0_0_20px_rgba(24,165,88,0.4)] border border-white/20 animate-pulse-subtle">
+                <CheckCircle2 className="w-4 h-4" /> Localização Rápida de Crianças
               </div>
             </div>
 
-            <div className="space-y-4 mt-6">
+            <div className="space-y-3 mt-4">
               <button 
-                className="btn-mobile btn-emergency py-6 text-xl animate-emergency"
+                className="btn-mobile btn-emergency py-4 text-lg animate-emergency"
                 onClick={() => { setRole('citizen'); setView('citizen_scan'); }}
               >
-                <Search className="w-6 h-6" />
+                <Search className="w-5 h-5" />
                 ENCONTROU UMA CRIANÇA?
               </button>
 
@@ -377,9 +506,9 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
           >
-            <div className="flex items-center gap-4 mb-8">
+            <div className="flex items-center gap-4 mb-6">
               <button onClick={() => setView('splash')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
                 <ChevronLeft className="w-6 h-6" />
               </button>
@@ -389,8 +518,8 @@ export default function App() {
               </h2>
             </div>
 
-            <div className="flex-1 space-y-4 overflow-y-auto pb-8">
-              <div className="space-y-2">
+            <div className="flex-1 space-y-3 overflow-y-auto pb-6">
+              <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Nome Completo' : 
                    regSubRole === 'guard' ? 'Nome da Instituição' : 'Instituição'}
@@ -400,23 +529,23 @@ export default function App() {
                   value={regForm.name}
                   onChange={(e) => setRegForm({...regForm, name: e.target.value})}
                   placeholder={regRole === 'responsible' ? "Digite seu nome" : "Ex: Guarda Municipal / Polícia"}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                 />
               </div>
 
               {regRole === 'responsible' ? (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">CPF</label>
                   <input 
                     type="text" 
                     value={regForm.cpf}
                     onChange={(e) => setRegForm({...regForm, cpf: e.target.value})}
                     placeholder="000.000.000-00"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                   />
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">
                     {regSubRole === 'guard' ? 'CNPJ' : 'Departamento'}
                   </label>
@@ -425,12 +554,12 @@ export default function App() {
                     value={regForm.registrationId}
                     onChange={(e) => setRegForm({...regForm, registrationId: e.target.value})}
                     placeholder={regSubRole === 'guard' ? "00.000.000/0000-00" : "Ex: Divisão de Busca"}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                   />
                 </div>
               )}
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Celular' : 'Nome do Responsável / Agente'}
                 </label>
@@ -439,49 +568,49 @@ export default function App() {
                   value={regForm.phone}
                   onChange={(e) => setRegForm({...regForm, phone: e.target.value})}
                   placeholder={regRole === 'responsible' ? "(00) 00000-0000" : "Digite o nome completo"}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                 />
               </div>
 
               {regRole !== 'responsible' && (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Matrícula / ID Funcional</label>
                   <input 
                     type="text" 
                     value={regForm.registrationId}
                     onChange={(e) => setRegForm({...regForm, registrationId: e.target.value})}
                     placeholder="Digite seu ID"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                   />
                 </div>
               )}
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                 <input 
                   type="email" 
                   value={regForm.email}
                   onChange={(e) => setRegForm({...regForm, email: e.target.value})}
                   placeholder="seu@email.com"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Senha</label>
                 <input 
                   type="password" 
                   value={regForm.password}
                   onChange={(e) => setRegForm({...regForm, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                 />
               </div>
 
-              <div className="pt-4 space-y-4">
+              <div className="pt-2 space-y-3">
                 <button 
                   className={cn(
-                    "btn-mobile shadow-xl",
+                    "btn-mobile shadow-xl py-4",
                     regRole === 'responsible' ? "btn-primary-mobile" : 
                     regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
                   )}
@@ -540,9 +669,9 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
           >
-            <div className="flex items-center gap-4 mb-8">
+            <div className="flex items-center gap-4 mb-6">
               <button onClick={() => setView('splash')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
                 <ChevronLeft className="w-6 h-6" />
               </button>
@@ -552,19 +681,19 @@ export default function App() {
               </h2>
             </div>
 
-            <div className="flex-1 space-y-6">
-              <div className="space-y-2">
+            <div className="flex-1 space-y-4">
+              <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                 <input 
                   type="email" 
                   value={loginForm.email}
                   onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
                   placeholder="seu@email.com"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex justify-between items-center px-1">
                   <label className="text-xs font-bold uppercase opacity-60 tracking-widest">Senha</label>
                   <button className="text-[10px] font-bold text-brand-secondary uppercase tracking-wider">Esqueceu?</button>
@@ -574,14 +703,14 @@ export default function App() {
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
                 />
               </div>
 
               <div className="pt-4 space-y-4">
                 <button 
                   className={cn(
-                    "btn-mobile shadow-xl",
+                    "btn-mobile shadow-xl py-4",
                     regRole === 'responsible' ? "btn-primary-mobile" : 
                     regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
                   )}
@@ -637,7 +766,7 @@ export default function App() {
             className="flex-1 flex flex-col bg-brand-gradient text-white"
           >
             {/* Header */}
-            <div className="p-6 pt-12 flex justify-between items-center bg-transparent border-b border-white/10">
+            <div className="p-5 pt-10 flex justify-between items-center bg-transparent border-b border-white/10">
               <button onClick={() => setView('splash')} className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shadow-inner group active:scale-95 transition-all overflow-hidden">
                 <img 
                   src="https://i.postimg.cc/8ThNw3rh/teste.png" 
@@ -656,7 +785,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="p-6 space-y-6 overflow-y-auto flex-1">
+            <div className="p-5 space-y-6 overflow-y-auto flex-1">
               {/* Profile Card */}
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full border-4 border-white/20 shadow-lg overflow-hidden relative group">
@@ -816,7 +945,7 @@ export default function App() {
             className="flex-1 flex flex-col bg-brand-gradient text-white"
           >
             {/* Header */}
-            <div className="p-6 pt-12 flex justify-between items-center bg-transparent border-b border-white/10">
+            <div className="p-5 pt-10 flex justify-between items-center bg-transparent border-b border-white/10">
               <button onClick={() => setView('splash')} className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shadow-inner group active:scale-95 transition-all overflow-hidden">
                 <img 
                   src="https://i.postimg.cc/8ThNw3rh/teste.png" 
@@ -835,7 +964,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="p-6 space-y-6 overflow-y-auto flex-1">
+            <div className="p-5 space-y-6 overflow-y-auto flex-1">
               <button 
                 onClick={() => setIsAuthorityOnline(!isAuthorityOnline)}
                 className={cn(
@@ -1261,7 +1390,7 @@ export default function App() {
             animate={{ y: 0 }}
             className="flex-1 flex flex-col bg-brand-gradient text-white"
           >
-            <div className="p-6 pt-12 flex items-center justify-between bg-transparent border-b border-white/10">
+            <div className="p-5 pt-10 flex items-center justify-between bg-transparent border-b border-white/10">
               <div className="flex items-center gap-4">
                 <button onClick={() => setView('splash')}><ChevronLeft className="w-6 h-6" /></button>
                 <h2 className="text-lg font-bold">Localização</h2>
@@ -1285,7 +1414,7 @@ export default function App() {
               <div className="absolute bottom-1/3 right-1/4"><MapPin className="text-brand-emergency w-8 h-8 fill-brand-emergency/20" /></div>
 
               {/* Found Child Card */}
-              <div className="absolute bottom-6 left-6 right-6 bg-blue-900/80 backdrop-blur-xl rounded-[32px] p-6 shadow-2xl border border-white/10 space-y-6">
+              <div className="absolute bottom-6 left-6 right-6 bg-blue-900/80 backdrop-blur-xl rounded-[32px] p-5 shadow-2xl border border-white/10 space-y-6">
                 <div className="text-center space-y-1">
                   <h3 className="text-2xl text-white font-black">Criança Encontrada!</h3>
                   <div className="flex items-center justify-center gap-3">
@@ -1478,7 +1607,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
           >
             <div className="flex items-center gap-4 mb-8">
               <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
@@ -1586,7 +1715,7 @@ export default function App() {
                     setCurrentUser(null);
                     setRole(null);
                     setLoginForm({ email: '', password: '' });
-                    setView('splash');
+                    setView('selection');
                   }}
                 >
                   <LogOut className="w-5 h-5" />
@@ -1693,7 +1822,7 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
           >
             <div className="flex items-center gap-4 mb-8">
               <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
@@ -1710,7 +1839,7 @@ export default function App() {
                 <div className="flex-1 space-y-8 overflow-y-auto pb-8">
                   {/* Status Toggle */}
                   <div className={cn(
-                    "p-6 rounded-[32px] border flex items-center justify-between transition-colors",
+                    "p-5 rounded-[32px] border flex items-center justify-between transition-colors",
                     child.status === 'safe' ? "bg-brand-icon-green/10 border-brand-icon-green/20" : "bg-brand-emergency/10 border-brand-emergency/20"
                   )}>
                     <div className="flex items-center gap-4">
@@ -1918,7 +2047,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
           >
             <div className="flex items-center gap-4 mb-8">
               <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
