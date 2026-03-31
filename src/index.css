@@ -53,7 +53,9 @@
 
 @layer base {
   body {
-    @apply bg-slate-100 text-slate-900 font-sans overflow-x-hidden;
+    @apply bg-slate-100 text-slate-900 font-sans overflow-x-hidden w-full;
+    margin: 0;
+    padding: 0;
   }
   
   h1, h2, h3, h4 {
@@ -63,7 +65,7 @@
 
 /* Mobile App Container */
 .app-container {
-  @apply max-w-[450px] mx-auto min-h-screen bg-white shadow-2xl relative flex flex-col;
+  @apply w-full max-w-[340px] mx-auto h-screen h-[100dvh] bg-white shadow-2xl relative flex flex-col overflow-hidden px-4;
 }
 
 .card-shadow {
@@ -71,7 +73,7 @@
 }
 
 .btn-mobile {
-  @apply w-full py-4 px-6 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all active:scale-95;
+  @apply w-full py-3 px-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95;
 }
 
 .btn-emergency {

@@ -284,27 +284,27 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 bg-brand-gradient flex flex-col p-5 pt-10"
+            className="flex-1 bg-brand-gradient flex flex-col p-4 pt-8 overflow-x-hidden"
           >
-            <div className="absolute top-10 right-5 z-10">
-              <button className="relative w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
-                <Bell className="w-5 h-5 text-brand-secondary fill-brand-secondary/20" />
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+            <div className="absolute top-4 right-4 z-10">
+              <button className="relative w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
+                <Bell className="w-4 h-4 text-brand-secondary fill-brand-secondary/20" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-emergency rounded-full border-2 border-brand-dark" />
               </button>
             </div>
 
             <div className="flex flex-col items-center gap-0.5 mb-3">
-              <h1 className="text-2xl text-white font-black tracking-tighter">
+              <h1 className="text-xl text-white font-black tracking-tighter">
                 ACHEI <span className="text-brand-secondary">VOCÊ</span>
               </h1>
-              <p className="text-blue-100 text-[8px] font-bold tracking-[0.2em] uppercase opacity-70">Segurança infantil e familiar</p>
+              <p className="text-blue-100 text-[8px] font-bold tracking-[0.2em] uppercase opacity-70 text-center">Segurança infantil e familiar</p>
             </div>
 
             <div className="text-center mb-3">
-              <h2 className="text-base text-white font-bold">Quem você quer proteger hoje?</h2>
+              <h2 className="text-sm text-white font-bold">Quem você quer proteger hoje?</h2>
             </div>
 
-            <div className="space-y-2.5 flex-1 overflow-y-auto pb-2">
+            <div className="space-y-2 flex-1 overflow-y-auto pb-4 scrollbar-hide">
               {/* Crianças Card */}
               <motion.div 
                 whileHover={{ scale: 1.01 }}
@@ -316,7 +316,7 @@ export default function App() {
                     setView('splash');
                   }
                 }}
-                className="relative overflow-hidden rounded-[20px] p-3.5 cursor-pointer group shadow-[0_8px_24px_rgba(0,0,0,0.2)] border border-white/10"
+                className="relative overflow-hidden rounded-[20px] p-4 cursor-pointer group shadow-[0_8px_24px_rgba(0,0,0,0.2)] border border-white/10 w-full"
                 style={{ background: 'linear-gradient(145deg, #2A9D5C 0%, #146B3A 100%)' }}
               >
                 <div className="absolute top-2 right-3 bg-white/15 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center gap-1 border border-white/10">
@@ -324,8 +324,8 @@ export default function App() {
                   <span className="text-[7px] text-white font-bold uppercase tracking-wider">Prioridade</span>
                 </div>
                 
-                <div className="flex flex-col items-center text-center gap-1">
-                  <div className="w-20 h-20 relative">
+                <div className="flex flex-col items-center text-center gap-1.5">
+                  <div className="w-[18vw] h-[18vw] max-w-[70px] max-h-[70px] relative">
                     <img 
                       src="https://i.postimg.cc/8ThNw3rh/teste.png" 
                       alt="Crianças" 
@@ -333,13 +333,13 @@ export default function App() {
                       referrerPolicy="no-referrer"
                     />
                   </div>
-                  <div className="space-y-0">
+                  <div className="space-y-0.5">
                     <h3 className="text-lg text-white font-black tracking-tight uppercase">CRIANÇAS</h3>
-                    <p className="text-white/80 text-[8px] font-medium leading-tight max-w-[150px] mx-auto">
+                    <p className="text-white/80 text-[9px] font-medium leading-tight max-w-[180px] mx-auto">
                       Localização rápida com pulseira QR Code
                     </p>
                   </div>
-                  <button className="mt-1 bg-white text-[#187A44] hover:bg-white/90 px-4 py-1 rounded-full font-extrabold text-[10px] flex items-center gap-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all">
+                  <button className="mt-1 bg-white text-[#187A44] hover:bg-white/90 px-5 py-1.5 rounded-full font-extrabold text-[10px] flex items-center gap-2 shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all w-full justify-center">
                     Acessar Crianças <ChevronLeft className="w-3 h-3 rotate-180" />
                   </button>
                 </div>
@@ -350,25 +350,25 @@ export default function App() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
                 onClick={() => alert('Em breve: Funcionalidade de Pets em desenvolvimento!')}
-                className="relative overflow-hidden rounded-[20px] p-3.5 cursor-pointer group shadow-[0_8px_24px_rgba(0,0,0,0.2)] border border-white/10"
+                className="relative overflow-hidden rounded-[20px] p-4 cursor-pointer group shadow-[0_8px_24px_rgba(0,0,0,0.2)] border border-white/10 w-full"
                 style={{ background: 'linear-gradient(145deg, #F5C518 0%, #C99300 100%)' }}
               >
-                <div className="flex flex-col items-center text-center gap-1">
-                  <div className="w-20 h-20 relative">
+                <div className="flex flex-col items-center text-center gap-1.5">
+                  <div className="w-[18vw] h-[18vw] max-w-[70px] max-h-[70px] relative">
                     <img 
                       src="https://picsum.photos/seed/pets_safety/400/400" 
                       alt="Pets" 
-                      className="w-full h-full object-cover rounded-xl drop-shadow-[0_8px_8px_rgba(0,0,0,0.3)]"
+                      className="w-full h-full object-cover rounded-2xl drop-shadow-[0_8px_8px_rgba(0,0,0,0.3)]"
                       referrerPolicy="no-referrer"
                     />
                   </div>
-                  <div className="space-y-0">
+                  <div className="space-y-0.5">
                     <h3 className="text-lg text-brand-dark font-black tracking-tight uppercase">PETS</h3>
-                    <p className="text-brand-dark/70 text-[8px] font-medium leading-tight max-w-[150px] mx-auto">
+                    <p className="text-brand-dark/70 text-[9px] font-medium leading-tight max-w-[180px] mx-auto">
                       Encontre seu pet com identificação segura
                     </p>
                   </div>
-                  <button className="mt-1 bg-brand-dark text-white hover:bg-brand-dark/90 px-4 py-1 rounded-full font-extrabold text-[10px] flex items-center gap-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all">
+                  <button className="mt-1 bg-brand-dark text-white hover:bg-brand-dark/90 px-5 py-1.5 rounded-full font-extrabold text-[10px] flex items-center gap-2 shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all w-full justify-center">
                     Acessar Pets
                   </button>
                 </div>
@@ -385,12 +385,12 @@ export default function App() {
                   <div className="h-[1px] flex-1 bg-white/5" />
                 </div>
                 
-                <div className="bg-white/5 backdrop-blur-md rounded-lg p-2 border border-white/5 flex items-center justify-center gap-2 shadow-lg max-w-[200px] mx-auto">
-                  <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center p-0.5">
+                <div className="bg-white/5 backdrop-blur-md rounded-xl p-2.5 border border-white/5 flex items-center justify-center gap-3 shadow-lg max-w-[220px] mx-auto w-full">
+                  <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center p-1 shrink-0">
                     <Building2 className="w-full h-full text-brand-primary" />
                   </div>
                   <div className="text-left">
-                    <p className="text-white font-black text-[9px] leading-none">Prefeitura de Mendes/RJ</p>
+                    <p className="text-white font-black text-[9px] leading-tight">Prefeitura de Mendes/RJ</p>
                   </div>
                 </div>
               </div>
@@ -404,26 +404,26 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 bg-brand-gradient flex flex-col p-6 pt-10"
+            className="flex-1 bg-brand-gradient flex flex-col p-4 pt-8 overflow-x-hidden"
           >
-            <div className="absolute top-10 left-5 z-10">
+            <div className="absolute top-4 left-4 z-10">
               <button 
                 onClick={() => setView('selection')}
-                className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all"
+                className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all"
               >
                 <ChevronLeft className="w-5 h-5 text-white" />
               </button>
             </div>
 
-            <div className="absolute top-10 right-5 z-10">
-              <button className="relative w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
-                <Bell className="w-5 h-5 text-brand-secondary fill-brand-secondary/20" />
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+            <div className="absolute top-4 right-4 z-10">
+              <button className="relative w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
+                <Bell className="w-4 h-4 text-brand-secondary fill-brand-secondary/20" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-emergency rounded-full border-2 border-brand-dark" />
               </button>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5 mb-4">
-              <div className="w-60 h-60 bg-transparent flex items-center justify-center overflow-hidden relative logo-glow">
+            <div className="flex flex-col items-center gap-1.5 mb-4 flex-1 justify-center overflow-y-auto scrollbar-hide">
+              <div className="w-[40vw] h-[40vw] max-w-[150px] max-h-[150px] bg-transparent flex items-center justify-center overflow-hidden relative logo-glow shrink-0">
                 <img 
                   src="https://i.postimg.cc/8ThNw3rh/teste.png" 
                   alt="Achei Você Logo" 
@@ -432,69 +432,69 @@ export default function App() {
                 />
               </div>
               <div className="text-center space-y-0.5">
-                <h1 className="text-4xl text-white font-black tracking-tighter">
+                <h1 className="text-2xl sm:text-3xl text-white font-black tracking-tighter">
                   ACHEI <span className="text-brand-secondary">VOCÊ</span>
                 </h1>
-                <p className="text-blue-100 text-xs font-bold tracking-[0.2em] uppercase opacity-80">Segurança Infantil</p>
+                <p className="text-blue-100 text-[10px] font-bold tracking-[0.2em] uppercase opacity-80">Segurança Infantil</p>
               </div>
-              <div className="bg-brand-icon-green text-white px-5 py-2 rounded-full text-xs font-black flex items-center gap-2 mt-1 shadow-[0_0_20px_rgba(24,165,88,0.4)] border border-white/20 animate-pulse-subtle">
-                <CheckCircle2 className="w-4 h-4" /> Localização Rápida de Crianças
+              <div className="bg-brand-icon-green text-white px-4 py-1.5 rounded-full text-[9px] sm:text-xs font-black flex items-center gap-2 mt-1 shadow-[0_0_20px_rgba(24,165,88,0.4)] border border-white/20 animate-pulse-subtle text-center">
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Localização Rápida de Crianças
+              </div>
+
+              <div className="w-full space-y-2 mt-4">
+                <button 
+                  className="btn-mobile btn-emergency py-3.5 text-sm sm:text-base animate-emergency w-full"
+                  onClick={() => { setRole('citizen'); setView('citizen_scan'); }}
+                >
+                  <Search className="w-4 h-4" />
+                  ENCONTROU UMA CRIANÇA?
+                </button>
+
+                <div className="grid grid-cols-1 gap-2 w-full">
+                  <button 
+                    className="btn-mobile btn-primary-mobile py-3 w-full text-xs"
+                    onClick={() => { setRegRole('responsible'); setView('login'); }}
+                  >
+                    <UserIcon className="w-4 h-4" />
+                    Sou Responsável
+                  </button>
+                  <button 
+                    className="btn-mobile btn-success-mobile py-3 w-full text-xs"
+                    onClick={() => { setRegRole('authority'); setRegSubRole('guard'); setView('login'); }}
+                  >
+                    <Shield className="w-4 h-4" />
+                    Prefeitura / Guarda
+                  </button>
+                  <button 
+                    className="btn-mobile btn-secondary-mobile py-3 w-full text-xs"
+                    onClick={() => { setRegRole('authority'); setRegSubRole('authority'); setView('login'); }}
+                  >
+                    <Siren className="w-4 h-4" />
+                    Autoridades
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-3 mt-4">
-              <button 
-                className="btn-mobile btn-emergency py-4 text-lg animate-emergency"
-                onClick={() => { setRole('citizen'); setView('citizen_scan'); }}
-              >
-                <Search className="w-5 h-5" />
-                ENCONTROU UMA CRIANÇA?
-              </button>
-
-              <div className="grid grid-cols-1 gap-3 pt-2">
-                <button 
-                  className="btn-mobile btn-primary-mobile"
-                  onClick={() => { setRegRole('responsible'); setView('login'); }}
-                >
-                  <UserIcon className="w-5 h-5" />
-                  Sou Responsável
-                </button>
-                <button 
-                  className="btn-mobile btn-success-mobile"
-                  onClick={() => { setRegRole('authority'); setRegSubRole('guard'); setView('login'); }}
-                >
-                  <Shield className="w-5 h-5" />
-                  Prefeitura / Guarda
-                </button>
-                <button 
-                  className="btn-mobile btn-secondary-mobile"
-                  onClick={() => { setRegRole('authority'); setRegSubRole('authority'); setView('login'); }}
-                >
-                  <Siren className="w-5 h-5" />
-                  Autoridades
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-auto text-center space-y-6">
-              <div className="space-y-3">
-                <p className="text-white/40 text-[10px] uppercase font-bold tracking-[0.3em]">Patrocinadores</p>
-                <div className="flex flex-wrap justify-center gap-4">
-                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center gap-3 min-w-[200px] shadow-xl">
-                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1">
+            <div className="mt-auto text-center space-y-3 pt-2 shrink-0">
+              <div className="space-y-1.5">
+                <p className="text-white/40 text-[7px] uppercase font-bold tracking-[0.3em]">Patrocinadores</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  <div className="bg-white/5 backdrop-blur-md rounded-xl p-2.5 border border-white/10 flex items-center gap-3 min-w-[160px] shadow-xl">
+                    <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center p-1 shrink-0">
                       <Building2 className="w-full h-full text-brand-primary" />
                     </div>
                     <div className="text-left">
-                      <p className="text-[10px] text-white/40 font-bold uppercase leading-none mb-1">Apoio</p>
-                      <p className="text-white font-black text-xs leading-none">Prefeitura de Mendes/RJ</p>
+                      <p className="text-[7px] text-white/40 font-bold uppercase leading-none mb-1">Apoio</p>
+                      <p className="text-white font-black text-[9px] leading-none">Prefeitura de Mendes/RJ</p>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div className="flex justify-center gap-1 text-brand-secondary pt-2">
-                {[1,2,3,4,5].map(i => <Heart key={i} className="w-3 h-3 fill-current" />)}
-                <span className="text-white text-[10px] font-bold ml-1">4.9</span>
+              <div className="flex justify-center gap-1 text-brand-secondary">
+                {[1,2,3,4,5].map(i => <Heart key={i} className="w-2 h-2 fill-current" />)}
+                <span className="text-white text-[8px] font-bold ml-1">4.9</span>
               </div>
             </div>
           </motion.div>
@@ -506,21 +506,21 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-4 pt-8 overflow-x-hidden"
           >
-            <div className="flex items-center gap-4 mb-6">
-              <button onClick={() => setView('splash')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-4 mb-5">
+              <button onClick={() => setView('splash')} className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <h2 className="text-xl font-bold">
+              <h2 className="text-base sm:text-lg font-bold leading-tight">
                 {regRole === 'responsible' ? 'Cadastro Responsável' : 
                  regSubRole === 'guard' ? 'Cadastro Prefeitura / Guarda' : 'Cadastro Autoridades'}
               </h2>
             </div>
 
-            <div className="flex-1 space-y-3 overflow-y-auto pb-6">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">
+            <div className="flex-1 space-y-3 overflow-y-auto pb-4 scrollbar-hide">
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Nome Completo' : 
                    regSubRole === 'guard' ? 'Nome da Instituição' : 'Instituição'}
                 </label>
@@ -529,24 +529,24 @@ export default function App() {
                   value={regForm.name}
                   onChange={(e) => setRegForm({...regForm, name: e.target.value})}
                   placeholder={regRole === 'responsible' ? "Digite seu nome" : "Ex: Guarda Municipal / Polícia"}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                 />
               </div>
 
               {regRole === 'responsible' ? (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">CPF</label>
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold uppercase opacity-60 ml-1 tracking-widest">CPF</label>
                   <input 
                     type="text" 
                     value={regForm.cpf}
                     onChange={(e) => setRegForm({...regForm, cpf: e.target.value})}
                     placeholder="000.000.000-00"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                   />
                 </div>
               ) : (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                     {regSubRole === 'guard' ? 'CNPJ' : 'Departamento'}
                   </label>
                   <input 
@@ -554,13 +554,13 @@ export default function App() {
                     value={regForm.registrationId}
                     onChange={(e) => setRegForm({...regForm, registrationId: e.target.value})}
                     placeholder={regSubRole === 'guard' ? "00.000.000/0000-00" : "Ex: Divisão de Busca"}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                   />
                 </div>
               )}
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Celular' : 'Nome do Responsável / Agente'}
                 </label>
                 <input 
@@ -568,49 +568,49 @@ export default function App() {
                   value={regForm.phone}
                   onChange={(e) => setRegForm({...regForm, phone: e.target.value})}
                   placeholder={regRole === 'responsible' ? "(00) 00000-0000" : "Digite o nome completo"}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                 />
               </div>
 
               {regRole !== 'responsible' && (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Matrícula / ID Funcional</label>
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold uppercase opacity-60 ml-1 tracking-widest">Matrícula / ID Funcional</label>
                   <input 
                     type="text" 
                     value={regForm.registrationId}
                     onChange={(e) => setRegForm({...regForm, registrationId: e.target.value})}
                     placeholder="Digite seu ID"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                   />
                 </div>
               )}
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                 <input 
                   type="email" 
                   value={regForm.email}
                   onChange={(e) => setRegForm({...regForm, email: e.target.value})}
                   placeholder="seu@email.com"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Senha</label>
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase opacity-60 ml-1 tracking-widest">Senha</label>
                 <input 
                   type="password" 
                   value={regForm.password}
                   onChange={(e) => setRegForm({...regForm, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                 />
               </div>
 
-              <div className="pt-2 space-y-3">
+              <div className="pt-3 space-y-2">
                 <button 
                   className={cn(
-                    "btn-mobile shadow-xl py-4",
+                    "btn-mobile shadow-xl py-3.5 w-full text-sm",
                     regRole === 'responsible' ? "btn-primary-mobile" : 
                     regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
                   )}
@@ -669,48 +669,48 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-4 pt-8 overflow-x-hidden"
           >
-            <div className="flex items-center gap-4 mb-6">
-              <button onClick={() => setView('splash')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-4 mb-5">
+              <button onClick={() => setView('splash')} className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <h2 className="text-xl font-bold">
+              <h2 className="text-base sm:text-lg font-bold leading-tight">
                 {regRole === 'responsible' ? 'Login Responsável' : 
                  regSubRole === 'guard' ? 'Login Prefeitura / Guarda' : 'Login Autoridades'}
               </h2>
             </div>
 
-            <div className="flex-1 space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
+            <div className="flex-1 space-y-3 overflow-y-auto scrollbar-hide">
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                 <input 
                   type="email" 
                   value={loginForm.email}
                   onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
                   placeholder="seu@email.com"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                 />
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex justify-between items-center px-1">
-                  <label className="text-xs font-bold uppercase opacity-60 tracking-widest">Senha</label>
-                  <button className="text-[10px] font-bold text-brand-secondary uppercase tracking-wider">Esqueceu?</button>
+                  <label className="text-[9px] font-bold uppercase opacity-60 tracking-widest">Senha</label>
+                  <button className="text-[9px] font-bold text-brand-secondary uppercase tracking-wider">Esqueceu?</button>
                 </div>
                 <input 
                   type="password" 
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 px-5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-xs"
                 />
               </div>
 
-              <div className="pt-4 space-y-4">
+              <div className="pt-4 space-y-3">
                 <button 
                   className={cn(
-                    "btn-mobile shadow-xl py-4",
+                    "btn-mobile shadow-xl py-3.5 w-full text-sm",
                     regRole === 'responsible' ? "btn-primary-mobile" : 
                     regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
                   )}
@@ -763,85 +763,87 @@ export default function App() {
             key="resp-dash"
             initial={{ x: 300 }}
             animate={{ x: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white"
+            className="flex-1 flex flex-col bg-brand-gradient text-white overflow-x-hidden"
           >
             {/* Header */}
-            <div className="p-5 pt-10 flex justify-between items-center bg-transparent border-b border-white/10">
-              <button onClick={() => setView('splash')} className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shadow-inner group active:scale-95 transition-all overflow-hidden">
+            <div className="p-3 pt-7 flex justify-between items-center bg-transparent border-b border-white/10 shrink-0">
+              <button onClick={() => setView('splash')} className="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shadow-inner group active:scale-95 transition-all overflow-hidden shrink-0">
                 <img 
                   src="https://i.postimg.cc/8ThNw3rh/teste.png" 
                   alt="Logo" 
-                  className="w-10 h-10 object-contain"
+                  className="w-6 h-6 sm:w-8 sm:h-8 object-contain"
                   referrerPolicy="no-referrer"
                 />
               </button>
-              <h2 className="text-lg font-bold">Dashboard</h2>
-              <div className="flex items-center gap-2">
+              <h2 className="text-xs sm:text-sm font-bold">Dashboard</h2>
+              <div className="flex items-center gap-2 shrink-0">
                 <button className="relative">
-                  <Bell className="w-6 h-6 text-brand-secondary fill-brand-secondary/20" />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                  <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-brand-secondary fill-brand-secondary/20" />
+                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-brand-emergency rounded-full border border-brand-dark" />
                 </button>
-                <button onClick={() => setView('settings')}><Settings className="w-6 h-6 text-white/60" /></button>
+                <button onClick={() => setView('settings')}><Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white/60" /></button>
               </div>
             </div>
 
-            <div className="p-5 space-y-6 overflow-y-auto flex-1">
+            <div className="p-3.5 space-y-4 overflow-y-auto flex-1 scrollbar-hide">
               {/* Profile Card */}
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full border-4 border-white/20 shadow-lg overflow-hidden relative group">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white/20 shadow-lg overflow-hidden relative group shrink-0">
                   <img src={userProfile.photo} alt={userProfile.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   <button 
                     onClick={() => setView('settings')}
                     className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <Camera className="w-5 h-5 text-white" />
+                    <Camera className="w-3 h-3 text-white" />
                   </button>
                 </div>
-                <div>
-                  <h3 className="text-2xl text-white">{userProfile.name}</h3>
-                  <p className="text-white/60 text-xs">{role === 'responsible' ? 'Responsável' : 'Autoridade'}</p>
+                <div className="min-w-0">
+                  <h3 className="text-base sm:text-lg text-white truncate font-bold">{userProfile.name}</h3>
+                  <p className="text-white/60 text-[8px] sm:text-[9px] uppercase tracking-widest">{role === 'responsible' ? 'Responsável' : 'Autoridade'}</p>
                 </div>
               </div>
 
               {/* Children List */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-bold text-white/40 uppercase tracking-widest ml-1">Minhas Crianças</h4>
-                {children.filter(child => child.responsibleId === currentUser?.id).map((child) => (
-                  <button 
-                    key={child.id} 
-                    onClick={() => { setSelectedChildId(child.id); setView('child_details'); }}
-                    className="w-full bg-white/5 p-4 rounded-3xl border border-white/10 card-shadow flex items-center gap-4 text-left active:bg-white/10 transition-colors"
-                  >
-                    <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20">
-                      <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold">{child.name}</h4>
-                      <div className={cn(
-                        "flex items-center gap-1 text-[10px] font-bold",
-                        child.status === 'safe' ? "text-brand-icon-green" : "text-brand-emergency"
-                      )}>
-                        <div className={cn(
-                          "w-1.5 h-1.5 rounded-full",
-                          child.status === 'safe' ? "bg-brand-icon-green animate-pulse" : "bg-brand-emergency animate-pulse"
-                        )} />
-                        {child.status === 'safe' ? 'Seguro • Pulseira Ativa' : 'DESAPARECIDO'}
+              <div className="space-y-2.5">
+                <h4 className="text-[8px] sm:text-[9px] font-bold text-white/40 uppercase tracking-widest ml-1">Minhas Crianças</h4>
+                <div className="space-y-2">
+                  {children.filter(child => child.responsibleId === currentUser?.id).map((child) => (
+                    <button 
+                      key={child.id} 
+                      onClick={() => { setSelectedChildId(child.id); setView('child_details'); }}
+                      className="w-full bg-white/5 p-2.5 rounded-2xl border border-white/10 card-shadow flex items-center gap-2.5 text-left active:bg-white/10 transition-colors"
+                    >
+                      <div className="w-9 h-9 rounded-lg overflow-hidden border border-white/20 shrink-0">
+                        <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
-                    </div>
-                    <div className="p-2 bg-white/10 rounded-lg"><ChevronLeft className="w-4 h-4 rotate-180" /></div>
-                  </button>
-                ))}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-xs font-bold truncate">{child.name}</h4>
+                        <div className={cn(
+                          "flex items-center gap-1 text-[8px] font-bold",
+                          child.status === 'safe' ? "text-brand-icon-green" : "text-brand-emergency"
+                        )}>
+                          <div className={cn(
+                            "w-1 h-1 rounded-full",
+                            child.status === 'safe' ? "bg-brand-icon-green animate-pulse" : "bg-brand-emergency animate-pulse"
+                          )} />
+                          {child.status === 'safe' ? 'Seguro • Pulseira Ativa' : 'DESAPARECIDO'}
+                        </div>
+                      </div>
+                      <div className="p-1.5 bg-white/10 rounded-lg shrink-0"><ChevronLeft className="w-3 h-3 rotate-180" /></div>
+                    </button>
+                  ))}
+                </div>
                 {children.filter(child => child.responsibleId === currentUser?.id).length === 0 && (
-                  <div className="py-10 text-center space-y-3 opacity-30">
-                    <Plus className="w-12 h-12 mx-auto" />
-                    <p className="text-sm font-bold">Nenhuma criança cadastrada.</p>
+                  <div className="py-6 text-center space-y-2 opacity-30">
+                    <Plus className="w-8 h-8 mx-auto" />
+                    <p className="text-[10px] font-bold">Nenhuma criança cadastrada.</p>
                   </div>
                 )}
               </div>
 
               {/* QR & Summary Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="qr-container card-shadow" onClick={() => {
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="qr-container card-shadow p-2.5 aspect-square flex flex-col justify-center items-center text-center" onClick={() => {
                   const userChildren = children.filter(c => c.responsibleId === currentUser?.id);
                   if (userChildren.length === 0) {
                     setView('register_child');
@@ -854,14 +856,14 @@ export default function App() {
                     alert('Selecione a criança na lista acima para vincular a pulseira.');
                   }
                 }}>
-                  <p className="text-xs font-bold text-white/60">Vincular Pulseira</p>
-                  <div className="p-2 bg-white/10 rounded-xl">
-                    <Camera className="w-12 h-12 text-brand-secondary" />
+                  <p className="text-[8px] font-bold text-white/60 mb-1">Vincular Pulseira</p>
+                  <div className="p-1.5 bg-white/10 rounded-xl">
+                    <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-brand-secondary" />
                   </div>
                 </div>
-                <div className="bg-white/5 p-4 rounded-3xl border border-white/10 card-shadow flex flex-col items-center gap-2">
-                  <p className="text-xs font-bold text-white/60">Total de Crianças</p>
-                  <div className="text-4xl font-black text-brand-primary">
+                <div className="bg-white/5 p-2.5 rounded-2xl border border-white/10 card-shadow aspect-square flex flex-col justify-center items-center text-center">
+                  <p className="text-[8px] font-bold text-white/60 mb-0.5">Total de Crianças</p>
+                  <div className="text-xl sm:text-2xl font-black text-brand-primary">
                     {children.filter(child => child.responsibleId === currentUser?.id).length}
                   </div>
                 </div>
@@ -869,7 +871,7 @@ export default function App() {
 
               {/* Emergency Button */}
               <button 
-                className="btn-mobile btn-emergency py-8 flex-col gap-1 shadow-2xl shadow-red-900/20"
+                className="btn-mobile btn-emergency py-4 sm:py-5 flex-col gap-0.5 shadow-2xl shadow-red-900/20 w-full"
                 onClick={() => {
                   const userChildren = children.filter(c => c.responsibleId === currentUser?.id);
                   if (userChildren.length === 1) {
@@ -882,38 +884,38 @@ export default function App() {
                   setView('emergency');
                 }}
               >
-                <AlertTriangle className="w-10 h-10" />
-                <span className="text-xl">Botão de Emergência</span>
+                <AlertTriangle className="w-6 h-6 sm:w-8 sm:h-8" />
+                <span className="text-sm sm:text-base">Botão de Emergência</span>
               </button>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-2 gap-4">
-                <button className="bg-white/5 p-4 rounded-3xl border border-white/10 card-shadow flex items-center gap-3">
-                  <div className="p-2 bg-white/10 rounded-full"><History className="w-5 h-5 text-white/60" /></div>
-                  <span className="text-sm font-bold">Histórico</span>
+              <div className="grid grid-cols-2 gap-2.5">
+                <button className="bg-white/5 p-2.5 rounded-2xl border border-white/10 card-shadow flex items-center gap-2 justify-center">
+                  <div className="p-1 bg-white/10 rounded-full shrink-0"><History className="w-3.5 h-3.5 text-white/60" /></div>
+                  <span className="text-[10px] font-bold truncate">Histórico</span>
                 </button>
-                <button className="bg-white/5 p-4 rounded-3xl border border-white/10 card-shadow flex items-center gap-3" onClick={() => setView('settings')}>
-                  <div className="p-2 bg-brand-success/20 rounded-full"><Settings className="w-5 h-5 text-brand-success" /></div>
-                  <span className="text-sm font-bold">Configurações</span>
+                <button className="bg-white/5 p-2.5 rounded-2xl border border-white/10 card-shadow flex items-center gap-2 justify-center" onClick={() => setView('settings')}>
+                  <div className="p-1 bg-brand-success/20 rounded-full shrink-0"><Settings className="w-3.5 h-3.5 text-brand-success" /></div>
+                  <span className="text-[10px] font-bold truncate">Configurações</span>
                 </button>
               </div>
 
               {/* Bottom Sections from Image */}
-              <div className="space-y-4 pt-4">
-                <h4 className="text-sm font-bold text-white/40 uppercase tracking-widest">Para Responsáveis</h4>
-                <div className="space-y-3">
+              <div className="space-y-2.5 pt-1">
+                <h4 className="text-[8px] sm:text-[9px] font-bold text-white/40 uppercase tracking-widest ml-1">Para Responsáveis</h4>
+                <div className="space-y-2">
                   <ActionCard 
-                    icon={<UserIcon className="text-brand-secondary" />} 
+                    icon={<UserIcon className="text-brand-secondary w-4 h-4" />} 
                     title="Cadastrar Criança" 
                     onClick={() => setView('register_child')}
                   />
                   <ActionCard 
-                    icon={<QrCode className="text-brand-icon-green" />} 
+                    icon={<QrCode className="text-brand-icon-green w-4 h-4" />} 
                     title="Vincular QR Code" 
                     onClick={() => setView('qr_generator')}
                   />
                   <ActionCard 
-                    icon={<MapIcon className="text-brand-primary" />} 
+                    icon={<MapIcon className="text-brand-primary w-4 h-4" />} 
                     title="Modo Evento" 
                     onClick={() => {}}
                   />
@@ -922,117 +924,116 @@ export default function App() {
             </div>
 
             {/* Bottom Nav */}
-            <div className="glass-nav p-4 flex justify-around items-center">
-              <button onClick={() => setView('dashboard')} className={cn(view === 'dashboard' ? "text-white" : "text-white/40")}><MapIcon className="w-6 h-6" /></button>
-              <button onClick={() => setView('notifications')} className={cn(view === 'notifications' ? "text-white" : "text-white/40")}><Bell className="w-6 h-6" /></button>
+            <div className="glass-nav p-2 sm:p-3 flex justify-around items-center shrink-0">
+              <button onClick={() => setView('dashboard')} className={cn(view === 'dashboard' ? "text-white" : "text-white/40")}><MapIcon className="w-4 h-4" /></button>
+              <button onClick={() => setView('notifications')} className={cn(view === 'notifications' ? "text-white" : "text-white/40")}><Bell className="w-4 h-4" /></button>
               <button 
                 onClick={() => setView('register_child')}
-                className="w-14 h-14 bg-brand-primary rounded-full flex items-center justify-center -mt-12 shadow-2xl border-4 border-brand-dark active:scale-90 transition-transform"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-primary rounded-full flex items-center justify-center -mt-7 sm:-mt-9 shadow-2xl border-4 border-brand-dark active:scale-90 transition-transform shrink-0"
               >
-                <Plus className="text-white w-8 h-8" />
+                <Plus className="text-white w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-              <button className="text-white/40"><History className="w-6 h-6" /></button>
-              <button onClick={() => setView('settings')} className={cn(view === 'settings' ? "text-white" : "text-white/40")}><UserIcon className="w-6 h-6" /></button>
+              <button className="text-white/40"><History className="w-4 h-4" /></button>
+              <button onClick={() => setView('settings')} className={cn(view === 'settings' ? "text-white" : "text-white/40")}><UserIcon className="w-4 h-4" /></button>
             </div>
           </motion.div>
         )}
 
         {view === 'dashboard' && role === 'authority' && (
           <motion.div 
-            key="auth-dash"
-            initial={{ x: 300 }}
-            animate={{ x: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute inset-0 bg-brand-dark flex flex-col z-50 overflow-hidden"
           >
             {/* Header */}
-            <div className="p-5 pt-10 flex justify-between items-center bg-transparent border-b border-white/10">
-              <button onClick={() => setView('splash')} className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shadow-inner group active:scale-95 transition-all overflow-hidden">
+            <div className="p-3 pt-6 sm:p-6 sm:pt-10 flex justify-between items-center bg-transparent border-b border-white/10 shrink-0">
+              <button onClick={() => setView('splash')} className="w-9 h-9 sm:w-12 sm:h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shadow-inner group active:scale-95 transition-all overflow-hidden shrink-0">
                 <img 
                   src="https://i.postimg.cc/8ThNw3rh/teste.png" 
                   alt="Logo" 
-                  className="w-10 h-10 object-contain"
+                  className="w-7 h-7 sm:w-10 sm:h-10 object-contain"
                   referrerPolicy="no-referrer"
                 />
               </button>
-              <h2 className="text-lg font-bold">Painel Autoridade</h2>
-              <div className="flex items-center gap-2">
+              <h2 className="text-sm sm:text-lg font-bold">Painel Autoridade</h2>
+              <div className="flex items-center gap-2 shrink-0">
                 <button className="relative">
-                  <Bell className="w-6 h-6 text-brand-secondary fill-brand-secondary/20" />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                  <Bell className="w-4 h-4 sm:w-6 sm:h-6 text-brand-secondary fill-brand-secondary/20" />
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-emergency rounded-full border-2 border-brand-dark" />
                 </button>
-                <button onClick={() => setView('settings')}><Settings className="w-6 h-6 text-white/60" /></button>
+                <button onClick={() => setView('settings')}><Settings className="w-4 h-4 sm:w-6 sm:h-6 text-white/60" /></button>
               </div>
             </div>
 
-            <div className="p-5 space-y-6 overflow-y-auto flex-1">
+            <div className="p-3 sm:p-6 space-y-5 overflow-y-auto flex-1 scrollbar-hide">
               <button 
                 onClick={() => setIsAuthorityOnline(!isAuthorityOnline)}
                 className={cn(
-                  "w-full p-6 rounded-[32px] shadow-xl flex items-center justify-between transition-all active:scale-95",
+                  "w-full p-4 sm:p-6 rounded-[20px] sm:rounded-[32px] shadow-xl flex items-center justify-between transition-all active:scale-95",
                   isAuthorityOnline ? "bg-brand-primary" : "bg-white/10 border border-white/20"
                 )}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                   <div className={cn(
-                    "w-16 h-16 rounded-2xl flex items-center justify-center",
+                    "w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0",
                     isAuthorityOnline ? "bg-white/20" : "bg-white/5"
                   )}>
-                    <Shield className={cn("w-8 h-8", isAuthorityOnline ? "text-white" : "text-white/40")} />
+                    <Shield className={cn("w-5 h-5 sm:w-8 sm:h-8", isAuthorityOnline ? "text-white" : "text-white/40")} />
                   </div>
-                  <div className="text-left">
-                    <h3 className="text-xl font-bold">Guarda Municipal</h3>
-                    <p className={cn("text-sm", isAuthorityOnline ? "text-blue-200" : "text-white/40")}>
+                  <div className="text-left min-w-0">
+                    <h3 className="text-sm sm:text-xl font-bold truncate">Guarda Municipal</h3>
+                    <p className={cn("text-[9px] sm:text-xs truncate", isAuthorityOnline ? "text-blue-200" : "text-white/40")}>
                       Unidade Centro • {isAuthorityOnline ? 'Online' : 'Offline'}
                     </p>
                   </div>
                 </div>
                 <div className={cn(
-                  "w-12 h-6 rounded-full relative transition-colors",
+                  "w-9 h-4.5 sm:w-12 sm:h-6 rounded-full relative transition-colors shrink-0",
                   isAuthorityOnline ? "bg-brand-icon-green" : "bg-white/20"
                 )}>
                   <motion.div 
-                    animate={{ x: isAuthorityOnline ? 24 : 4 }}
-                    className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-md"
+                    animate={{ x: isAuthorityOnline ? (window.innerWidth < 400 ? 18 : 24) : 4 }}
+                    className="absolute top-1 w-2.5 h-2.5 sm:w-4 sm:h-4 bg-white rounded-full shadow-md"
                   />
                 </div>
               </button>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <button 
                   onClick={() => setView('authority_alerts')}
-                  className="bg-white/5 p-6 rounded-[32px] border border-white/10 card-shadow flex flex-col items-center gap-3 text-center active:bg-white/10 transition-all"
+                  className="bg-white/5 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] border border-white/10 card-shadow flex flex-col items-center gap-2 sm:gap-3 text-center active:bg-white/10 transition-all aspect-square justify-center"
                 >
-                  <div className="w-12 h-12 bg-red-100/20 text-brand-emergency rounded-2xl flex items-center justify-center">
-                    <AlertTriangle className="w-6 h-6" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-100/20 text-brand-emergency rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
+                    <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <span className="font-bold text-white/80">Alertas</span>
+                  <span className="font-bold text-white/80 text-xs sm:text-sm">Alertas</span>
                 </button>
-                <button className="bg-white/5 p-6 rounded-[32px] border border-white/10 card-shadow flex flex-col items-center gap-3 text-center active:bg-white/10 transition-all">
-                  <div className="w-12 h-12 bg-blue-100/20 text-brand-primary rounded-2xl flex items-center justify-center">
-                    <MapIcon className="w-6 h-6" />
+                <button className="bg-white/5 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] border border-white/10 card-shadow flex flex-col items-center gap-2 sm:gap-3 text-center active:bg-white/10 transition-all aspect-square justify-center">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100/20 text-brand-primary rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
+                    <MapIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <span className="font-bold text-white/80">Mapa</span>
+                  <span className="font-bold text-white/80 text-xs sm:text-sm">Mapa</span>
                 </button>
-                <button className="bg-white/5 p-6 rounded-[32px] border border-white/10 card-shadow flex flex-col items-center gap-3 text-center active:bg-white/10 transition-all">
-                  <div className="w-12 h-12 bg-orange-100/20 text-brand-secondary rounded-2xl flex items-center justify-center">
-                    <UserIcon className="w-6 h-6" />
+                <button className="bg-white/5 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] border border-white/10 card-shadow flex flex-col items-center gap-2 sm:gap-3 text-center active:bg-white/10 transition-all aspect-square justify-center">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100/20 text-brand-secondary rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
+                    <UserIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <span className="font-bold text-white/80">Atendimentos</span>
+                  <span className="font-bold text-white/80 text-xs sm:text-sm">Atendimentos</span>
                 </button>
                 <button 
                   onClick={() => setView('authority_reports')}
-                  className="bg-white/5 p-6 rounded-[32px] border border-white/10 card-shadow flex flex-col items-center gap-3 text-center active:bg-white/10 transition-all"
+                  className="bg-white/5 p-4 sm:p-6 rounded-[24px] sm:rounded-[32px] border border-white/10 card-shadow flex flex-col items-center gap-2 sm:gap-3 text-center active:bg-white/10 transition-all aspect-square justify-center"
                 >
-                  <div className="w-12 h-12 bg-white/10 text-white/60 rounded-2xl flex items-center justify-center">
-                    <History className="w-6 h-6" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/10 text-white/60 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
+                    <History className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <span className="font-bold text-white/80">Relatórios</span>
+                  <span className="font-bold text-white/80 text-xs sm:text-sm">Relatórios</span>
                 </button>
               </div>
 
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-sm font-bold text-white/40 uppercase tracking-widest">Ocorrências Ativas</h4>
+                <div className="flex justify-between items-center px-1">
+                  <h4 className="text-[10px] sm:text-xs font-bold text-white/40 uppercase tracking-widest">Ocorrências Ativas</h4>
                   <span className="px-2 py-0.5 bg-brand-emergency/20 text-brand-emergency text-[10px] font-black rounded-full">
                     {children.filter(c => c.status === 'missing').length} ATIVAS
                   </span>
@@ -1045,14 +1046,14 @@ export default function App() {
                       onClick={() => { setSelectedChildId(child.id); setView('occurrence_details'); }}
                       className="w-full bg-white/5 p-4 rounded-2xl border border-white/10 card-shadow border-l-4 border-red-500 flex items-center gap-4 text-left active:bg-white/10 transition-all"
                     >
-                      <div className="w-12 h-12 bg-white/10 rounded-xl overflow-hidden">
+                      <div className="w-12 h-12 bg-white/10 rounded-xl overflow-hidden shrink-0">
                         <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-white">{child.name}, {child.age} anos</p>
-                        <p className="text-xs text-white/40">Desaparecido há 15 min</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-white text-sm sm:text-base truncate">{child.name}, {child.age} anos</p>
+                        <p className="text-[10px] sm:text-xs text-white/40">Desaparecido há 15 min</p>
                       </div>
-                      <div className="p-2 bg-brand-primary text-white rounded-lg"><Navigation className="w-4 h-4" /></div>
+                      <div className="p-2 bg-brand-primary text-white rounded-lg shrink-0"><Navigation className="w-4 h-4" /></div>
                     </button>
                   ))}
                   {children.filter(c => c.status === 'missing').length === 0 && (
@@ -1064,17 +1065,6 @@ export default function App() {
                 </div>
               </div>
             </div>
-
-            {/* Bottom Nav */}
-            <div className="glass-nav p-4 flex justify-around items-center">
-              <button className="text-white"><Shield className="w-6 h-6" /></button>
-              <button className="text-white/40"><Bell className="w-6 h-6" /></button>
-              <div className="w-14 h-14 bg-brand-primary rounded-full flex items-center justify-center -mt-12 shadow-2xl border-4 border-brand-dark">
-                <Plus className="text-white w-8 h-8" />
-              </div>
-              <button className="text-white/40"><History className="w-6 h-6" /></button>
-              <button className="text-white/40"><UserIcon className="w-6 h-6" /></button>
-            </div>
           </motion.div>
         )}
 
@@ -1084,42 +1074,42 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 shrink-0">
+              <button onClick={() => setView('authority_dashboard')} className="w-7 h-7 sm:w-8 sm:h-8 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
-              <h2 className="text-xl font-bold">Relatórios e Comunicados</h2>
+              <h2 className="text-base sm:text-lg font-bold leading-tight">Relatórios e Comunicados</h2>
             </div>
 
-            <div className="flex-1 flex flex-col gap-6">
-              <div className="bg-white/5 p-6 rounded-3xl border border-white/10 flex-1 flex flex-col gap-4">
-                <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-                  <div className="p-2 bg-brand-secondary/20 rounded-lg"><History className="w-5 h-5 text-brand-secondary" /></div>
+            <div className="flex-1 flex flex-col gap-2 sm:gap-3 overflow-y-auto scrollbar-hide">
+              <div className="bg-white/5 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 flex-1 flex flex-col gap-2 sm:gap-3 min-h-[150px] sm:min-h-[200px]">
+                <div className="flex items-center gap-2 border-b border-white/10 pb-2 sm:pb-3 shrink-0">
+                  <div className="p-1.5 bg-brand-secondary/20 rounded-lg"><History className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-secondary" /></div>
                   <div>
-                    <h4 className="font-bold">Bloco de Notas Compartilhado</h4>
-                    <p className="text-[10px] opacity-40 uppercase tracking-widest">Atualizado em tempo real</p>
+                    <h4 className="font-bold text-[11px] sm:text-xs">Bloco de Notas Compartilhado</h4>
+                    <p className="text-[8px] sm:text-[9px] opacity-40 uppercase tracking-widest">Atualizado em tempo real</p>
                   </div>
                 </div>
                 <textarea 
                   value={authorityNotes}
                   onChange={(e) => setAuthorityNotes(e.target.value)}
                   placeholder="Digite aqui comunicados importantes para outros agentes..."
-                  className="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder:text-white/20 resize-none text-sm leading-relaxed"
+                  className="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder:text-white/20 resize-none text-[11px] sm:text-xs leading-relaxed"
                 />
               </div>
               
-              <div className="bg-brand-primary/10 p-4 rounded-2xl border border-brand-primary/20 flex items-start gap-3">
-                <Shield className="w-5 h-5 text-brand-primary shrink-0 mt-1" />
-                <p className="text-xs text-blue-100 leading-relaxed">
+              <div className="bg-brand-primary/10 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border border-brand-primary/20 flex items-start gap-2 sm:gap-2.5 shrink-0">
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-primary shrink-0 mt-0.5" />
+                <p className="text-[8px] sm:text-[9px] text-blue-100 leading-relaxed">
                   Este bloco de notas é visível para todos os agentes da Unidade Centro. Use para informações táticas e avisos rápidos.
                 </p>
               </div>
 
               <button 
-                onClick={() => setView('dashboard')}
-                className="btn-mobile btn-primary-mobile py-5 shadow-xl"
+                onClick={() => setView('authority_dashboard')}
+                className="btn-mobile btn-primary-mobile py-2.5 sm:py-3 shadow-xl w-full shrink-0 text-xs sm:text-sm"
               >
                 Salvar e Voltar
               </button>
@@ -1133,55 +1123,55 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 shrink-0">
+              <button onClick={() => setView('authority_dashboard')} className="w-7 h-7 sm:w-8 sm:h-8 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
-              <h2 className="text-xl font-bold">Alertas de Emergência</h2>
+              <h2 className="text-base sm:text-lg font-bold leading-tight">Alertas de Emergência</h2>
             </div>
 
-            <div className="flex-1 space-y-4 overflow-y-auto pb-8">
+            <div className="flex-1 space-y-2 sm:space-y-3 overflow-y-auto pb-6 scrollbar-hide">
               {children.filter(c => c.status === 'missing').map(child => (
-                <div key={child.id} className="bg-brand-emergency/10 p-6 rounded-[32px] border border-brand-emergency/30 space-y-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-brand-emergency rounded-2xl flex items-center justify-center animate-pulse">
-                      <AlertTriangle className="w-8 h-8 text-white" />
+                <div key={child.id} className="bg-brand-emergency/10 p-3 sm:p-4 rounded-xl sm:rounded-[24px] border border-brand-emergency/30 space-y-3 sm:space-y-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-emergency rounded-lg sm:rounded-xl flex items-center justify-center animate-pulse shrink-0">
+                      <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <div>
-                      <h4 className="text-lg font-black uppercase tracking-tighter">ALERTA ATIVO</h4>
-                      <p className="text-xs opacity-60">Acionado há 15 min</p>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl overflow-hidden border border-white/20">
-                      <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <h5 className="font-bold">{child.name}</h5>
-                      <p className="text-xs opacity-60">{child.age} anos • {child.description?.substring(0, 30)}...</p>
+                    <div className="min-w-0">
+                      <h4 className="text-xs sm:text-base font-black uppercase tracking-tighter truncate">ALERTA ATIVO</h4>
+                      <p className="text-[8px] sm:text-[9px] opacity-60">Acionado há 15 min</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white/5 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border border-white/10 flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl overflow-hidden border border-white/20 shrink-0">
+                      <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                    <div className="min-w-0">
+                      <h5 className="font-bold text-[11px] sm:text-xs truncate">{child.name}</h5>
+                      <p className="text-[8px] sm:text-[9px] opacity-60 truncate">{child.age} anos • {child.description?.substring(0, 30)}...</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
                     <button 
                       onClick={() => { setSelectedChildId(child.id); setView('occurrence_details'); }}
-                      className="py-3 bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10"
+                      className="py-2 sm:py-2.5 bg-white/10 rounded-lg sm:rounded-xl text-[8px] sm:text-[9px] font-black uppercase tracking-widest border border-white/10 active:bg-white/20 transition-colors"
                     >
                       Ver Detalhes
                     </button>
-                    <button className="py-3 bg-brand-primary rounded-xl text-[10px] font-black uppercase tracking-widest">
+                    <button className="py-2 sm:py-2.5 bg-brand-primary rounded-lg sm:rounded-xl text-[8px] sm:text-[9px] font-black uppercase tracking-widest active:bg-brand-primary/80 transition-colors">
                       Traçar Rota
                     </button>
                   </div>
                 </div>
               ))}
               {children.filter(c => c.status === 'missing').length === 0 && (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-20 opacity-30">
-                  <Shield className="w-20 h-20 mb-4" />
-                  <p className="text-lg font-bold">Nenhum alerta de emergência ativo.</p>
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 sm:py-16 opacity-30">
+                  <Shield className="w-10 h-10 sm:w-16 sm:h-16 mb-2 sm:mb-3" />
+                  <p className="text-xs sm:text-base font-bold">Nenhum alerta de emergência ativo.</p>
                 </div>
               )}
             </div>
@@ -1194,13 +1184,13 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-3 mb-4 shrink-0">
+              <button onClick={() => setView('authority_dashboard')} className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <h2 className="text-xl font-bold">Detalhes da Ocorrência</h2>
+              <h2 className="text-base sm:text-lg font-bold leading-tight">Detalhes da Ocorrência</h2>
             </div>
 
             {(() => {
@@ -1208,67 +1198,67 @@ export default function App() {
               if (!child) return null;
 
               return (
-                <div className="flex-1 space-y-6 overflow-y-auto pb-8">
-                  <div className="bg-white/5 p-6 rounded-[40px] border border-white/10 space-y-6">
-                    <div className="aspect-square w-full rounded-[32px] overflow-hidden border-4 border-brand-emergency shadow-2xl">
-                      <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" />
+                <div className="flex-1 space-y-4 overflow-y-auto pb-6 scrollbar-hide">
+                  <div className="bg-white/5 p-4 sm:p-5 rounded-[20px] sm:rounded-[24px] border border-white/10 space-y-4">
+                    <div className="aspect-square w-full max-w-[200px] sm:max-w-[240px] mx-auto rounded-xl sm:rounded-2xl overflow-hidden border-4 border-brand-emergency shadow-2xl shrink-0">
+                      <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>
                     
-                    <div className="text-center space-y-1">
-                      <h3 className="text-3xl font-black">{child.name}</h3>
-                      <p className="text-brand-emergency font-bold uppercase tracking-[0.2em] text-xs">Desaparecido</p>
+                    <div className="text-center space-y-0.5">
+                      <h3 className="text-lg sm:text-xl font-black truncate">{child.name}</h3>
+                      <p className="text-brand-emergency font-bold uppercase tracking-[0.2em] text-[8px] sm:text-[10px]">Desaparecido</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                        <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Idade</p>
-                        <p className="text-lg font-bold">{child.age} anos</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-white/5 p-2 rounded-xl border border-white/10 text-center">
+                        <p className="text-[8px] font-bold opacity-40 uppercase tracking-widest">Idade</p>
+                        <p className="text-xs sm:text-sm font-bold">{child.age} anos</p>
                       </div>
-                      <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                        <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Sexo</p>
-                        <p className="text-lg font-bold">{child.gender === 'M' ? 'Masculino' : child.gender === 'F' ? 'Feminino' : child.gender || 'N/A'}</p>
+                      <div className="bg-white/5 p-2 rounded-xl border border-white/10 text-center">
+                        <p className="text-[8px] font-bold opacity-40 uppercase tracking-widest">Sexo</p>
+                        <p className="text-xs sm:text-sm font-bold truncate">{child.gender === 'M' ? 'Masculino' : child.gender === 'F' ? 'Feminino' : child.gender || 'N/A'}</p>
                       </div>
                     </div>
 
                     {/* Medical Info */}
                     {(child.allergies || child.medications || child.disability) && (
-                      <div className="bg-brand-emergency/10 p-4 rounded-2xl border border-brand-emergency/20 space-y-3">
-                        <p className="text-[10px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-2">
+                      <div className="bg-brand-emergency/10 p-3 rounded-xl border border-brand-emergency/20 space-y-2">
+                        <p className="text-[9px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-1.5">
                           <AlertTriangle className="w-3 h-3" />
                           Informações Médicas Críticas
                         </p>
-                        <div className="space-y-2">
+                        <div className="space-y-1.5">
                           {child.allergies && (
                             <div>
-                              <p className="text-[10px] font-bold opacity-60 uppercase">Alergias</p>
-                              <p className="text-sm font-bold">{child.allergies}</p>
+                              <p className="text-[8px] font-bold opacity-60 uppercase">Alergias</p>
+                              <p className="text-[10px] sm:text-xs font-bold">{child.allergies}</p>
                             </div>
                           )}
                           {child.medications && (
                             <div>
-                              <p className="text-[10px] font-bold opacity-60 uppercase">Medicamentos</p>
-                              <p className="text-sm font-bold">{child.medications}</p>
+                              <p className="text-[8px] font-bold opacity-60 uppercase">Medicamentos</p>
+                              <p className="text-[10px] sm:text-xs font-bold">{child.medications}</p>
                             </div>
                           )}
                           {child.disability && (
                             <div>
-                              <p className="text-[10px] font-bold opacity-60 uppercase">Deficiência / Condição</p>
-                              <p className="text-sm font-bold">{child.disability}</p>
+                              <p className="text-[8px] font-bold opacity-60 uppercase">Deficiência / Condição</p>
+                              <p className="text-[10px] sm:text-xs font-bold">{child.disability}</p>
                             </div>
                           )}
                         </div>
                       </div>
                     )}
 
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
-                      <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Características</p>
-                      <p className="text-sm leading-relaxed">{child.description || 'Nenhuma descrição fornecida.'}</p>
+                    <div className="bg-white/5 p-3 rounded-xl border border-white/10 space-y-1">
+                      <p className="text-[8px] font-bold opacity-40 uppercase tracking-widest">Características</p>
+                      <p className="text-[10px] sm:text-xs leading-relaxed">{child.description || 'Nenhuma descrição fornecida.'}</p>
                     </div>
 
-                    <div className="bg-brand-primary/10 p-4 rounded-2xl border border-brand-primary/20 space-y-2">
-                      <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest">Responsável</p>
-                      <div className="flex justify-between items-center">
-                        <p className="font-bold">{child.responsibleName}</p>
+                    <div className="bg-brand-primary/10 p-3 rounded-xl border border-brand-primary/20 space-y-1.5">
+                      <p className="text-[8px] font-bold text-brand-primary uppercase tracking-widest">Responsável</p>
+                      <div className="flex justify-between items-center gap-2">
+                        <p className="font-bold text-[10px] sm:text-xs truncate">{child.responsibleName}</p>
                         <button 
                           onClick={() => {
                             if (child.responsiblePhone) {
@@ -1277,21 +1267,21 @@ export default function App() {
                               alert('Telefone do responsável não cadastrado.');
                             }
                           }}
-                          className="p-2 bg-brand-primary text-white rounded-lg active:scale-95 transition-transform"
+                          className="p-1.5 bg-brand-primary text-white rounded-lg active:scale-95 transition-transform shrink-0"
                         >
-                          <Phone className="w-4 h-4" />
+                          <Phone className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2 pt-1">
                     <button 
                       onClick={() => {
                         setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: 'safe' } : c));
-                        setView('dashboard');
+                        setView('authority_dashboard');
                       }}
-                      className="btn-mobile btn-success-mobile py-5 font-black uppercase tracking-widest"
+                      className="btn-mobile btn-success-mobile py-3 font-black uppercase tracking-widest w-full text-[10px] sm:text-xs"
                     >
                       Marcar como Encontrado
                     </button>
@@ -1306,11 +1296,17 @@ export default function App() {
                         }, 1500);
                       }}
                       className={cn(
-                        "btn-mobile py-5 font-black uppercase tracking-widest transition-all",
+                        "btn-mobile py-3 font-black uppercase tracking-widest w-full flex items-center justify-center gap-2 shadow-xl transition-all text-[10px] sm:text-xs",
                         isSharing ? "bg-white/20 text-white/40 cursor-wait" : "bg-white/10 text-white border border-white/20 active:bg-white/20"
                       )}
                     >
                       {isSharing ? 'Compartilhando...' : 'Compartilhar com Unidades'}
+                    </button>
+                    <button 
+                      onClick={() => setView('authority_dashboard')}
+                      className="btn-mobile btn-secondary-mobile py-3 font-black uppercase tracking-widest w-full opacity-60 mt-2 text-[10px] sm:text-xs"
+                    >
+                      Voltar
                     </button>
                   </div>
                 </div>
@@ -1324,25 +1320,25 @@ export default function App() {
             key="citizen-scan"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex-1 flex flex-col bg-brand-gradient p-8 pt-20 text-white"
+            className="flex-1 flex flex-col bg-brand-gradient p-3 pt-6 sm:p-4 sm:pt-8 text-white overflow-x-hidden"
           >
-            <button onClick={() => { setView('splash'); setScanSuccess(false); }} className="mb-8 text-white"><ChevronLeft className="w-8 h-8" /></button>
-            <div className="text-center space-y-6">
-              <div className="w-20 h-20 bg-brand-emergency/20 rounded-3xl flex items-center justify-center mx-auto">
-                <Search className="w-10 h-10 text-brand-emergency" />
+            <button onClick={() => { setView('splash'); setScanSuccess(false); }} className="mb-4 text-white shrink-0"><ChevronLeft className="w-6 h-6" /></button>
+            <div className="text-center space-y-3 flex-1 flex flex-col justify-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brand-emergency/20 rounded-2xl flex items-center justify-center mx-auto shrink-0">
+                <Search className="w-6 h-6 sm:w-8 sm:h-8 text-brand-emergency" />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold">Escanear Pulseira</h2>
-                <p className="text-white/60">Aproxime a câmera do QR Code na pulseira da criança encontrada.</p>
+              <div className="space-y-1">
+                <h2 className="text-xl sm:text-2xl font-bold">Escanear Pulseira</h2>
+                <p className="text-white/60 text-xs sm:text-sm">Aproxime a câmera do QR Code na pulseira da criança encontrada.</p>
               </div>
               
-              <div className="relative aspect-square w-full max-w-[280px] mx-auto bg-black/40 rounded-[48px] border-2 border-white/10 overflow-hidden flex items-center justify-center">
+              <div className="relative aspect-square w-full max-w-[200px] sm:max-w-[240px] mx-auto bg-black/40 rounded-[24px] sm:rounded-[32px] border-2 border-white/10 overflow-hidden flex items-center justify-center shrink-0">
                 {!scanSuccess ? (
                   <>
                     {!isScanning ? (
-                      <div className="flex flex-col items-center gap-4 text-center p-6">
-                        <Camera className="w-16 h-16 text-brand-secondary opacity-40" />
-                        <p className="text-sm font-bold opacity-60 uppercase tracking-widest">Câmera Pronta</p>
+                      <div className="flex flex-col items-center gap-3 text-center p-4">
+                        <Camera className="w-10 h-10 sm:w-12 sm:h-12 text-brand-secondary opacity-40" />
+                        <p className="text-[8px] sm:text-[10px] font-bold opacity-60 uppercase tracking-widest">Câmera Pronta</p>
                       </div>
                     ) : (
                       <div id="qr-reader" className="w-full h-full" />
@@ -1352,30 +1348,30 @@ export default function App() {
                   <motion.div 
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="flex flex-col items-center gap-4"
+                    className="flex flex-col items-center gap-3"
                   >
-                    <div className="w-24 h-24 bg-brand-icon-green rounded-full flex items-center justify-center shadow-2xl">
-                      <CheckCircle2 className="w-12 h-12 text-white" />
+                    <div className="w-12 h-12 sm:w-16 sm:h-20 bg-brand-icon-green rounded-full flex items-center justify-center shadow-2xl">
+                      <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-10 text-white" />
                     </div>
-                    <p className="font-bold text-brand-icon-green uppercase tracking-widest">Identificado!</p>
+                    <p className="font-bold text-brand-icon-green uppercase tracking-widest text-[10px] sm:text-xs">Identificado!</p>
                   </motion.div>
                 )}
               </div>
 
-              <div className="mt-12 space-y-4">
+              <div className="mt-4 space-y-2 shrink-0">
                 {!scanSuccess ? (
                   <button 
-                    className="btn-mobile btn-emergency py-5" 
+                    className="btn-mobile btn-emergency-mobile py-3 w-full text-xs sm:text-sm" 
                     onClick={() => setIsScanning(true)}
                     disabled={isScanning}
                   >
-                    <Camera className="w-5 h-5" />
+                    <Camera className="w-4 h-4" />
                     {isScanning ? 'Escaneando...' : 'Iniciar Scanner'}
                   </button>
                 ) : (
-                  <div className="flex items-center justify-center gap-3 text-brand-secondary animate-pulse">
-                    <MapPin className="w-5 h-5" />
-                    <p className="text-sm font-bold uppercase tracking-widest">Obtendo Localização...</p>
+                  <div className="flex items-center justify-center gap-2 text-brand-secondary animate-pulse">
+                    <MapPin className="w-4 h-4" />
+                    <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">Obtendo Localização...</p>
                   </div>
                 )}
               </div>
@@ -1388,62 +1384,62 @@ export default function App() {
             key="location"
             initial={{ y: 300 }}
             animate={{ y: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white"
+            className="flex-1 flex flex-col bg-brand-gradient text-white overflow-x-hidden"
           >
-            <div className="p-5 pt-10 flex items-center justify-between bg-transparent border-b border-white/10">
-              <div className="flex items-center gap-4">
-                <button onClick={() => setView('splash')}><ChevronLeft className="w-6 h-6" /></button>
-                <h2 className="text-lg font-bold">Localização</h2>
+            <div className="p-3 pt-6 sm:p-4 sm:pt-8 flex items-center justify-between bg-transparent border-b border-white/10 shrink-0">
+              <div className="flex items-center gap-3">
+                <button onClick={() => setView('splash')} className="shrink-0"><ChevronLeft className="w-5 h-5" /></button>
+                <h2 className="text-base sm:text-lg font-bold leading-tight">Localização</h2>
               </div>
               <div className="flex items-center gap-2">
-                <button className="relative">
-                  <Bell className="w-6 h-6 text-brand-secondary fill-brand-secondary/20" />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                <button className="relative shrink-0">
+                  <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-brand-secondary fill-brand-secondary/20" />
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
                 </button>
-                <button><Settings className="w-6 h-6 text-white/40" /></button>
+                <button className="shrink-0"><Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white/40" /></button>
               </div>
             </div>
 
-            <div className="flex-1 relative bg-slate-200">
+            <div className="flex-1 relative bg-slate-200 overflow-hidden">
               {/* Simulated Map */}
               <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/map/800/1200')] bg-cover opacity-50" />
               
               {/* Map Pins */}
-              <div className="absolute top-1/4 left-1/3"><MapPin className="text-brand-icon-green w-8 h-8 fill-brand-icon-green/20" /></div>
-              <div className="absolute top-1/2 left-1/2"><MapPin className="text-brand-pin-yellow w-10 h-10 fill-brand-pin-yellow/20" /></div>
-              <div className="absolute bottom-1/3 right-1/4"><MapPin className="text-brand-emergency w-8 h-8 fill-brand-emergency/20" /></div>
+              <div className="absolute top-1/4 left-1/3"><MapPin className="text-brand-icon-green w-6 h-6 sm:w-8 sm:h-8 fill-brand-icon-green/20" /></div>
+              <div className="absolute top-1/2 left-1/2"><MapPin className="text-brand-pin-yellow w-8 h-8 sm:w-10 sm:h-10 fill-brand-pin-yellow/20" /></div>
+              <div className="absolute bottom-1/3 right-1/4"><MapPin className="text-brand-emergency w-6 h-6 sm:w-8 sm:h-8 fill-brand-emergency/20" /></div>
 
               {/* Found Child Card */}
-              <div className="absolute bottom-6 left-6 right-6 bg-blue-900/80 backdrop-blur-xl rounded-[32px] p-5 shadow-2xl border border-white/10 space-y-6">
-                <div className="text-center space-y-1">
-                  <h3 className="text-2xl text-white font-black">Criança Encontrada!</h3>
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-brand-secondary shadow-lg">
+              <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-6 bg-blue-900/80 backdrop-blur-xl rounded-[24px] sm:rounded-[32px] p-3 sm:p-5 shadow-2xl border border-white/10 space-y-3 sm:space-y-6">
+                <div className="text-center space-y-1.5">
+                  <h3 className="text-lg sm:text-2xl text-white font-black">Criança Encontrada!</h3>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-brand-secondary shadow-lg shrink-0">
                       <img src={scannedChild?.photo || "https://picsum.photos/seed/lucas/200"} alt={scannedChild?.name || "Criança"} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>
-                    <div className="text-left">
-                      <p className="text-xl font-bold text-white">{scannedChild?.name || "Lucas"}, {scannedChild?.age || 6} anos</p>
-                      <div className="flex gap-1 text-brand-secondary">
-                        {[1,2,3,4,5].map(i => <Heart key={i} className="w-3 h-3 fill-current" />)}
+                    <div className="text-left min-w-0">
+                      <p className="text-base sm:text-xl font-bold text-white truncate">{scannedChild?.name || "Lucas"}, {scannedChild?.age || 6} anos</p>
+                      <div className="flex gap-0.5 text-brand-secondary">
+                        {[1,2,3,4,5].map(i => <Heart key={i} className="w-2.5 h-2.5 fill-current" />)}
                       </div>
                     </div>
                   </div>
                   {scannedChild && (scannedChild.allergies || scannedChild.medications || scannedChild.disability) && (
-                    <div className="bg-brand-emergency/20 p-3 rounded-xl border border-brand-emergency/30 text-left mt-2">
-                      <p className="text-[10px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-2 mb-1">
-                        <AlertTriangle className="w-3 h-3" />
+                    <div className="bg-brand-emergency/20 p-2 rounded-lg border border-brand-emergency/30 text-left mt-1.5">
+                      <p className="text-[8px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-1.5 mb-0.5">
+                        <AlertTriangle className="w-2.5 h-2.5" />
                         Atenção Médica
                       </p>
-                      <p className="text-[10px] text-white/80 line-clamp-2">
+                      <p className="text-[8px] text-white/80 line-clamp-2">
                         {[scannedChild.allergies, scannedChild.medications, scannedChild.disability].filter(Boolean).join(' • ')}
                       </p>
                     </div>
                   )}
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <button 
-                    className="btn-mobile btn-success-mobile"
+                    className="btn-mobile btn-success-mobile py-3 w-full text-xs sm:text-sm"
                     onClick={() => {
                       if (scannedChild?.responsiblePhone) {
                         window.location.href = `tel:${scannedChild.responsiblePhone}`;
@@ -1452,16 +1448,15 @@ export default function App() {
                       }
                     }}
                   >
-                    <Phone className="w-5 h-5" />
+                    <Phone className="w-4 h-4" />
                     Ligar Responsável
                   </button>
                   <button 
-                    className="btn-mobile btn-primary-mobile"
+                    className="btn-mobile btn-primary-mobile py-3 w-full text-xs sm:text-sm"
                     onClick={() => {
                       alert('Guarda Municipal acionada! Uma viatura está a caminho da sua localização.');
                     }}
                   >
-                    <Shield className="w-5 h-5" />
                     Acionar Guarda
                   </button>
                 </div>
@@ -1475,29 +1470,29 @@ export default function App() {
             key="qr"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex-1 flex flex-col bg-brand-gradient p-8 pt-20 text-white"
+            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient p-3 pt-6 sm:p-4 sm:pt-8 text-white overflow-x-hidden"
           >
-            <button onClick={() => { setView('dashboard'); setScanSuccess(false); }} className="mb-8 text-white"><ChevronLeft className="w-8 h-8" /></button>
-            <div className="text-center space-y-6">
-              <div className="w-20 h-20 bg-brand-secondary/20 rounded-3xl flex items-center justify-center mx-auto">
-                <QrCode className="w-10 h-10 text-brand-secondary" />
+            <button onClick={() => { setView('dashboard'); setScanSuccess(false); }} className="mb-4 text-white w-fit shrink-0"><ChevronLeft className="w-6 h-6" /></button>
+            <div className="text-center space-y-3 sm:space-y-4 flex-1 flex flex-col justify-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brand-secondary/20 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto shrink-0">
+                <QrCode className="w-6 h-6 sm:w-8 sm:h-8 text-brand-secondary" />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold">Vincular Pulseira</h2>
-                <p className="text-white/60">
+              <div className="space-y-1 shrink-0">
+                <h2 className="text-xl sm:text-2xl font-bold">Vincular Pulseira</h2>
+                <p className="text-white/60 text-[10px] sm:text-sm">
                   {selectedChildId === 'TEMP_REG' 
                     ? 'Escaneie o QR Code da pulseira física para o novo cadastro.' 
-                    : `Escaneie o QR Code da pulseira física para registrar ${activeChild.name}.`}
+                    : `Escaneie o QR Code da pulseira física para registrar ${activeChild?.name}.`}
                 </p>
               </div>
               
-              <div className="relative aspect-square w-full max-w-[280px] mx-auto bg-black/40 rounded-[48px] border-2 border-white/10 overflow-hidden flex items-center justify-center">
+              <div className="relative aspect-square w-full max-w-[200px] sm:max-w-[240px] mx-auto bg-black/40 rounded-[24px] sm:rounded-[32px] border-2 border-white/10 overflow-hidden flex items-center justify-center shrink-0">
                 {!scanSuccess ? (
                   <>
                     {!isScanning ? (
-                      <div className="flex flex-col items-center gap-4 text-center p-6">
-                        <Camera className="w-16 h-16 text-brand-secondary opacity-40" />
-                        <p className="text-sm font-bold opacity-60 uppercase tracking-widest">Câmera Pronta</p>
+                      <div className="flex flex-col items-center gap-3 text-center p-4">
+                        <Camera className="w-10 h-10 sm:w-12 sm:h-12 text-brand-secondary opacity-40" />
+                        <p className="text-[8px] sm:text-[10px] font-bold opacity-60 uppercase tracking-widest">Câmera Pronta</p>
                       </div>
                     ) : (
                       <div id="qr-reader" className="w-full h-full" />
@@ -1507,33 +1502,33 @@ export default function App() {
                   <motion.div 
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="flex flex-col items-center gap-4"
+                    className="flex flex-col items-center gap-3"
                   >
-                    <div className="w-24 h-24 bg-brand-icon-green rounded-full flex items-center justify-center shadow-2xl">
-                      <CheckCircle2 className="w-12 h-12 text-white" />
+                    <div className="w-12 h-12 sm:w-16 sm:h-20 bg-brand-icon-green rounded-full flex items-center justify-center shadow-2xl">
+                      <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-10 text-white" />
                     </div>
-                    <p className="font-bold text-brand-icon-green">PULSEIRA VINCULADA!</p>
+                    <p className="font-bold text-brand-icon-green text-[8px] sm:text-xs uppercase tracking-widest">PULSEIRA VINCULADA!</p>
                   </motion.div>
                 )}
               </div>
 
-              <div className="mt-12 space-y-4">
+              <div className="mt-4 space-y-2 shrink-0">
                 {!scanSuccess ? (
                   <button 
-                    className="btn-mobile btn-primary-mobile" 
+                    className="btn-mobile btn-primary-mobile py-3 w-full text-xs sm:text-sm" 
                     onClick={() => setIsScanning(true)}
                     disabled={isScanning}
                   >
-                    <Camera className="w-5 h-5" />
+                    <Camera className="w-4 h-4" />
                     {isScanning ? 'Escaneando...' : 'Escanear Agora'}
                   </button>
                 ) : (
-                  <button className="btn-mobile btn-success-mobile" onClick={() => { setView('dashboard'); setScanSuccess(false); }}>
+                  <button className="btn-mobile btn-success-mobile py-3 w-full text-xs sm:text-sm" onClick={() => { setView('dashboard'); setScanSuccess(false); }}>
                     Voltar ao Painel
                   </button>
                 )}
                 <button 
-                  className="btn-mobile bg-white/10 text-white border border-white/20"
+                  className="btn-mobile py-3 w-full bg-white/10 text-white border border-white/20 active:bg-white/20 transition-colors text-xs sm:text-sm"
                   onClick={() => setView('manual_entry')}
                 >
                   Digitar Código Manualmente
@@ -1548,19 +1543,19 @@ export default function App() {
             key="manual"
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="flex-1 flex flex-col bg-brand-gradient p-8 pt-20 text-white"
+            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient p-3 pt-6 sm:p-4 sm:pt-8 text-white overflow-x-hidden"
           >
-            <button onClick={() => setView('qr_generator')} className="mb-8 text-white"><ChevronLeft className="w-8 h-8" /></button>
-            <div className="text-center space-y-6">
-              <div className="w-20 h-20 bg-brand-secondary/20 rounded-3xl flex items-center justify-center mx-auto">
-                <QrCode className="w-10 h-10 text-brand-secondary" />
+            <button onClick={() => setView('qr_generator')} className="mb-4 text-white w-fit shrink-0"><ChevronLeft className="w-6 h-6" /></button>
+            <div className="text-center space-y-3 sm:space-y-4 flex-1 flex flex-col justify-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brand-secondary/20 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto shrink-0">
+                <QrCode className="w-6 h-6 sm:w-8 sm:h-8 text-brand-secondary" />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold">Código Manual</h2>
-                <p className="text-white/60">Digite o código de 8 dígitos impresso na pulseira.</p>
+              <div className="space-y-1 shrink-0">
+                <h2 className="text-xl sm:text-2xl font-bold">Código Manual</h2>
+                <p className="text-white/60 text-[10px] sm:text-sm">Digite o código de 8 dígitos impresso na pulseira.</p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-2 shrink-0">
                 <input 
                   type="text" 
                   maxLength={8}
@@ -1568,11 +1563,11 @@ export default function App() {
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value.toUpperCase())}
                   disabled={isScanning}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-6 px-6 text-center text-3xl font-black tracking-[0.2em] text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
+                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl py-2.5 sm:py-4 px-3 sm:px-4 text-center text-base sm:text-xl font-black tracking-[0.2em] text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
                 />
                 
                 <button 
-                  className="btn-mobile btn-primary-mobile py-6"
+                  className="btn-mobile btn-primary-mobile py-3 sm:py-4 text-xs sm:text-sm"
                   disabled={manualCode.length < 8 || isScanning}
                   onClick={() => {
                     if (selectedChildId && manualCode.length >= 4) {
@@ -1590,8 +1585,8 @@ export default function App() {
                   }}
                 >
                   {isScanning ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="flex items-center gap-2 justify-center">
+                      <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       Validando...
                     </div>
                   ) : 'Confirmar Código'}
@@ -1607,24 +1602,24 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
+            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-3 mb-6 shrink-0">
+              <button onClick={() => setView('dashboard')} className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <h2 className="text-xl font-bold">Configurações de Perfil</h2>
+              <h2 className="text-base sm:text-lg font-bold">Configurações</h2>
             </div>
 
-            <div className="flex-1 space-y-8 overflow-y-auto pb-8">
+            <div className="flex-1 space-y-6 overflow-y-auto pb-6 scrollbar-hide">
               {/* Photo Edit */}
-              <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center gap-2">
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-full border-4 border-brand-secondary shadow-2xl overflow-hidden">
+                  <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full border-4 border-brand-secondary shadow-2xl overflow-hidden bg-white/10">
                     <img src={userProfile.photo} alt="Profile" className="w-full h-full object-cover" />
                   </div>
-                  <label className="absolute bottom-0 right-0 w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
-                    <Camera className="w-5 h-5 text-white" />
+                  <label className="absolute bottom-0 right-0 w-6 h-6 sm:w-8 sm:h-8 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
+                    <Camera className="w-2.5 h-2.5 sm:w-4 sm:h-4 text-white" />
                     <input 
                       type="file" 
                       className="hidden" 
@@ -1639,59 +1634,59 @@ export default function App() {
                     />
                   </label>
                 </div>
-                <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Toque para alterar foto</p>
+                <p className="text-[7px] sm:text-[10px] font-bold text-white/40 uppercase tracking-widest">Toque para alterar foto</p>
               </div>
 
               {/* Form */}
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Nome Exibido</label>
+              <div className="space-y-2">
+                <div className="space-y-0.5">
+                  <label className="text-[7px] sm:text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome Exibido</label>
                   <input 
                     type="text" 
                     value={userProfile.name}
                     onChange={(e) => setUserProfile(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl py-2 sm:py-3 px-3 sm:px-5 text-[11px] sm:text-sm text-white focus:outline-none focus:border-brand-secondary transition-colors"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
+                <div className="space-y-0.5">
+                  <label className="text-[7px] sm:text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                   <input 
                     type="email" 
                     value={userProfile.email}
                     onChange={(e) => setUserProfile(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl py-2 sm:py-3 px-3 sm:px-5 text-[11px] sm:text-sm text-white focus:outline-none focus:border-brand-secondary transition-colors"
                   />
                 </div>
               </div>
 
               {/* Preferences */}
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Preferências</h4>
-                <div className="space-y-2">
-                  <div className="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Bell className="w-5 h-5 text-brand-secondary" />
-                      <span className="font-bold text-sm">Notificações Push</span>
+              <div className="space-y-2">
+                <h4 className="text-[7px] sm:text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1">Preferências</h4>
+                <div className="space-y-1.5">
+                  <div className="bg-white/5 p-2 rounded-lg sm:rounded-xl border border-white/10 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Bell className="w-3.5 h-3.5 text-brand-secondary" />
+                      <span className="font-bold text-[10px] sm:text-xs">Notificações Push</span>
                     </div>
-                    <div className="w-12 h-6 bg-brand-icon-green rounded-full relative">
-                      <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                    <div className="w-7 h-3.5 sm:w-10 sm:h-5 bg-brand-icon-green rounded-full relative">
+                      <div className="absolute right-0.5 top-0.5 w-2.5 h-2.5 sm:w-4 sm:h-4 bg-white rounded-full" />
                     </div>
                   </div>
-                  <div className="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <MapPin className="w-5 h-5 text-brand-primary" />
-                      <span className="font-bold text-sm">Localização em Tempo Real</span>
+                  <div className="bg-white/5 p-2 rounded-lg sm:rounded-xl border border-white/10 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-brand-primary" />
+                      <span className="font-bold text-[10px] sm:text-xs">Localização em Tempo Real</span>
                     </div>
-                    <div className="w-12 h-6 bg-brand-icon-green rounded-full relative">
-                      <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                    <div className="w-7 h-3.5 sm:w-10 sm:h-5 bg-brand-icon-green rounded-full relative">
+                      <div className="absolute right-0.5 top-0.5 w-2.5 h-2.5 sm:w-4 sm:h-4 bg-white rounded-full" />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 space-y-4">
+              <div className="pt-3 space-y-2 sm:space-y-3">
                 <button 
-                  className="btn-mobile btn-primary-mobile shadow-xl py-5"
+                  className="btn-mobile btn-primary-mobile shadow-xl py-3 sm:py-4 text-xs sm:text-sm"
                   onClick={() => {
                     if (currentUser) {
                       const updatedUser = {
@@ -1710,7 +1705,7 @@ export default function App() {
                   Salvar Alterações
                 </button>
                 <button 
-                  className="w-full py-4 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-2 bg-white/5 rounded-2xl border border-white/10 active:bg-white/10 transition-colors"
+                  className="w-full py-2.5 sm:py-3 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-2 bg-white/5 rounded-lg sm:rounded-xl border border-white/10 active:bg-white/10 transition-colors text-[10px] sm:text-xs"
                   onClick={() => {
                     setCurrentUser(null);
                     setRole(null);
@@ -1718,11 +1713,11 @@ export default function App() {
                     setView('selection');
                   }}
                 >
-                  <LogOut className="w-5 h-5" />
+                  <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   Sair da Conta
                 </button>
                 <button 
-                  className="w-full py-4 text-white/20 font-bold text-[10px] uppercase tracking-[0.3em] hover:text-brand-emergency transition-colors"
+                  className="w-full py-3 text-white/20 font-bold text-[8px] uppercase tracking-[0.3em] hover:text-brand-emergency transition-colors"
                   onClick={() => {
                     if (confirm('Isso apagará todos os seus dados, crianças cadastradas e usuários. Deseja continuar?')) {
                       localStorage.clear();
@@ -1743,57 +1738,57 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-6 pt-12"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-10"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-6">
+              <button onClick={() => setView('dashboard')} className="w-7 h-7 sm:w-8 sm:h-8 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10">
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
-              <h2 className="text-xl font-bold">Notificações</h2>
+              <h2 className="text-base sm:text-lg font-bold">Notificações</h2>
             </div>
 
-            <div className="flex-1 space-y-4 overflow-y-auto pb-8">
-              <div className="bg-white/10 p-5 rounded-3xl border border-brand-icon-green/30 flex gap-4">
-                <div className="w-12 h-12 bg-brand-icon-green/20 rounded-2xl flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-6 h-6 text-brand-icon-green" />
+            <div className="flex-1 space-y-2 overflow-y-auto pb-4 scrollbar-hide">
+              <div className="bg-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-brand-icon-green/30 flex gap-2 sm:gap-3">
+                <div className="w-7 h-7 sm:w-10 sm:h-10 bg-brand-icon-green/20 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-brand-icon-green" />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-0.5 flex-1 min-w-0">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-sm">Criança Encontrada!</h4>
-                    <span className="text-[10px] opacity-40">10 min</span>
+                    <h4 className="font-bold text-[10px] sm:text-xs">Criança Encontrada!</h4>
+                    <span className="text-[7px] sm:text-[9px] opacity-40">10 min</span>
                   </div>
-                  <p className="text-xs text-white/70 leading-relaxed">
+                  <p className="text-[9px] sm:text-[11px] text-white/70 leading-tight">
                     A Guarda Municipal localizou <span className="font-bold text-white">Lucas</span> no Ponto de Apoio 03. Ele está seguro e aguardando você.
                   </p>
-                  <button className="text-brand-secondary text-[10px] font-black uppercase tracking-widest mt-2">Ver Localização</button>
+                  <button className="text-brand-secondary text-[7px] sm:text-[9px] font-black uppercase tracking-widest mt-1">Ver Localização</button>
                 </div>
               </div>
 
-              <div className="bg-white/5 p-5 rounded-3xl border border-white/10 flex gap-4 opacity-60">
-                <div className="w-12 h-12 bg-brand-primary/20 rounded-2xl flex items-center justify-center shrink-0">
-                  <Shield className="w-6 h-6 text-brand-primary" />
+              <div className="bg-white/5 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 flex gap-2 sm:gap-3 opacity-60">
+                <div className="w-7 h-7 sm:w-10 sm:h-10 bg-brand-primary/20 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
+                  <Shield className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-brand-primary" />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-0.5 flex-1 min-w-0">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-sm">Alerta de Segurança</h4>
-                    <span className="text-[10px] opacity-40">1h</span>
+                    <h4 className="font-bold text-[10px] sm:text-xs">Alerta de Segurança</h4>
+                    <span className="text-[7px] sm:text-[9px] opacity-40">1h</span>
                   </div>
-                  <p className="text-xs text-white/70 leading-relaxed">
+                  <p className="text-[9px] sm:text-[11px] text-white/70 leading-tight">
                     O Modo Evento foi ativado para a região do Parque Ibirapuera. Fique atento às notificações.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-white/5 p-5 rounded-3xl border border-white/10 flex gap-4 opacity-60">
-                <div className="w-12 h-12 bg-brand-secondary/20 rounded-2xl flex items-center justify-center shrink-0">
-                  <Bell className="w-6 h-6 text-brand-secondary" />
+              <div className="bg-white/5 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 flex gap-2 sm:gap-3 opacity-60">
+                <div className="w-7 h-7 sm:w-10 sm:h-10 bg-brand-secondary/20 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
+                  <Bell className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-brand-secondary" />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-0.5 flex-1 min-w-0">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-sm">Bem-vindo ao Achei Você</h4>
-                    <span className="text-[10px] opacity-40">2h</span>
+                    <h4 className="font-bold text-[10px] sm:text-xs">Bem-vindo ao Achei Você</h4>
+                    <span className="text-[7px] sm:text-[9px] opacity-40">2h</span>
                   </div>
-                  <p className="text-xs text-white/70 leading-relaxed">
+                  <p className="text-[9px] sm:text-[11px] text-white/70 leading-tight">
                     Seu cadastro foi concluído com sucesso. Não esqueça de vincular a pulseira da sua criança.
                   </p>
                 </div>
@@ -1801,17 +1796,17 @@ export default function App() {
             </div>
             
             {/* Bottom Nav inside notifications too for consistency */}
-            <div className="glass-nav p-4 flex justify-around items-center -mx-6 -mb-6">
-              <button onClick={() => setView('dashboard')} className="text-white/40"><MapIcon className="w-6 h-6" /></button>
-              <button onClick={() => setView('notifications')} className="text-white"><Bell className="w-6 h-6" /></button>
+            <div className="glass-nav p-1.5 sm:p-3 flex justify-around items-center -mx-3 sm:-mx-4 -mb-3 sm:-mb-4 shrink-0">
+              <button onClick={() => setView('dashboard')} className="text-white/40"><MapIcon className="w-3.5 h-3.5 sm:w-5 sm:h-5" /></button>
+              <button onClick={() => setView('notifications')} className="text-white"><Bell className="w-4 h-4 sm:w-6 sm:h-6" /></button>
               <button 
                 onClick={() => setView('register_child')}
-                className="w-14 h-14 bg-brand-primary rounded-full flex items-center justify-center -mt-12 shadow-2xl border-4 border-brand-dark"
+                className="w-10 h-10 sm:w-14 sm:h-14 bg-brand-primary rounded-full flex items-center justify-center -mt-8 sm:-mt-12 shadow-2xl border-4 border-brand-dark"
               >
-                <Plus className="text-white w-8 h-8" />
+                <Plus className="text-white w-5 h-5 sm:w-8 sm:h-8" />
               </button>
-              <button className="text-white/40"><History className="w-6 h-6" /></button>
-              <button onClick={() => setView('settings')} className="text-white/40"><UserIcon className="w-6 h-6" /></button>
+              <button className="text-white/40"><History className="w-4 h-4 sm:w-6 sm:h-6" /></button>
+              <button onClick={() => setView('settings')} className="text-white/40"><UserIcon className="w-4 h-4 sm:w-6 sm:h-6" /></button>
             </div>
           </motion.div>
         )}
@@ -1822,13 +1817,13 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-10 scrollbar-hide"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 shrink-0">
+              <button onClick={() => setView('dashboard')} className="w-7 h-7 sm:w-8 sm:h-8 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
-              <h2 className="text-xl font-bold">Perfil da Criança</h2>
+              <h2 className="text-base sm:text-lg font-bold">Perfil da Criança</h2>
             </div>
 
             {(() => {
@@ -1836,22 +1831,22 @@ export default function App() {
               if (!child) return null;
 
               return (
-                <div className="flex-1 space-y-8 overflow-y-auto pb-8">
+                <div className="flex-1 space-y-4 overflow-y-auto pb-6 scrollbar-hide">
                   {/* Status Toggle */}
                   <div className={cn(
-                    "p-5 rounded-[32px] border flex items-center justify-between transition-colors",
+                    "p-3 rounded-2xl border flex items-center justify-between transition-colors",
                     child.status === 'safe' ? "bg-brand-icon-green/10 border-brand-icon-green/20" : "bg-brand-emergency/10 border-brand-emergency/20"
                   )}>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2.5">
                       <div className={cn(
-                        "w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg",
+                        "w-8 h-8 rounded-xl flex items-center justify-center shadow-lg",
                         child.status === 'safe' ? "bg-brand-icon-green" : "bg-brand-emergency"
                       )}>
-                        {child.status === 'safe' ? <CheckCircle2 className="w-6 h-6 text-white" /> : <AlertTriangle className="w-6 h-6 text-white" />}
+                        {child.status === 'safe' ? <CheckCircle2 className="w-3.5 h-3.5 text-white" /> : <AlertTriangle className="w-3.5 h-3.5 text-white" />}
                       </div>
                       <div>
-                        <p className="text-xs font-bold opacity-60 uppercase tracking-widest">Status Atual</p>
-                        <h4 className="text-lg font-bold">{child.status === 'safe' ? 'Seguro' : 'Desaparecido'}</h4>
+                        <p className="text-[7px] font-bold opacity-60 uppercase tracking-widest">Status Atual</p>
+                        <h4 className="text-xs font-bold">{child.status === 'safe' ? 'Seguro' : 'Desaparecido'}</h4>
                       </div>
                     </div>
                     <button 
@@ -1859,7 +1854,7 @@ export default function App() {
                         setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: c.status === 'safe' ? 'missing' : 'safe' } : c));
                       }}
                       className={cn(
-                        "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all active:scale-95",
+                        "px-2.5 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-all active:scale-95",
                         child.status === 'safe' ? "bg-brand-emergency border-brand-emergency text-white" : "bg-brand-icon-green border-brand-icon-green text-white"
                       )}
                     >
@@ -1868,14 +1863,14 @@ export default function App() {
                   </div>
 
                   {/* Profile Edit */}
-                  <div className="space-y-6">
-                    <div className="flex flex-col items-center gap-4">
+                  <div className="space-y-3">
+                    <div className="flex flex-col items-center gap-2">
                       <div className="relative">
-                        <div className="w-32 h-32 rounded-[32px] border-4 border-brand-secondary shadow-2xl overflow-hidden">
-                          <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" />
+                        <div className="w-20 h-20 rounded-2xl border-4 border-brand-secondary shadow-2xl overflow-hidden">
+                          <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                         </div>
-                        <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
-                          <Camera className="w-5 h-5 text-white" />
+                        <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
+                          <Camera className="w-3.5 h-3.5 text-white" />
                           <input 
                             type="file" 
                             className="hidden" 
@@ -1892,86 +1887,86 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
+                    <div className="space-y-2">
+                      <div className="space-y-0.5">
+                        <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
                         <input 
                           type="text" 
                           value={child.name}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, name: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-[11px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
+                      <div className="space-y-0.5">
+                        <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
                         <input 
                           type="number" 
                           value={child.age}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, age: parseInt(e.target.value) || 0 } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-[11px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
-                        <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-0.5">
+                        <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
+                        <div className="grid grid-cols-3 gap-1.5">
                           {['M', 'F', 'Outro'].map((g) => (
                             <button
                               key={g}
                               onClick={() => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, gender: g as any } : c))}
                               className={cn(
-                                "py-3 rounded-2xl border font-bold text-sm transition-all",
+                                "py-1.5 rounded-xl border font-bold text-[9px] transition-all",
                                 child.gender === g 
                                   ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
                                   : "bg-white/5 border-white/10 text-white/60"
                               )}
                             >
-                              {g === 'M' ? 'Masculino' : g === 'F' ? 'Feminino' : 'Outro'}
+                              {g === 'M' ? 'Masc.' : g === 'F' ? 'Fem.' : 'Outro'}
                             </button>
                           ))}
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
+                      <div className="space-y-0.5">
+                        <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
                         <input 
                           type="text" 
                           value={child.allergies || ''}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, allergies: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-[11px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
+                      <div className="space-y-0.5">
+                        <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
                         <input 
                           type="text" 
                           value={child.medications || ''}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, medications: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-[11px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
+                      <div className="space-y-0.5">
+                        <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
                         <input 
                           type="text" 
                           value={child.disability || ''}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, disability: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-[11px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
+                      <div className="space-y-0.5">
+                        <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
                         <textarea 
                           value={child.description}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, description: e.target.value } : c))}
-                          rows={3}
-                          className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-brand-secondary transition-colors resize-none"
+                          rows={2}
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-[11px] text-white focus:outline-none focus:border-brand-secondary transition-colors resize-none"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* QR Code Section */}
-                  <div className="space-y-4">
-                    <h4 className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">QR Code da Pulseira</h4>
+                  <div className="space-y-2">
+                    <h4 className="text-[8px] font-bold text-white/40 uppercase tracking-widest ml-1">QR Code da Pulseira</h4>
                     {!child.qrCode ? (
                       <button 
                         onClick={() => {
@@ -1980,24 +1975,24 @@ export default function App() {
                           setScanSuccess(false);
                           setIsScanning(false);
                         }}
-                        className="w-full py-10 bg-white/5 border-2 border-dashed border-white/20 rounded-[40px] flex flex-col items-center gap-4 active:bg-white/10 transition-all"
+                        className="w-full py-4 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center gap-2 active:bg-white/10 transition-all"
                       >
-                        <div className="w-16 h-16 bg-brand-secondary/20 rounded-3xl flex items-center justify-center">
-                          <QrCode className="w-8 h-8 text-brand-secondary" />
+                        <div className="w-8 h-8 bg-brand-secondary/20 rounded-xl flex items-center justify-center">
+                          <QrCode className="w-4 h-4 text-brand-secondary" />
                         </div>
                         <div className="text-center">
-                          <p className="font-bold text-lg">Vincular Pulseira</p>
-                          <p className="text-xs opacity-40 uppercase tracking-widest">Nenhum código registrado ainda</p>
+                          <p className="font-bold text-xs">Vincular Pulseira</p>
+                          <p className="text-[7px] opacity-40 uppercase tracking-widest">Nenhum código registrado ainda</p>
                         </div>
                       </button>
                     ) : (
-                      <div className="bg-white p-6 rounded-[40px] flex flex-col items-center gap-4 shadow-2xl">
-                        <div className="p-4 bg-slate-50 rounded-3xl border border-slate-100">
-                          <QRCode value={child.qrCode} size={180} />
+                      <div className="bg-white p-3 rounded-2xl flex flex-col items-center gap-2 shadow-2xl">
+                        <div className="p-1.5 bg-slate-50 rounded-xl border border-slate-100">
+                          <QRCode value={child.qrCode} size={100} />
                         </div>
                         <div className="text-center">
-                          <p className="text-slate-900 font-black tracking-widest text-lg uppercase">ID: {child.qrCode.toUpperCase()}</p>
-                          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Válido em todo território nacional</p>
+                          <p className="text-slate-900 font-black tracking-widest text-xs uppercase">ID: {child.qrCode.toUpperCase()}</p>
+                          <p className="text-slate-400 text-[7px] font-bold uppercase tracking-widest">Válido em todo território nacional</p>
                         </div>
                         <button 
                           onClick={() => {
@@ -2006,24 +2001,24 @@ export default function App() {
                             setScanSuccess(false);
                             setIsScanning(false);
                           }}
-                          className="w-full py-3 bg-brand-primary/10 text-brand-primary rounded-2xl font-bold text-xs uppercase tracking-widest border border-brand-primary/20 flex items-center justify-center gap-2"
+                          className="w-full py-2 sm:py-3 bg-brand-primary/10 text-brand-primary rounded-xl sm:rounded-2xl font-bold text-[9px] sm:text-xs uppercase tracking-widest border border-brand-primary/20 flex items-center justify-center gap-1.5"
                         >
-                          <Camera className="w-4 h-4" />
+                          <Camera className="w-3.5 h-3.5" />
                           Vincular Nova Pulseira
                         </button>
                       </div>
                     )}
                   </div>
 
-                  <div className="pt-4 space-y-4">
+                  <div className="pt-3 space-y-2 sm:space-y-4">
                     <button 
-                      className="btn-mobile btn-primary-mobile shadow-xl py-5"
+                      className="btn-mobile btn-primary-mobile shadow-xl py-3 sm:py-5 text-xs sm:text-base"
                       onClick={() => setView('dashboard')}
                     >
                       Salvar Alterações
                     </button>
                     <button 
-                      className="w-full py-4 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-2 bg-white/5 rounded-2xl border border-white/10 active:bg-white/10 transition-colors"
+                      className="w-full py-2.5 sm:py-4 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.5 bg-white/5 rounded-xl sm:rounded-2xl border border-white/10 active:bg-white/10 transition-colors text-[10px] sm:text-sm"
                       onClick={() => {
                         if (confirm(`Tem certeza que deseja remover ${child.name}?`)) {
                           setChildren(prev => prev.filter(c => c.id !== child.id));
@@ -2031,7 +2026,7 @@ export default function App() {
                         }
                       }}
                     >
-                      <X className="w-5 h-5" />
+                      <X className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
                       Remover Criança
                     </button>
                   </div>
@@ -2047,27 +2042,27 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-5 pt-10"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-10"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <button onClick={() => setView('dashboard')} className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-6 h-6" />
+            <div className="flex items-center gap-3 mb-4 sm:mb-8 shrink-0">
+              <button onClick={() => setView('dashboard')} className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <h2 className="text-xl font-bold">Cadastrar Criança</h2>
+              <h2 className="text-base sm:text-lg font-bold">Cadastrar Criança</h2>
             </div>
 
-            <div className="flex-1 space-y-6 overflow-y-auto pb-8">
-              <div className="flex flex-col items-center gap-4">
+            <div className="flex-1 space-y-4 overflow-y-auto pb-6 scrollbar-hide">
+              <div className="flex flex-col items-center gap-3">
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-[32px] border-4 border-brand-secondary shadow-2xl overflow-hidden bg-white/10 flex items-center justify-center">
+                  <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-[20px] sm:rounded-[32px] border-4 border-brand-secondary shadow-2xl overflow-hidden bg-white/10 flex items-center justify-center">
                     {newChild.photo ? (
-                      <img src={newChild.photo} alt="Preview" className="w-full h-full object-cover" />
+                      <img src={newChild.photo} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
-                      <UserIcon className="w-12 h-12 text-white/20" />
+                      <UserIcon className="w-8 h-8 sm:w-12 sm:h-12 text-white/20" />
                     )}
                   </div>
-                  <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
-                    <Camera className="w-5 h-5 text-white" />
+                  <label className="absolute -bottom-1 -right-1 w-7 h-7 sm:w-10 sm:h-10 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
+                    <Camera className="w-3.5 h-3.5 sm:w-5 h-5 text-white" />
                     <input 
                       type="file" 
                       className="hidden" 
@@ -2082,94 +2077,94 @@ export default function App() {
                     />
                   </label>
                 </div>
-                <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Foto da Criança</p>
+                <p className="text-[8px] font-bold text-white/40 uppercase tracking-widest">Foto da Criança</p>
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Maria Clara"
                     value={newChild.name}
                     onChange={(e) => setNewChild(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 px-4 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-xs sm:text-base"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
+                <div className="space-y-1">
+                  <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
                   <input 
                     type="number" 
                     placeholder="Ex: 5"
                     value={newChild.age}
                     onChange={(e) => setNewChild(prev => ({ ...prev, age: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 px-4 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-xs sm:text-base"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
-                  <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     {['M', 'F', 'Outro'].map((g) => (
                       <button
                         key={g}
                         onClick={() => setNewChild(prev => ({ ...prev, gender: g as any }))}
                         className={cn(
-                          "py-3 rounded-2xl border font-bold text-sm transition-all",
+                          "py-2 sm:py-3 rounded-xl border font-bold text-[10px] sm:text-sm transition-all",
                           newChild.gender === g 
                             ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
                             : "bg-white/5 border-white/10 text-white/60"
                         )}
                       >
-                        {g === 'M' ? 'Masculino' : g === 'F' ? 'Feminino' : 'Outro'}
+                        {g === 'M' ? 'Masc.' : g === 'F' ? 'Fem.' : 'Outro'}
                       </button>
                     ))}
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
+                <div className="space-y-1">
+                  <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Amendoim, lactose..."
                     value={newChild.allergies}
                     onChange={(e) => setNewChild(prev => ({ ...prev, allergies: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 px-4 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-xs sm:text-base"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
+                <div className="space-y-1">
+                  <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Insulina, antialérgico..."
                     value={newChild.medications}
                     onChange={(e) => setNewChild(prev => ({ ...prev, medications: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 px-4 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-xs sm:text-base"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
+                <div className="space-y-1">
+                  <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Autismo, cadeirante..."
                     value={newChild.disability}
                     onChange={(e) => setNewChild(prev => ({ ...prev, disability: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 px-4 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-xs sm:text-base"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
+                <div className="space-y-1">
+                  <label className="text-[8px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
                   <textarea 
                     placeholder="Ex: Cabelo castanho, camiseta rosa..."
-                    rows={3}
+                    rows={2}
                     value={newChild.description}
                     onChange={(e) => setNewChild(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors resize-none"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 px-4 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors resize-none text-xs sm:text-base"
                   />
                 </div>
 
-                <div className="space-y-4 pt-4">
-                  <h4 className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Pulseira da Criança</h4>
+                <div className="space-y-3 pt-2">
+                  <h4 className="text-[8px] font-bold text-white/40 uppercase tracking-widest ml-1">Pulseira da Criança</h4>
                   {!newChild.qrCode ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <button 
                         onClick={() => {
                           setSelectedChildId('TEMP_REG'); 
@@ -2177,42 +2172,42 @@ export default function App() {
                           setScanSuccess(false);
                           setIsScanning(false);
                         }}
-                        className="w-full py-6 bg-white/5 border-2 border-dashed border-white/20 rounded-[32px] flex flex-col items-center gap-3 active:bg-white/10 transition-all"
+                        className="w-full py-4 sm:py-8 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl sm:rounded-[32px] flex flex-col items-center gap-2 active:bg-white/10 transition-all"
                       >
-                        <div className="w-12 h-12 bg-brand-secondary/20 rounded-2xl flex items-center justify-center">
-                          <QrCode className="w-6 h-6 text-brand-secondary" />
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-brand-secondary/20 rounded-xl sm:rounded-2xl flex items-center justify-center">
+                          <QrCode className="w-4 h-4 sm:w-6 sm:h-6 text-brand-secondary" />
                         </div>
                         <div className="text-center">
-                          <p className="font-bold text-sm">Vincular Pulseira Agora</p>
-                          <p className="text-[10px] opacity-40 uppercase tracking-widest">Escaneie o QR Code oficial</p>
+                          <p className="font-bold text-xs sm:text-base">Vincular Pulseira Agora</p>
+                          <p className="text-[8px] sm:text-[10px] opacity-40 uppercase tracking-widest">Escaneie o QR Code oficial</p>
                         </div>
                       </button>
                     </div>
                   ) : (
-                    <div className="bg-brand-icon-green/10 border border-brand-icon-green/20 p-6 rounded-[32px] flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-brand-icon-green rounded-2xl flex items-center justify-center">
-                          <CheckCircle2 className="w-6 h-6 text-white" />
+                    <div className="bg-brand-icon-green/10 border border-brand-icon-green/20 p-3 sm:p-6 rounded-2xl sm:rounded-[32px] flex items-center justify-between">
+                      <div className="flex items-center gap-2 sm:gap-4">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-brand-icon-green rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <div>
-                          <p className="text-[10px] font-bold text-brand-icon-green uppercase tracking-widest">Pulseira Vinculada</p>
-                          <p className="font-bold text-white tracking-widest">{newChild.qrCode.toUpperCase()}</p>
+                        <div className="min-w-0">
+                          <p className="text-[8px] sm:text-[10px] font-bold text-brand-icon-green uppercase tracking-widest truncate">Pulseira Vinculada</p>
+                          <p className="font-bold text-white tracking-widest truncate text-xs sm:text-base">{newChild.qrCode.toUpperCase()}</p>
                         </div>
                       </div>
                       <button 
                         onClick={() => setNewChild(prev => ({ ...prev, qrCode: '' }))}
-                        className="p-2 bg-white/10 rounded-xl text-white/40 hover:text-white transition-colors"
+                        className="p-1.5 bg-white/10 rounded-lg text-white/40 hover:text-white transition-colors shrink-0"
                       >
-                        <X className="w-5 h-5" />
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="pt-6">
+              <div className="pt-4 pb-4">
                 <button 
-                  className="btn-mobile btn-primary-mobile shadow-xl py-5"
+                  className="btn-mobile btn-primary-mobile shadow-xl py-3 sm:py-5 text-xs sm:text-base"
                   disabled={!newChild.name || !newChild.age}
                   onClick={() => {
                     const child: Child = {
@@ -2259,23 +2254,23 @@ export default function App() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className={cn(
-              "flex-1 flex flex-col p-8 pt-20 text-white",
+              "flex-1 flex flex-col p-4 sm:p-8 pt-16 sm:pt-20 text-white",
               emergencyStep === 'select' ? "bg-brand-gradient" : "bg-brand-emergency"
             )}
           >
-            <button onClick={() => setView('dashboard')} className="text-white mb-8"><ChevronLeft className="w-8 h-8" /></button>
+            <button onClick={() => setView('dashboard')} className="text-white mb-4 sm:mb-8"><ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" /></button>
             
             {emergencyStep === 'select' ? (
-              <div className="flex-1 flex flex-col gap-8">
-                <div className="text-center space-y-2">
-                  <div className="w-20 h-20 bg-brand-emergency/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <AlertTriangle className="w-10 h-10 text-brand-emergency" />
+              <div className="flex-1 flex flex-col gap-4 sm:gap-8">
+                <div className="text-center space-y-1 sm:space-y-2">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-brand-emergency/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                    <AlertTriangle className="w-8 h-8 sm:w-10 sm:h-10 text-brand-emergency" />
                   </div>
-                  <h2 className="text-3xl font-black">QUAL CRIANÇA?</h2>
-                  <p className="text-white/60">Selecione quem está desaparecido para acionar o alerta.</p>
+                  <h2 className="text-2xl sm:text-3xl font-black uppercase">Qual Criança?</h2>
+                  <p className="text-sm sm:text-base text-white/60">Selecione quem está desaparecido para acionar o alerta.</p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {children.filter(c => c.responsibleId === currentUser?.id).map(child => (
                     <button 
                       key={child.id}
@@ -2284,17 +2279,17 @@ export default function App() {
                         setEmergencyStep('alert');
                         setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: 'missing' } : c));
                       }}
-                      className="w-full bg-white/10 p-4 rounded-3xl border border-white/20 flex items-center gap-4 text-left active:scale-95 transition-all"
+                      className="w-full bg-white/10 p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-white/20 flex items-center gap-3 sm:gap-4 text-left active:scale-95 transition-all"
                     >
-                      <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/20">
-                        <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" />
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl overflow-hidden border-2 border-white/20">
+                        <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-xl font-bold">{child.name}</h4>
-                        <p className="text-xs opacity-60 uppercase tracking-widest">{child.age} anos</p>
+                        <h4 className="text-lg sm:text-xl font-bold">{child.name}</h4>
+                        <p className="text-[10px] sm:text-xs opacity-60 uppercase tracking-widest">{child.age} anos</p>
                       </div>
-                      <div className="w-10 h-10 bg-brand-emergency rounded-full flex items-center justify-center">
-                        <AlertTriangle className="w-5 h-5 text-white" />
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-brand-emergency rounded-full flex items-center justify-center">
+                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                       </div>
                     </button>
                   ))}
@@ -2302,28 +2297,28 @@ export default function App() {
 
                 <button 
                   onClick={() => setView('dashboard')}
-                  className="mt-auto w-full py-4 text-white/60 font-bold uppercase tracking-widest"
+                  className="mt-auto w-full py-3 sm:py-4 text-white/60 font-bold uppercase tracking-widest text-xs sm:text-sm"
                 >
                   Cancelar
                 </button>
               </div>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-center gap-8">
-                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
-                  <AlertTriangle className="w-16 h-16" />
+              <div className="flex-1 flex flex-col items-center justify-center text-center gap-6 sm:gap-8">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+                  <AlertTriangle className="w-12 h-12 sm:w-16 sm:h-16" />
                 </div>
-                <div className="space-y-2">
-                  <h2 className="text-4xl font-black uppercase">Alerta Ativado</h2>
-                  <p className="text-red-100">
+                <div className="space-y-1 sm:space-y-2">
+                  <h2 className="text-3xl sm:text-4xl font-black uppercase">Alerta Ativado</h2>
+                  <p className="text-sm sm:text-base text-red-100">
                     As autoridades e pontos de apoio próximos foram notificados sobre o desaparecimento de <span className="font-black underline">{children.find(c => c.id === emergencyChildId)?.name}</span>.
                   </p>
                 </div>
                 
-                <div className="w-full space-y-4 mt-8">
-                  <div className="bg-white/10 p-6 rounded-3xl border border-white/20">
-                    <p className="text-sm font-bold uppercase tracking-widest opacity-60">Status da Busca</p>
-                    <p className="text-xl font-bold mt-1">Guarda Municipal Acionada</p>
-                    <p className="text-sm opacity-80">Viatura a caminho da sua localização.</p>
+                <div className="w-full space-y-3 sm:space-y-4 mt-4 sm:mt-8">
+                  <div className="bg-white/10 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/20">
+                    <p className="text-[10px] sm:text-sm font-bold uppercase tracking-widest opacity-60">Status da Busca</p>
+                    <p className="text-lg sm:text-xl font-bold mt-1">Guarda Municipal Acionada</p>
+                    <p className="text-xs sm:text-sm opacity-80">Viatura a caminho da sua localização.</p>
                   </div>
                   <button 
                     onClick={() => {
@@ -2332,7 +2327,7 @@ export default function App() {
                       }
                       setView('dashboard');
                     }}
-                    className="btn-mobile bg-white text-brand-emergency font-black"
+                    className="btn-mobile bg-white text-brand-emergency font-black text-sm sm:text-base"
                   >
                     CANCELAR ALERTA
                   </button>
@@ -2350,15 +2345,15 @@ function ActionCard({ icon, title, onClick }: { icon: React.ReactNode, title: st
   return (
     <button 
       onClick={onClick}
-      className="w-full bg-white/10 p-4 rounded-2xl border border-white/20 card-shadow flex items-center justify-between group active:bg-white/20 transition-all"
+      className="w-full bg-white/10 p-3 rounded-2xl border border-white/20 card-shadow flex items-center justify-between group active:bg-white/20 transition-all"
     >
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-xl shadow-inner">
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center text-xl shadow-inner">
           {icon}
         </div>
-        <span className="font-bold text-white tracking-wide">{title}</span>
+        <span className="font-bold text-white tracking-wide text-sm">{title}</span>
       </div>
-      <Plus className="w-5 h-5 text-white/40 group-hover:text-brand-secondary transition-colors" />
+      <Plus className="w-4 h-4 text-white/40 group-hover:text-brand-secondary transition-colors" />
     </button>
   );
 }
