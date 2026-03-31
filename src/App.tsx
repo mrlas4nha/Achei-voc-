@@ -943,7 +943,7 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute inset-0 bg-brand-dark flex flex-col z-50 overflow-hidden"
+            className="fixed inset-0 bg-brand-dark flex flex-col z-50 overflow-hidden"
           >
             {/* Header */}
             <div className="p-3 pt-6 sm:p-6 sm:pt-10 flex justify-between items-center bg-transparent border-b border-white/10 shrink-0">
@@ -1074,7 +1074,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
           >
             <div className="flex items-center gap-2 sm:gap-3 mb-4 shrink-0">
               <button onClick={() => setView('authority_dashboard')} className="w-7 h-7 sm:w-8 sm:h-8 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10 shrink-0">
@@ -1123,7 +1123,7 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
           >
             <div className="flex items-center gap-2 sm:gap-3 mb-4 shrink-0">
               <button onClick={() => setView('authority_dashboard')} className="w-7 h-7 sm:w-8 sm:h-8 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10 shrink-0">
@@ -1184,7 +1184,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
           >
             <div className="flex items-center gap-3 mb-4 shrink-0">
               <button onClick={() => setView('authority_dashboard')} className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
@@ -1470,7 +1470,7 @@ export default function App() {
             key="qr"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient p-3 pt-6 sm:p-4 sm:pt-8 text-white overflow-x-hidden"
+            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient p-3 pt-6 sm:p-4 sm:pt-8 text-white overflow-x-hidden"
           >
             <button onClick={() => { setView('dashboard'); setScanSuccess(false); }} className="mb-4 text-white w-fit shrink-0"><ChevronLeft className="w-6 h-6" /></button>
             <div className="text-center space-y-3 sm:space-y-4 flex-1 flex flex-col justify-center">
@@ -1543,7 +1543,7 @@ export default function App() {
             key="manual"
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient p-3 pt-6 sm:p-4 sm:pt-8 text-white overflow-x-hidden"
+            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient p-3 pt-6 sm:p-4 sm:pt-8 text-white overflow-x-hidden"
           >
             <button onClick={() => setView('qr_generator')} className="mb-4 text-white w-fit shrink-0"><ChevronLeft className="w-6 h-6" /></button>
             <div className="text-center space-y-3 sm:space-y-4 flex-1 flex flex-col justify-center">
@@ -1602,7 +1602,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="absolute inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
           >
             <div className="flex items-center gap-3 mb-6 shrink-0">
               <button onClick={() => setView('dashboard')} className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">

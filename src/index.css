@@ -65,7 +65,7 @@
 
 /* Mobile App Container */
 .app-container {
-  @apply w-full max-w-[340px] mx-auto h-screen h-[100dvh] bg-white shadow-2xl relative flex flex-col overflow-hidden px-4;
+  @apply w-full max-w-full md:max-w-[450px] mx-auto h-screen h-[100dvh] bg-white shadow-2xl relative flex flex-col overflow-hidden;
 }
 
 .card-shadow {
