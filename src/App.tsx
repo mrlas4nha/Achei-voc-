@@ -1077,7 +1077,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+            className="h-full flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-hidden"
           >
             <div className="flex items-center gap-1.5 sm:gap-2.5 mb-3.5 shrink-0">
               <button onClick={() => setView('authority_dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10 shrink-0">
@@ -1086,7 +1086,7 @@ export default function App() {
               <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">Relatórios e Comunicados</h2>
             </div>
 
-            <div className="flex-1 flex flex-col gap-1.5 sm:gap-2.5 overflow-y-auto scrollbar-hide">
+            <div className="flex-1 min-h-0 max-h-full flex flex-col gap-1.5 sm:gap-2.5 overflow-y-auto scrollbar-hide">
               <div className="bg-white/5 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-white/10 flex-1 flex flex-col gap-1.5 sm:gap-2.5 min-h-[127px] sm:min-h-[170px]">
                 <div className="flex items-center gap-1.5 border-b border-white/10 pb-1.5 sm:pb-2.5 shrink-0">
                   <div className="p-1.5 bg-brand-secondary/20 rounded-lg"><History className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-secondary" /></div>
@@ -1109,7 +1109,9 @@ export default function App() {
                   Este bloco de notas é visível para todos os agentes da Unidade Centro. Use para informações táticas e avisos rápidos.
                 </p>
               </div>
+            </div>
 
+            <div className="pt-2.5 pb-10 shrink-0">
               <button 
                 onClick={() => setView('authority_dashboard')}
                 className="btn-mobile btn-primary-mobile py-1.5 sm:py-2 shadow-xl shrink-0 text-[17px] sm:text-[19px]"
@@ -1126,7 +1128,7 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+            className="h-full flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-hidden"
           >
             <div className="flex items-center gap-1.5 sm:gap-2.5 mb-3.5 shrink-0">
               <button onClick={() => setView('authority_dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10 shrink-0">
@@ -1135,7 +1137,7 @@ export default function App() {
               <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">Alertas de Emergência</h2>
             </div>
 
-            <div className="flex-1 min-h-0 space-y-1.5 sm:space-y-2.5 overflow-y-auto pb-5 scrollbar-hide">
+            <div className="flex-1 min-h-0 max-h-full space-y-1.5 sm:space-y-2.5 overflow-y-auto pb-10 scrollbar-hide">
               {children.filter(c => c.status === 'missing').map(child => (
                 <div key={child.id} className="bg-brand-emergency/10 p-2.5 sm:p-3.5 rounded-xl sm:rounded-[20px] border border-brand-emergency/30 space-y-2.5 sm:space-y-3.5">
                   <div className="flex items-center gap-1.5 sm:gap-2.5">
@@ -1187,7 +1189,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+            className="h-full flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-hidden"
           >
             <div className="flex items-center gap-2.5 mb-3.5 shrink-0">
               <button onClick={() => setView('authority_dashboard')} className="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
@@ -1201,84 +1203,86 @@ export default function App() {
               if (!child) return null;
 
               return (
-                <div className="flex-1 space-y-3.5 overflow-y-auto pb-5 scrollbar-hide">
-                  <div className="bg-white/5 p-3.5 sm:p-4.5 rounded-[17px] sm:rounded-[20px] border border-white/10 space-y-3.5">
-                    <div className="aspect-square w-full max-w-[170px] sm:max-w-[204px] mx-auto rounded-xl sm:rounded-2xl overflow-hidden border-4 border-brand-emergency shadow-2xl shrink-0">
-                      <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                    </div>
-                    
-                    <div className="text-center space-y-0.5">
-                      <h3 className="text-[17.3px] sm:text-[19px] font-black truncate">{child.name}</h3>
-                      <p className="text-brand-emergency font-bold uppercase tracking-[0.2em] text-[12px] sm:text-[15px]">Desaparecido</p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-1.5">
-                      <div className="bg-white/5 p-1.5 rounded-xl border border-white/10 text-center">
-                        <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Idade</p>
-                        <p className="text-[17px] sm:text-[19px] font-bold">{child.age} anos</p>
+                <>
+                  <div className="flex-1 min-h-0 max-h-full space-y-3.5 overflow-y-auto pb-4 scrollbar-hide">
+                    <div className="bg-white/5 p-3.5 sm:p-4.5 rounded-[17px] sm:rounded-[20px] border border-white/10 space-y-3.5">
+                      <div className="aspect-square w-full max-w-[170px] sm:max-w-[204px] mx-auto rounded-xl sm:rounded-2xl overflow-hidden border-4 border-brand-emergency shadow-2xl shrink-0">
+                        <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
-                      <div className="bg-white/5 p-1.5 rounded-xl border border-white/10 text-center">
-                        <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Sexo</p>
-                        <p className="text-[17px] sm:text-[19px] font-bold truncate">{child.gender === 'M' ? 'Masculino' : child.gender === 'F' ? 'Feminino' : child.gender || 'N/A'}</p>
+                      
+                      <div className="text-center space-y-0.5">
+                        <h3 className="text-[17.3px] sm:text-[19px] font-black truncate">{child.name}</h3>
+                        <p className="text-brand-emergency font-bold uppercase tracking-[0.2em] text-[12px] sm:text-[15px]">Desaparecido</p>
                       </div>
-                    </div>
 
-                    {/* Medical Info */}
-                    {(child.allergies || child.medications || child.disability) && (
-                      <div className="bg-brand-emergency/10 p-2.5 rounded-xl border border-brand-emergency/20 space-y-1.5">
-                        <p className="text-[13px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-1.5">
-                          <AlertTriangle className="w-2.5 h-2.5" />
-                          Informações Médicas Críticas
-                        </p>
-                        <div className="space-y-1.5">
-                          {child.allergies && (
-                            <div>
-                              <p className="text-[12px] font-bold opacity-60 uppercase">Alergias</p>
-                              <p className="text-[15px] sm:text-[17px] font-bold">{child.allergies}</p>
-                            </div>
-                          )}
-                          {child.medications && (
-                            <div>
-                              <p className="text-[12px] font-bold opacity-60 uppercase">Medicamentos</p>
-                              <p className="text-[15px] sm:text-[17px] font-bold">{child.medications}</p>
-                            </div>
-                          )}
-                          {child.disability && (
-                            <div>
-                              <p className="text-[10px] font-bold opacity-60 uppercase">Deficiência / Condição</p>
-                              <p className="text-[15px] sm:text-[17px] font-bold">{child.disability}</p>
-                            </div>
-                          )}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <div className="bg-white/5 p-1.5 rounded-xl border border-white/10 text-center">
+                          <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Idade</p>
+                          <p className="text-[17px] sm:text-[19px] font-bold">{child.age} anos</p>
+                        </div>
+                        <div className="bg-white/5 p-1.5 rounded-xl border border-white/10 text-center">
+                          <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Sexo</p>
+                          <p className="text-[17px] sm:text-[19px] font-bold truncate">{child.gender === 'M' ? 'Masculino' : child.gender === 'F' ? 'Feminino' : child.gender || 'N/A'}</p>
                         </div>
                       </div>
-                    )}
 
-                    <div className="bg-white/5 p-2.5 rounded-xl border border-white/10 space-y-1">
-                      <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Características</p>
-                      <p className="text-[15px] sm:text-[17px] leading-relaxed">{child.description || 'Nenhuma descrição fornecida.'}</p>
-                    </div>
+                      {/* Medical Info */}
+                      {(child.allergies || child.medications || child.disability) && (
+                        <div className="bg-brand-emergency/10 p-2.5 rounded-xl border border-brand-emergency/20 space-y-1.5">
+                          <p className="text-[13px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-1.5">
+                            <AlertTriangle className="w-2.5 h-2.5" />
+                            Informações Médicas Críticas
+                          </p>
+                          <div className="space-y-1.5">
+                            {child.allergies && (
+                              <div>
+                                <p className="text-[12px] font-bold opacity-60 uppercase">Alergias</p>
+                                <p className="text-[15px] sm:text-[17px] font-bold">{child.allergies}</p>
+                              </div>
+                            )}
+                            {child.medications && (
+                              <div>
+                                <p className="text-[12px] font-bold opacity-60 uppercase">Medicamentos</p>
+                                <p className="text-[15px] sm:text-[17px] font-bold">{child.medications}</p>
+                              </div>
+                            )}
+                            {child.disability && (
+                              <div>
+                                <p className="text-[10px] font-bold opacity-60 uppercase">Deficiência / Condição</p>
+                                <p className="text-[15px] sm:text-[17px] font-bold">{child.disability}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
-                    <div className="bg-brand-primary/10 p-2.5 rounded-xl border border-brand-primary/20 space-y-1.5">
-                      <p className="text-[12px] font-bold text-brand-primary uppercase tracking-widest">Responsável</p>
-                      <div className="flex justify-between items-center gap-1.5">
-                        <p className="font-bold text-[15px] sm:text-[17px] truncate">{child.responsibleName}</p>
-                        <button 
-                          onClick={() => {
-                            if (child.responsiblePhone) {
-                              window.location.href = `tel:${child.responsiblePhone.replace(/\D/g, '')}`;
-                            } else {
-                              alert('Telefone do responsável não cadastrado.');
-                            }
-                          }}
-                          className="p-1.5 bg-brand-primary text-white rounded-lg active:scale-95 transition-transform shrink-0"
-                        >
-                          <Phone className="w-3 h-3" />
-                        </button>
+                      <div className="bg-white/5 p-2.5 rounded-xl border border-white/10 space-y-1">
+                        <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Características</p>
+                        <p className="text-[15px] sm:text-[17px] leading-relaxed">{child.description || 'Nenhuma descrição fornecida.'}</p>
+                      </div>
+
+                      <div className="bg-brand-primary/10 p-2.5 rounded-xl border border-brand-primary/20 space-y-1.5">
+                        <p className="text-[12px] font-bold text-brand-primary uppercase tracking-widest">Responsável</p>
+                        <div className="flex justify-between items-center gap-1.5">
+                          <p className="font-bold text-[15px] sm:text-[17px] truncate">{child.responsibleName}</p>
+                          <button 
+                            onClick={() => {
+                              if (child.responsiblePhone) {
+                                window.location.href = `tel:${child.responsiblePhone.replace(/\D/g, '')}`;
+                              } else {
+                                alert('Telefone do responsável não cadastrado.');
+                              }
+                            }}
+                            className="p-1.5 bg-brand-primary text-white rounded-lg active:scale-95 transition-transform shrink-0"
+                          >
+                            <Phone className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-1.5 pt-1">
+                  <div className="space-y-1.5 pt-2.5 pb-10 shrink-0">
                     <button 
                       onClick={() => {
                         setSelectedChildId(child.id);
@@ -1312,7 +1316,7 @@ export default function App() {
                       Voltar
                     </button>
                   </div>
-                </div>
+                </>
               );
             })()}
           </motion.div>
@@ -1324,7 +1328,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+            className="h-full flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-hidden"
           >
             <div className="flex items-center gap-2.5 mb-3.5 shrink-0">
               <button onClick={() => setView('occurrence_details')} className="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
@@ -1339,7 +1343,7 @@ export default function App() {
 
               return (
                 <>
-                  <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pb-5 scrollbar-hide">
+                  <div className="flex-1 min-h-0 max-h-full space-y-4 overflow-y-auto pb-4 scrollbar-hide">
                     <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20">
@@ -1380,7 +1384,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="space-y-2 pt-3.5 shrink-0">
+                  <div className="pt-3.5 pb-10 shrink-0">
                     <button 
                       onClick={() => {
                         if (!foundLocationForm.address) {
@@ -1404,13 +1408,13 @@ export default function App() {
                         setFoundLocationForm({ address: '', notes: '' });
                         setView('authority_dashboard');
                       }}
-                      className="btn-mobile btn-primary-mobile py-3 font-black uppercase tracking-widest text-[17px]"
+                      className="btn-mobile btn-success-mobile py-2.5 font-black uppercase tracking-widest text-[17px] sm:text-[19px] shadow-xl"
                     >
-                      Confirmar e Finalizar
+                      Confirmar Encontro
                     </button>
                     <button 
                       onClick={() => setView('occurrence_details')}
-                      className="btn-mobile bg-white/5 border border-white/10 py-3 font-black uppercase tracking-widest text-[17px]"
+                      className="btn-mobile bg-white/5 border border-white/10 py-2.5 font-black uppercase tracking-widest text-[15px] mt-2"
                     >
                       Cancelar
                     </button>
@@ -1923,7 +1927,7 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-10 scrollbar-hide"
+            className="h-full flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-10 overflow-hidden"
           >
             <div className="flex items-center gap-1.5 sm:gap-2.5 mb-3.5 sm:mb-5 shrink-0">
               <button onClick={() => setView('dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
@@ -1937,169 +1941,144 @@ export default function App() {
               if (!child) return null;
 
               return (
-                <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pb-6 scrollbar-hide">
-                  {/* Status Toggle */}
-                  <div className={cn(
-                    "p-2.5 rounded-2xl border flex items-center justify-between transition-colors",
-                    child.status === 'safe' ? "bg-brand-icon-green/10 border-brand-icon-green/20" : "bg-brand-emergency/10 border-brand-emergency/20"
-                  )}>
-                    <div className="flex items-center gap-2">
-                      <div className={cn(
-                        "w-7 h-7 rounded-xl flex items-center justify-center shadow-lg",
-                        child.status === 'safe' ? "bg-brand-icon-green" : "bg-brand-emergency"
-                      )}>
-                        {child.status === 'safe' ? <CheckCircle2 className="w-3 h-3 text-white" /> : <AlertTriangle className="w-3 h-3 text-white" />}
-                      </div>
-                      <div>
-                        <p className="text-[11px] font-bold opacity-60 uppercase tracking-widest">Status Atual</p>
-                        <h4 className="text-[16px] font-bold">{child.status === 'safe' ? 'Seguro' : 'Desaparecido'}</h4>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => {
-                        setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: c.status === 'safe' ? 'missing' : 'safe' } : c));
-                      }}
-                      className={cn(
-                        "px-2 py-0.5 rounded-lg text-[12px] font-black uppercase tracking-widest border transition-all active:scale-95",
-                        child.status === 'safe' ? "bg-brand-emergency border-brand-emergency text-white" : "bg-brand-icon-green border-brand-icon-green text-white"
-                      )}
-                    >
-                      Alterar para {child.status === 'safe' ? 'Desaparecido' : 'Seguro'}
-                    </button>
-                  </div>
-
-                  {/* Profile Edit */}
-                  <div className="space-y-2.5">
-                    <div className="flex flex-col items-center gap-1.5">
-                      <div className="relative">
-                        <div className="w-17 h-17 rounded-2xl border-4 border-brand-secondary shadow-2xl overflow-hidden">
-                          <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <>
+                  <div className="flex-1 min-h-0 max-h-full space-y-4 overflow-y-auto pb-4 scrollbar-hide">
+                    {/* Status Toggle */}
+                    <div className={cn(
+                      "p-2.5 rounded-2xl border flex items-center justify-between transition-colors",
+                      child.status === 'safe' ? "bg-brand-icon-green/10 border-brand-icon-green/20" : "bg-brand-emergency/10 border-brand-emergency/20"
+                    )}>
+                      <div className="flex items-center gap-2">
+                        <div className={cn(
+                          "w-7 h-7 rounded-xl flex items-center justify-center shadow-lg",
+                          child.status === 'safe' ? "bg-brand-icon-green" : "bg-brand-emergency"
+                        )}>
+                          {child.status === 'safe' ? <CheckCircle2 className="w-3 h-3 text-white" /> : <AlertTriangle className="w-3 h-3 text-white" />}
                         </div>
-                        <label className="absolute -bottom-1 -right-1 w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
-                          <Camera className="w-3 h-3 text-white" />
-                          <input 
-                            type="file" 
-                            className="hidden" 
-                            accept="image/*"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                const url = URL.createObjectURL(file);
-                                setChildren(prev => prev.map(c => c.id === child.id ? { ...c, photo: url } : c));
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <div className="space-y-0.5">
-                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
-                        <input 
-                          type="text" 
-                          value={child.name}
-                          onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, name: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                        />
-                      </div>
-                      <div className="space-y-0.5">
-                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
-                        <input 
-                          type="number" 
-                          value={child.age}
-                          onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, age: parseInt(e.target.value) || 0 } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                        />
-                      </div>
-                      <div className="space-y-0.5">
-                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
-                        <div className="grid grid-cols-3 gap-1">
-                          {['M', 'F', 'Outro'].map((g) => (
-                            <button
-                              key={g}
-                              onClick={() => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, gender: g as any } : c))}
-                              className={cn(
-                                "py-1 rounded-xl border font-bold text-[13px] transition-all",
-                                child.gender === g 
-                                  ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
-                                  : "bg-white/5 border-white/10 text-white/60"
-                              )}
-                            >
-                              {g === 'M' ? 'Masc.' : g === 'F' ? 'Fem.' : 'Outro'}
-                            </button>
-                          ))}
+                        <div>
+                          <p className="text-[11px] font-bold opacity-60 uppercase tracking-widest">Status Atual</p>
+                          <h4 className="text-[16px] font-bold">{child.status === 'safe' ? 'Seguro' : 'Desaparecido'}</h4>
                         </div>
                       </div>
-                      <div className="space-y-0.5">
-                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
-                        <input 
-                          type="text" 
-                          value={child.allergies || ''}
-                          onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, allergies: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                        />
-                      </div>
-                      <div className="space-y-0.5">
-                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
-                        <input 
-                          type="text" 
-                          value={child.medications || ''}
-                          onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, medications: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                        />
-                      </div>
-                      <div className="space-y-0.5">
-                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
-                        <input 
-                          type="text" 
-                          value={child.disability || ''}
-                          onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, disability: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                        />
-                      </div>
-                      <div className="space-y-0.5">
-                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
-                        <textarea 
-                          value={child.description}
-                          onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, description: e.target.value } : c))}
-                          rows={2}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors resize-none"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* QR Code Section */}
-                  <div className="space-y-1.5">
-                    <h4 className="text-[13px] font-bold text-white/40 uppercase tracking-widest ml-1">QR Code da Pulseira</h4>
-                    {!child.qrCode ? (
                       <button 
                         onClick={() => {
-                          setSelectedChildId(child.id);
-                          setView('qr_generator');
-                          setScanSuccess(false);
-                          setIsScanning(false);
+                          setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: c.status === 'safe' ? 'missing' : 'safe' } : c));
                         }}
-                        className="w-full py-3.5 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center gap-1.5 active:bg-white/10 transition-all"
+                        className={cn(
+                          "px-2 py-0.5 rounded-lg text-[12px] font-black uppercase tracking-widest border transition-all active:scale-95",
+                          child.status === 'safe' ? "bg-brand-emergency border-brand-emergency text-white" : "bg-brand-icon-green border-brand-icon-green text-white"
+                        )}
                       >
-                        <div className="w-7 h-7 bg-brand-secondary/20 rounded-xl flex items-center justify-center">
-                          <QrCode className="w-3.5 h-3.5 text-brand-secondary" />
-                        </div>
-                        <div className="text-center">
-                          <p className="font-bold text-[16px]">Vincular Pulseira</p>
-                          <p className="text-[11px] opacity-40 uppercase tracking-widest">Nenhum código registrado ainda</p>
-                        </div>
+                        Alterar para {child.status === 'safe' ? 'Desaparecido' : 'Seguro'}
                       </button>
-                    ) : (
-                      <div className="bg-white p-2.5 rounded-2xl flex flex-col items-center gap-1.5 shadow-2xl">
-                        <div className="p-1 bg-slate-50 rounded-xl border border-slate-100">
-                          <QRCode value={child.qrCode} size={85} />
+                    </div>
+
+                    {/* Profile Edit */}
+                    <div className="space-y-2.5">
+                      <div className="flex flex-col items-center gap-1.5">
+                        <div className="relative">
+                          <div className="w-17 h-17 rounded-2xl border-4 border-brand-secondary shadow-2xl overflow-hidden">
+                            <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          </div>
+                          <label className="absolute -bottom-1 -right-1 w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
+                            <Camera className="w-3 h-3 text-white" />
+                            <input 
+                              type="file" 
+                              className="hidden" 
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const url = URL.createObjectURL(file);
+                                  setChildren(prev => prev.map(c => c.id === child.id ? { ...c, photo: url } : c));
+                                }
+                              }}
+                            />
+                          </label>
                         </div>
-                        <div className="text-center">
-                          <p className="text-slate-900 font-black tracking-widest text-[16px] uppercase">ID: {child.qrCode.toUpperCase()}</p>
-                          <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">Válido em todo território nacional</p>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <div className="space-y-0.5">
+                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
+                          <input 
+                            type="text" 
+                            value={child.name}
+                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, name: e.target.value } : c))}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          />
                         </div>
+                        <div className="space-y-0.5">
+                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
+                          <input 
+                            type="number" 
+                            value={child.age}
+                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, age: parseInt(e.target.value) || 0 } : c))}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          />
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
+                          <div className="grid grid-cols-3 gap-1">
+                            {['M', 'F', 'Outro'].map((g) => (
+                              <button
+                                key={g}
+                                onClick={() => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, gender: g as any } : c))}
+                                className={cn(
+                                  "py-1 rounded-xl border font-bold text-[13px] transition-all",
+                                  child.gender === g 
+                                    ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
+                                    : "bg-white/5 border-white/10 text-white/60"
+                                )}
+                              >
+                                {g === 'M' ? 'Masc.' : g === 'F' ? 'Fem.' : 'Outro'}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
+                          <input 
+                            type="text" 
+                            value={child.allergies || ''}
+                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, allergies: e.target.value } : c))}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          />
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
+                          <input 
+                            type="text" 
+                            value={child.medications || ''}
+                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, medications: e.target.value } : c))}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          />
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
+                          <input 
+                            type="text" 
+                            value={child.disability || ''}
+                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, disability: e.target.value } : c))}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          />
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
+                          <textarea 
+                            value={child.description}
+                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, description: e.target.value } : c))}
+                            rows={2}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors resize-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* QR Code Section */}
+                    <div className="space-y-1.5">
+                      <h4 className="text-[13px] font-bold text-white/40 uppercase tracking-widest ml-1">QR Code da Pulseira</h4>
+                      {!child.qrCode ? (
                         <button 
                           onClick={() => {
                             setSelectedChildId(child.id);
@@ -2107,16 +2086,43 @@ export default function App() {
                             setScanSuccess(false);
                             setIsScanning(false);
                           }}
-                          className="w-full py-1 sm:py-2 bg-brand-primary/10 text-brand-primary rounded-xl sm:rounded-2xl font-bold text-[13px] sm:text-[16px] uppercase tracking-widest border border-brand-primary/20 flex items-center justify-center gap-1.25"
+                          className="w-full py-3.5 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center gap-1.5 active:bg-white/10 transition-all"
                         >
-                          <Camera className="w-3 h-3" />
-                          Vincular Nova Pulseira
+                          <div className="w-7 h-7 bg-brand-secondary/20 rounded-xl flex items-center justify-center">
+                            <QrCode className="w-3.5 h-3.5 text-brand-secondary" />
+                          </div>
+                          <div className="text-center">
+                            <p className="font-bold text-[16px]">Vincular Pulseira</p>
+                            <p className="text-[11px] opacity-40 uppercase tracking-widest">Nenhum código registrado ainda</p>
+                          </div>
                         </button>
-                      </div>
-                    )}
+                      ) : (
+                        <div className="bg-white p-2.5 rounded-2xl flex flex-col items-center gap-1.5 shadow-2xl">
+                          <div className="p-1 bg-slate-50 rounded-xl border border-slate-100">
+                            <QRCode value={child.qrCode} size={85} />
+                          </div>
+                          <div className="text-center">
+                            <p className="text-slate-900 font-black tracking-widest text-[16px] uppercase">ID: {child.qrCode.toUpperCase()}</p>
+                            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">Válido em todo território nacional</p>
+                          </div>
+                          <button 
+                            onClick={() => {
+                              setSelectedChildId(child.id);
+                              setView('qr_generator');
+                              setScanSuccess(false);
+                              setIsScanning(false);
+                            }}
+                            className="w-full py-1 sm:py-2 bg-brand-primary/10 text-brand-primary rounded-xl sm:rounded-2xl font-bold text-[13px] sm:text-[16px] uppercase tracking-widest border border-brand-primary/20 flex items-center justify-center gap-1.25"
+                          >
+                            <Camera className="w-3 h-3" />
+                            Vincular Nova Pulseira
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="pt-2.5 space-y-1.5 sm:space-y-3.5">
+                  <div className="pt-2.5 pb-10 shrink-0 space-y-1.5 sm:space-y-3.5">
                     <button 
                       className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3.5 text-[12px] sm:text-base"
                       onClick={() => setView('dashboard')}
@@ -2136,7 +2142,7 @@ export default function App() {
                       Remover Criança
                     </button>
                   </div>
-                </div>
+                </>
               );
             })()}
           </motion.div>
