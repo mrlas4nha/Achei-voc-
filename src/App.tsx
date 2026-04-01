@@ -33,7 +33,7 @@ import {
 import QRCode from 'react-qr-code';
 import { Html5Qrcode } from 'html5-qrcode';
 import { cn } from './utils';
-import { Child, UserRole, SupportPoint, User } from './types';
+import { Child, UserRole, SupportPoint, User, Notification } from './types';
 
 // Mock Data
 const MOCK_CHILDREN: Child[] = [];
@@ -98,6 +98,70 @@ export default function App() {
   const [emergencyChildId, setEmergencyChildId] = useState<string | null>(null);
   const [emergencyStep, setEmergencyStep] = useState<'select' | 'alert'>('select');
   const [isAuthorityOnline, setIsAuthorityOnline] = useState(true);
+  const [notifications, setNotifications] = useState<Notification[]>(() => {
+    const saved = localStorage.getItem('achei_voce_notifications');
+    return saved ? JSON.parse(saved) : [
+      {
+        id: '1',
+        title: 'Criança Encontrada!',
+        message: 'A Guarda Municipal localizou Lucas no Ponto de Apoio 03. Ele está seguro e aguardando você.',
+        time: '10 min',
+        type: 'success',
+        read: false
+      },
+      {
+        id: '2',
+        title: 'Alerta de Segurança',
+        message: 'O Modo Evento foi ativado para a região do Parque Ibirapuera. Fique atento às notificações.',
+        time: '1h',
+        type: 'alert',
+        read: true
+      },
+      {
+        id: '3',
+        title: 'Bem-vindo ao Achei Você',
+        message: 'Seu cadastro foi concluído com sucesso. Não esqueça de vincular a pulseira da sua criança.',
+        time: '2h',
+        type: 'info',
+        read: true
+      }
+    ];
+  });
+
+  // Persist notifications
+  React.useEffect(() => {
+    localStorage.setItem('achei_voce_notifications', JSON.stringify(notifications));
+  }, [notifications]);
+
+  // Real-time simulation between tabs
+  React.useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'achei_voce_notifications' && e.newValue) {
+        setNotifications(JSON.parse(e.newValue));
+      }
+      if (e.key === 'achei_voce_children' && e.newValue) {
+        setChildren(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const triggerNotification = (notification: Omit<Notification, 'id' | 'time' | 'read'>) => {
+    const newNotif: Notification = {
+      ...notification,
+      id: Math.random().toString(36).substr(2, 9),
+      time: 'Agora',
+      read: false
+    };
+    setNotifications(prev => [newNotif, ...prev]);
+    
+    // Also update localStorage immediately to trigger storage event in other tabs
+    const currentNotifs = JSON.parse(localStorage.getItem('achei_voce_notifications') || '[]');
+    localStorage.setItem('achei_voce_notifications', JSON.stringify([newNotif, ...currentNotifs]));
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
   const [authorityNotes, setAuthorityNotes] = useState(() => {
     return localStorage.getItem('achei_voce_authority_notes') || '';
   });
@@ -291,9 +355,11 @@ export default function App() {
             className="flex-1 bg-brand-gradient flex flex-col p-3.5 pt-7 overflow-x-hidden"
           >
             <div className="absolute top-3.5 right-3.5 z-10">
-              <button className="relative w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
+              <button onClick={() => setView('notifications')} className="relative w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
                 <Bell className="w-3.5 h-3.5 text-brand-secondary fill-brand-secondary/20" />
-                <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                )}
               </button>
             </div>
 
@@ -420,9 +486,11 @@ export default function App() {
             </div>
 
             <div className="absolute top-3.5 right-3.5 z-10">
-              <button className="relative w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
+              <button onClick={() => setView('notifications')} className="relative w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
                 <Bell className="w-3.5 h-3.5 text-brand-secondary fill-brand-secondary/20" />
-                <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                )}
               </button>
             </div>
 
@@ -781,9 +849,11 @@ export default function App() {
               </button>
               <h2 className="text-[16px] sm:text-[18px] font-bold">Dashboard</h2>
               <div className="flex items-center gap-1.5 shrink-0">
-                <button className="relative">
+                <button onClick={() => setView('notifications')} className="relative">
                   <Bell className="w-3.5 h-3.5 sm:w-4.25 sm:h-4.25 text-brand-secondary fill-brand-secondary/20" />
-                  <span className="absolute -top-0.5 -right-0.5 w-1.25 h-1.25 bg-brand-emergency rounded-full border border-brand-dark" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 w-1.25 h-1.25 bg-brand-emergency rounded-full border border-brand-dark" />
+                  )}
                 </button>
                 <button onClick={() => setView('settings')}><Settings className="w-3.5 h-3.5 sm:w-4.25 sm:h-4.25 text-white/60" /></button>
               </div>
@@ -930,7 +1000,12 @@ export default function App() {
             {/* Bottom Nav */}
             <div className="glass-nav p-1.5 sm:p-2.5 flex justify-around items-center shrink-0">
               <button onClick={() => setView('dashboard')} className={cn(view === 'dashboard' ? "text-white" : "text-white/40")}><MapIcon className="w-3.5 h-3.5" /></button>
-              <button onClick={() => setView('notifications')} className={cn(view === 'notifications' ? "text-white" : "text-white/40")}><Bell className="w-3.5 h-3.5" /></button>
+              <button onClick={() => setView('notifications')} className={cn("relative", view === 'notifications' ? "text-white" : "text-white/40")}>
+                <Bell className="w-3.5 h-3.5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-brand-emergency rounded-full border border-brand-dark" />
+                )}
+              </button>
               <button 
                 onClick={() => setView('register_child')}
                 className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-brand-primary rounded-full flex items-center justify-center -mt-6 sm:-mt-7.5 shadow-2xl border-4 border-brand-dark active:scale-90 transition-transform shrink-0"
@@ -961,9 +1036,11 @@ export default function App() {
               </button>
               <h2 className="text-[18px] sm:text-[22px] font-bold">Painel Autoridade</h2>
               <div className="flex items-center gap-2 shrink-0">
-                <button className="relative">
+                <button onClick={() => setView('notifications')} className="relative">
                   <Bell className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-brand-secondary fill-brand-secondary/20" />
-                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                  )}
                 </button>
                 <button onClick={() => setView('settings')}><Settings className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white/60" /></button>
               </div>
@@ -1858,57 +1935,69 @@ export default function App() {
             </div>
 
             <div className="flex-1 space-y-1.5 overflow-y-auto pb-3.5 scrollbar-hide">
-              <div className="bg-white/10 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border border-brand-icon-green/30 flex gap-1.5 sm:gap-2.5">
-                <div className="w-6 h-6 sm:w-8.5 sm:h-8.5 bg-brand-icon-green/20 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-brand-icon-green" />
-                </div>
-                <div className="space-y-0.5 flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-[12px] sm:text-[14px]">Criança Encontrada!</h4>
-                    <span className="text-[9px] sm:text-[11px] opacity-40">10 min</span>
+              {notifications.length > 0 ? (
+                notifications.map(notif => (
+                  <div 
+                    key={notif.id} 
+                    className={cn(
+                      "p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border flex gap-1.5 sm:gap-2.5 transition-all",
+                      notif.read ? "bg-white/5 border-white/10 opacity-60" : "bg-white/10 border-white/20 shadow-lg",
+                      notif.type === 'emergency' && !notif.read && "bg-brand-emergency/20 border-brand-emergency/40"
+                    )}
+                    onClick={() => {
+                      setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
+                      if (notif.childId) {
+                        setSelectedChildId(notif.childId);
+                        setView(currentUser?.role === 'authority' ? 'occurrence_details' : 'child_details');
+                      }
+                    }}
+                  >
+                    <div className={cn(
+                      "w-6 h-6 sm:w-8.5 sm:h-8.5 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0",
+                      notif.type === 'success' ? "bg-brand-icon-green/20" : 
+                      notif.type === 'emergency' ? "bg-brand-emergency/20" :
+                      notif.type === 'alert' ? "bg-brand-secondary/20" : "bg-brand-primary/20"
+                    )}>
+                      {notif.type === 'success' ? <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-brand-icon-green" /> :
+                       notif.type === 'emergency' ? <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-brand-emergency" /> :
+                       notif.type === 'alert' ? <Bell className="w-3 h-3 sm:w-4 sm:h-4 text-brand-secondary" /> :
+                       <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-brand-primary" />}
+                    </div>
+                    <div className="space-y-0.5 flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <h4 className={cn("font-bold text-[12px] sm:text-[14px]", notif.type === 'emergency' && "text-brand-emergency")}>
+                          {notif.title}
+                        </h4>
+                        <span className="text-[9px] sm:text-[11px] opacity-40">{notif.time}</span>
+                      </div>
+                      <p className="text-[11px] sm:text-[13px] text-white/70 leading-tight">
+                        {notif.message}
+                      </p>
+                      {notif.childId && (
+                        <button className="text-brand-secondary text-[9px] sm:text-[11px] font-black uppercase tracking-widest mt-1">
+                          Ver Detalhes
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-[11px] sm:text-[13px] text-white/70 leading-tight">
-                    A Guarda Municipal localizou <span className="font-bold text-white">Lucas</span> no Ponto de Apoio 03. Ele está seguro e aguardando você.
-                  </p>
-                  <button className="text-brand-secondary text-[9px] sm:text-[11px] font-black uppercase tracking-widest mt-1">Ver Localização</button>
+                ))
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-10 opacity-30">
+                  <Bell className="w-10 h-10 mb-2" />
+                  <p className="text-lg font-bold">Nenhuma notificação.</p>
                 </div>
-              </div>
-
-              <div className="bg-white/5 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border border-white/10 flex gap-1.5 sm:gap-2.5 opacity-60">
-                <div className="w-6 h-6 sm:w-8.5 sm:h-8.5 bg-brand-primary/20 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
-                  <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-brand-primary" />
-                </div>
-                <div className="space-y-0.5 flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-[12px] sm:text-[14px]">Alerta de Segurança</h4>
-                    <span className="text-[9px] sm:text-[11px] opacity-40">1h</span>
-                  </div>
-                  <p className="text-[11px] sm:text-[13px] text-white/70 leading-tight">
-                    O Modo Evento foi ativado para a região do Parque Ibirapuera. Fique atento às notificações.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-white/5 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border border-white/10 flex gap-1.5 sm:gap-2.5 opacity-60">
-                <div className="w-6 h-6 sm:w-8.5 sm:h-8.5 bg-brand-secondary/20 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
-                  <Bell className="w-3 h-3 sm:w-4 sm:h-4 text-brand-secondary" />
-                </div>
-                <div className="space-y-0.5 flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-[12px] sm:text-[14px]">Bem-vindo ao Achei Você</h4>
-                    <span className="text-[9px] sm:text-[11px] opacity-40">2h</span>
-                  </div>
-                  <p className="text-[11px] sm:text-[13px] text-white/70 leading-tight">
-                    Seu cadastro foi concluído com sucesso. Não esqueça de vincular a pulseira da sua criança.
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
             
             {/* Bottom Nav inside notifications too for consistency */}
             <div className="glass-nav p-1 sm:p-2.5 flex justify-around items-center -mx-2.5 sm:-mx-3.5 -mb-2.5 sm:-mb-3.5 shrink-0">
               <button onClick={() => setView('dashboard')} className="text-white/40"><MapIcon className="w-3 h-3 sm:w-4 sm:h-4" /></button>
-              <button onClick={() => setView('notifications')} className="text-white"><Bell className="w-3.5 h-3.5 sm:w-5 sm:h-5" /></button>
+              <button onClick={() => setView('notifications')} className="relative text-white">
+                <Bell className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                )}
+              </button>
               <button 
                 onClick={() => setView('register_child')}
                 className="w-8.5 h-8.5 sm:w-12 sm:h-12 bg-brand-primary rounded-full flex items-center justify-center -mt-7 sm:-mt-10 shadow-2xl border-4 border-brand-dark"
@@ -2389,7 +2478,19 @@ export default function App() {
                       onClick={() => {
                         setEmergencyChildId(child.id);
                         setEmergencyStep('alert');
-                        setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: 'missing' } : c));
+                        setChildren(prev => {
+                          const updated = prev.map(c => c.id === child.id ? { ...c, status: 'missing' } : c);
+                          localStorage.setItem('achei_voce_children', JSON.stringify(updated));
+                          return updated;
+                        });
+                        
+                        // Trigger notification for authorities
+                        triggerNotification({
+                          title: 'NOVO ALERTA DE EMERGÊNCIA!',
+                          message: `A criança ${child.name} foi marcada como desaparecida. Verifique os detalhes na aba de alertas.`,
+                          type: 'emergency',
+                          childId: child.id
+                        });
                       }}
                       className="w-[85%] mx-auto bg-white/10 p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl border border-white/20 flex items-center gap-2.5 sm:gap-3.5 text-left active:scale-95 transition-all"
                     >

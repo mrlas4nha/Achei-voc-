@@ -54,12 +54,14 @@
 @layer base {
   html {
     font-size: 95%;
+    overscroll-behavior-y: none;
   }
 
   body {
     @apply bg-slate-100 text-slate-900 font-sans overflow-x-hidden w-full;
     margin: 0;
     padding: 0;
+    overscroll-behavior-y: none;
   }
   
   h1, h2, h3, h4 {
@@ -78,6 +80,7 @@
 /* Mobile App Container */
 .app-container {
   @apply w-full max-w-full md:max-w-[450px] mx-auto h-[100dvh] bg-white shadow-2xl relative flex flex-col overflow-hidden;
+  overscroll-behavior-y: none;
 }
 
 .card-shadow {

@@ -50,3 +50,13 @@ export interface User {
 }
 
 export type UserRole = 'responsible' | 'citizen' | 'authority' | 'support_point';
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  type: 'emergency' | 'info' | 'success' | 'alert';
+  read: boolean;
+  childId?: string;
+}
