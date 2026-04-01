@@ -522,7 +522,7 @@ export default function App() {
               </h2>
             </div>
 
-            <div className="flex-1 space-y-2.5 overflow-y-auto pb-3.5 scrollbar-hide">
+            <div className="flex-1 min-h-0 space-y-2.5 overflow-y-auto pb-3.5 scrollbar-hide">
               <div className="space-y-1">
                 <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Nome Completo' : 
@@ -1135,7 +1135,7 @@ export default function App() {
               <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">Alertas de Emergência</h2>
             </div>
 
-            <div className="flex-1 space-y-1.5 sm:space-y-2.5 overflow-y-auto pb-5 scrollbar-hide">
+            <div className="flex-1 min-h-0 space-y-1.5 sm:space-y-2.5 overflow-y-auto pb-5 scrollbar-hide">
               {children.filter(c => c.status === 'missing').map(child => (
                 <div key={child.id} className="bg-brand-emergency/10 p-2.5 sm:p-3.5 rounded-xl sm:rounded-[20px] border border-brand-emergency/30 space-y-2.5 sm:space-y-3.5">
                   <div className="flex items-center gap-1.5 sm:gap-2.5">
@@ -1338,7 +1338,7 @@ export default function App() {
               if (!child) return null;
 
               return (
-                <div className="flex-1 space-y-4 overflow-y-auto pb-5 scrollbar-hide">
+                <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pb-5 scrollbar-hide">
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20">
@@ -1935,7 +1935,7 @@ export default function App() {
               if (!child) return null;
 
               return (
-                <div className="flex-1 space-y-4 overflow-y-auto pb-6 scrollbar-hide">
+                <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pb-6 scrollbar-hide">
                   {/* Status Toggle */}
                   <div className={cn(
                     "p-2.5 rounded-2xl border flex items-center justify-between transition-colors",
@@ -2155,7 +2155,7 @@ export default function App() {
               <h2 className="text-base sm:text-lg font-bold">Cadastrar Criança</h2>
             </div>
 
-            <div className="flex-1 space-y-3.5 overflow-y-auto pb-5 scrollbar-hide">
+            <div className="flex-1 min-h-0 space-y-3.5 overflow-y-auto pb-5 scrollbar-hide">
               <div className="flex flex-col items-center gap-2.5">
                 <div className="relative">
                   <div className="w-17 h-17 sm:w-27 sm:h-27 rounded-[20px] sm:rounded-[32px] border-4 border-brand-secondary shadow-2xl overflow-hidden bg-white/10 flex items-center justify-center">
