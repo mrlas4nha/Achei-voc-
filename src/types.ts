@@ -17,6 +17,12 @@ export interface Child {
     address: string;
   };
   lastSeenTime?: Date;
+  foundLocation?: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  foundTime?: Date;
   description?: string;
   qrCode?: string;
 }

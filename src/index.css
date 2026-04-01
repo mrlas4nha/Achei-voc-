@@ -53,7 +53,7 @@
 
 @layer base {
   html {
-    font-size: 85%;
+    font-size: 95%;
   }
 
   body {
@@ -77,7 +77,7 @@
 }
 
 .btn-mobile {
-  @apply w-[85%] mx-auto py-3 px-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95;
+  @apply w-[85%] mx-auto py-2.5 px-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95;
 }
 
 .btn-emergency {

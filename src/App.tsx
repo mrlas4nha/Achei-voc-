@@ -64,11 +64,15 @@ export default function App() {
     }
     return null;
   });
-  const [view, setView] = useState<'selection' | 'splash' | 'dashboard' | 'location' | 'qr_generator' | 'emergency' | 'register' | 'login' | 'settings' | 'manual_entry' | 'register_child' | 'child_details' | 'notifications' | 'authority_reports' | 'authority_alerts' | 'occurrence_details' | 'citizen_scan'>(() => {
+  const [view, setView] = useState<'selection' | 'splash' | 'dashboard' | 'location' | 'qr_generator' | 'emergency' | 'register' | 'login' | 'settings' | 'manual_entry' | 'register_child' | 'child_details' | 'notifications' | 'authority_reports' | 'authority_alerts' | 'occurrence_details' | 'citizen_scan' | 'log_found_location'>(() => {
     return 'selection';
   });
   const [scannedChild, setScannedChild] = useState<Child | null>(null);
   const [citizenLocation, setCitizenLocation] = useState<{lat: number, lng: number, address: string} | null>(null);
+  const [foundLocationForm, setFoundLocationForm] = useState({
+    address: '',
+    notes: ''
+  });
   const [children, setChildren] = useState<Child[]>(() => {
     const saved = localStorage.getItem('achei_voce_children');
     return saved ? JSON.parse(saved) : MOCK_CHILDREN;
@@ -294,14 +298,14 @@ export default function App() {
             </div>
 
             <div className="flex flex-col items-center gap-0.5 mb-2.5">
-              <h1 className="text-[17px] text-white font-black tracking-tighter">
+              <h1 className="text-[24px] sm:text-[30px] text-white font-black tracking-tighter">
                 ACHEI <span className="text-brand-secondary">VOCÊ</span>
               </h1>
-              <p className="text-blue-100 text-[5.8px] font-bold tracking-[0.2em] uppercase opacity-70 text-center">Segurança infantil e familiar</p>
+              <p className="text-blue-100 text-[10px] font-bold tracking-[0.2em] uppercase opacity-70 text-center">Segurança infantil e familiar</p>
             </div>
 
             <div className="text-center mb-2.5">
-              <h2 className="text-[11.9px] text-white font-bold">Quem você quer proteger hoje?</h2>
+              <h2 className="text-[18px] text-white font-bold">Quem você quer proteger hoje?</h2>
             </div>
 
             <div className="space-y-1.5 flex-1 overflow-y-auto pb-3.5 scrollbar-hide">
@@ -321,7 +325,7 @@ export default function App() {
               >
                 <div className="absolute top-1.5 right-2.5 bg-white/15 backdrop-blur-md px-1.5 py-0.5 rounded-full flex items-center gap-1 border border-white/10">
                   <Shield className="w-1.5 h-1.5 text-white" />
-                  <span className="text-[5px] text-white font-bold uppercase tracking-wider">Prioridade</span>
+                  <span className="text-[10px] text-white font-bold uppercase tracking-wider">Prioridade</span>
                 </div>
                 
                 <div className="flex flex-col items-center text-center gap-1.25">
@@ -334,12 +338,12 @@ export default function App() {
                     />
                   </div>
                   <div className="space-y-0.5">
-                    <h3 className="text-[15.3px] text-white font-black tracking-tight uppercase">CRIANÇAS</h3>
-                    <p className="text-white/80 text-[6.5px] font-medium leading-tight max-w-[130px] mx-auto">
+                    <h3 className="text-[22px] text-white font-black tracking-tight uppercase">CRIANÇAS</h3>
+                    <p className="text-white/80 text-[12px] font-medium leading-tight max-w-[130px] mx-auto">
                       Localização rápida com pulseira QR Code
                     </p>
                   </div>
-                  <button className="mt-1 bg-white text-[#187A44] hover:bg-white/90 px-3.5 py-1 rounded-full font-extrabold text-[7.2px] flex items-center gap-1.5 shadow-[0_3.4px_10.2px_rgba(0,0,0,0.15)] transition-all w-[85%] mx-auto justify-center">
+                  <button className="mt-1 bg-white text-[#187A44] hover:bg-white/90 px-3 py-0.5 rounded-full font-extrabold text-[13px] flex items-center gap-1.5 shadow-[0_3.4px_10.2px_rgba(0,0,0,0.15)] transition-all w-[85%] mx-auto justify-center">
                     Acessar Crianças <ChevronLeft className="w-2 h-2 rotate-180" />
                   </button>
                 </div>
@@ -363,12 +367,12 @@ export default function App() {
                     />
                   </div>
                   <div className="space-y-0.5">
-                    <h3 className="text-[15.3px] text-brand-dark font-black tracking-tight uppercase">PETS</h3>
-                    <p className="text-brand-dark/70 text-[6.5px] font-medium leading-tight max-w-[130px] mx-auto">
+                    <h3 className="text-[17.3px] text-brand-dark font-black tracking-tight uppercase">PETS</h3>
+                    <p className="text-brand-dark/70 text-[12px] font-medium leading-tight max-w-[130px] mx-auto">
                       Encontre seu pet com identificação segura
                     </p>
                   </div>
-                  <button className="mt-1 bg-brand-dark text-white hover:bg-brand-dark/90 px-3.5 py-1 rounded-full font-extrabold text-[7.2px] flex items-center gap-1.5 shadow-[0_3.4px_10.2px_rgba(0,0,0,0.15)] transition-all w-[85%] mx-auto justify-center">
+                  <button className="mt-1 bg-brand-dark text-white hover:bg-brand-dark/90 px-3 py-0.5 rounded-full font-extrabold text-[13px] flex items-center gap-1.5 shadow-[0_3.4px_10.2px_rgba(0,0,0,0.15)] transition-all w-[85%] mx-auto justify-center">
                     Acessar Pets
                   </button>
                 </div>
@@ -376,12 +380,12 @@ export default function App() {
             </div>
 
             <div className="mt-auto pt-1.5 text-center space-y-2.5">
-              <p className="text-white/50 text-[6.5px] font-bold">Cada segundo importa. Comece agora.</p>
+              <p className="text-white/50 text-[12px] font-bold">Cada segundo importa. Comece agora.</p>
               
               <div className="space-y-1.5">
                 <div className="flex items-center justify-center gap-1.5">
                   <div className="h-[1px] flex-1 bg-white/5" />
-                  <p className="text-white/30 text-[5px] uppercase font-bold tracking-[0.4em]">Parceria</p>
+                  <p className="text-white/30 text-[10px] uppercase font-bold tracking-[0.4em]">Parceria</p>
                   <div className="h-[1px] flex-1 bg-white/5" />
                 </div>
                 
@@ -390,7 +394,7 @@ export default function App() {
                     <Building2 className="w-full h-full text-brand-primary" />
                   </div>
                   <div className="text-left">
-                    <p className="text-white font-black text-[6.5px] leading-tight">Prefeitura de Mendes/RJ</p>
+                    <p className="text-white font-black text-[12px] leading-tight">Prefeitura de Mendes/RJ</p>
                   </div>
                 </div>
               </div>
@@ -432,18 +436,18 @@ export default function App() {
                 />
               </div>
               <div className="text-center space-y-0.5">
-                <h1 className="text-[20.4px] sm:text-[25.5px] text-white font-black tracking-tighter">
+                <h1 className="text-[28px] sm:text-[34px] text-white font-black tracking-tighter">
                   ACHEI <span className="text-brand-secondary">VOCÊ</span>
                 </h1>
-                <p className="text-blue-100 text-[7.2px] font-bold tracking-[0.2em] uppercase opacity-80">Segurança Infantil</p>
+                <p className="text-blue-100 text-[12px] font-bold tracking-[0.2em] uppercase opacity-80">Segurança Infantil</p>
               </div>
-              <div className="bg-brand-icon-green text-white px-3.5 py-1 rounded-full text-[6.5px] sm:text-[8.7px] font-black flex items-center gap-1.5 mt-1 shadow-[0_0_17px_rgba(24,165,88,0.4)] border border-white/20 animate-pulse-subtle text-center">
+              <div className="bg-brand-icon-green text-white px-3.5 py-1 rounded-full text-[14px] sm:text-[16px] font-black flex items-center gap-1.5 mt-1 shadow-[0_0_17px_rgba(24,165,88,0.4)] border border-white/20 animate-pulse-subtle text-center">
                 <CheckCircle2 className="w-2.5 h-2.5 shrink-0" /> Localização Rápida de Crianças
               </div>
 
               <div className="w-full space-y-1.5 mt-3.5">
                 <button 
-                  className="btn-mobile btn-emergency py-2.5 text-[10.2px] sm:text-[11.9px] animate-emergency"
+                  className="btn-mobile btn-emergency py-1.5 text-[15px] sm:text-[17px] animate-emergency"
                   onClick={() => { setRole('citizen'); setView('citizen_scan'); }}
                 >
                   <Search className="w-3 h-3" />
@@ -452,21 +456,21 @@ export default function App() {
 
                 <div className="grid grid-cols-1 gap-1.5 w-full">
                   <button 
-                    className="btn-mobile btn-primary-mobile py-2 text-[8.7px]"
+                    className="btn-mobile btn-primary-mobile py-1.5 text-[15px]"
                     onClick={() => { setRegRole('responsible'); setView('login'); }}
                   >
                     <UserIcon className="w-3 h-3" />
                     Sou Responsável
                   </button>
                   <button 
-                    className="btn-mobile btn-success-mobile py-2 text-[8.7px]"
+                    className="btn-mobile btn-success-mobile py-1.5 text-[15px]"
                     onClick={() => { setRegRole('authority'); setRegSubRole('guard'); setView('login'); }}
                   >
                     <Shield className="w-3 h-3" />
                     Prefeitura / Guarda
                   </button>
                   <button 
-                    className="btn-mobile btn-secondary-mobile py-2 text-[8.7px]"
+                    className="btn-mobile btn-secondary-mobile py-1.5 text-[15px]"
                     onClick={() => { setRegRole('authority'); setRegSubRole('authority'); setView('login'); }}
                   >
                     <Siren className="w-3 h-3" />
@@ -478,15 +482,15 @@ export default function App() {
 
             <div className="mt-auto text-center space-y-2.5 pt-1.5 shrink-0">
               <div className="space-y-1.25">
-                <p className="text-white/40 text-[5px] uppercase font-bold tracking-[0.3em]">Patrocinadores</p>
+                <p className="text-white/40 text-[10px] uppercase font-bold tracking-[0.3em]">Patrocinadores</p>
                 <div className="flex flex-wrap justify-center gap-1.5">
                   <div className="bg-white/5 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex items-center gap-2.5 min-w-[115px] shadow-xl">
                     <div className="w-5 h-5 bg-white rounded-lg flex items-center justify-center p-1 shrink-0">
                       <Building2 className="w-full h-full text-brand-primary" />
                     </div>
                     <div className="text-left">
-                      <p className="text-[5px] text-white/40 font-bold uppercase leading-none mb-1">Apoio</p>
-                      <p className="text-white font-black text-[6.5px] leading-none">Prefeitura de Mendes/RJ</p>
+                      <p className="text-[10px] text-white/40 font-bold uppercase leading-none mb-1">Apoio</p>
+                      <p className="text-white font-black text-[12px] leading-none">Prefeitura de Mendes/RJ</p>
                     </div>
                   </div>
                 </div>
@@ -494,7 +498,7 @@ export default function App() {
               
               <div className="flex justify-center gap-1 text-brand-secondary">
                 {[1,2,3,4,5].map(i => <Heart key={i} className="w-1.25 h-1.25 fill-current" />)}
-                <span className="text-white text-[5.8px] font-bold ml-1">4.9</span>
+                <span className="text-white text-[11px] font-bold ml-1">4.9</span>
               </div>
             </div>
           </motion.div>
@@ -512,7 +516,7 @@ export default function App() {
               <button onClick={() => setView('splash')} className="w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <h2 className="text-[13.6px] sm:text-[15.3px] font-bold leading-tight">
+              <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">
                 {regRole === 'responsible' ? 'Cadastro Responsável' : 
                  regSubRole === 'guard' ? 'Cadastro Prefeitura / Guarda' : 'Cadastro Autoridades'}
               </h2>
@@ -520,7 +524,7 @@ export default function App() {
 
             <div className="flex-1 space-y-2.5 overflow-y-auto pb-3.5 scrollbar-hide">
               <div className="space-y-1">
-                <label className="text-[6.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
+                <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Nome Completo' : 
                    regSubRole === 'guard' ? 'Nome da Instituição' : 'Instituição'}
                 </label>
@@ -529,24 +533,24 @@ export default function App() {
                   value={regForm.name}
                   onChange={(e) => setRegForm({...regForm, name: e.target.value})}
                   placeholder={regRole === 'responsible' ? "Digite seu nome" : "Ex: Guarda Municipal / Polícia"}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                 />
               </div>
 
               {regRole === 'responsible' ? (
                 <div className="space-y-1">
-                  <label className="text-[6.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">CPF</label>
+                  <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">CPF</label>
                   <input 
                     type="text" 
                     value={regForm.cpf}
                     onChange={(e) => setRegForm({...regForm, cpf: e.target.value})}
                     placeholder="000.000.000-00"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                   />
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <label className="text-[6.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
+                  <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                     {regSubRole === 'guard' ? 'CNPJ' : 'Departamento'}
                   </label>
                   <input 
@@ -554,13 +558,13 @@ export default function App() {
                     value={regForm.registrationId}
                     onChange={(e) => setRegForm({...regForm, registrationId: e.target.value})}
                     placeholder={regSubRole === 'guard' ? "00.000.000/0000-00" : "Ex: Divisão de Busca"}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                   />
                 </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-[6.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
+                <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Celular' : 'Nome do Responsável / Agente'}
                 </label>
                 <input 
@@ -568,49 +572,49 @@ export default function App() {
                   value={regForm.phone}
                   onChange={(e) => setRegForm({...regForm, phone: e.target.value})}
                   placeholder={regRole === 'responsible' ? "(00) 00000-0000" : "Digite o nome completo"}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                 />
               </div>
 
               {regRole !== 'responsible' && (
                 <div className="space-y-1">
-                  <label className="text-[6.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">Matrícula / ID Funcional</label>
+                  <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">Matrícula / ID Funcional</label>
                   <input 
                     type="text" 
                     value={regForm.registrationId}
                     onChange={(e) => setRegForm({...regForm, registrationId: e.target.value})}
                     placeholder="Digite seu ID"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                   />
                 </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-[6.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
+                <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                 <input 
                   type="email" 
                   value={regForm.email}
                   onChange={(e) => setRegForm({...regForm, email: e.target.value})}
                   placeholder="seu@email.com"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[6.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">Senha</label>
+                <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">Senha</label>
                 <input 
                   type="password" 
                   value={regForm.password}
                   onChange={(e) => setRegForm({...regForm, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                 />
               </div>
 
               <div className="pt-2.5 space-y-1.5">
                 <button 
                   className={cn(
-                    "btn-mobile shadow-xl py-2.5 text-[10.2px]",
+                    "btn-mobile shadow-xl py-2 text-[12.2px]",
                     regRole === 'responsible' ? "btn-primary-mobile" : 
                     regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
                   )}
@@ -653,7 +657,7 @@ export default function App() {
                   Concluir Cadastro
                 </button>
                 <button 
-                  className="w-[85%] mx-auto py-1.5 text-[11.9px] font-bold text-white/60 hover:text-white transition-colors"
+                  className="w-[85%] mx-auto py-1.5 text-[13.9px] font-bold text-white/60 hover:text-white transition-colors"
                   onClick={() => setView('login')}
                 >
                   Já tem uma conta? <span className="text-brand-secondary">Entrar</span>
@@ -675,7 +679,7 @@ export default function App() {
               <button onClick={() => setView('splash')} className="w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <h2 className="text-[13.6px] sm:text-[15.3px] font-bold leading-tight">
+              <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">
                 {regRole === 'responsible' ? 'Login Responsável' : 
                  regSubRole === 'guard' ? 'Login Prefeitura / Guarda' : 'Login Autoridades'}
               </h2>
@@ -683,34 +687,34 @@ export default function App() {
 
             <div className="flex-1 space-y-2.5 overflow-y-auto scrollbar-hide">
               <div className="space-y-1">
-                <label className="text-[6.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
+                <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                 <input 
                   type="email" 
                   value={loginForm.email}
                   onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
                   placeholder="seu@email.com"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                 />
               </div>
 
               <div className="space-y-1">
                 <div className="flex justify-between items-center px-1">
-                  <label className="text-[6.5px] font-bold uppercase opacity-60 tracking-widest">Senha</label>
-                  <button className="text-[6.5px] font-bold text-brand-secondary uppercase tracking-wider">Esqueceu?</button>
+                  <label className="text-[8.5px] font-bold uppercase opacity-60 tracking-widest">Senha</label>
+                  <button className="text-[8.5px] font-bold text-brand-secondary uppercase tracking-wider">Esqueceu?</button>
                 </div>
                 <input 
                   type="password" 
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[8.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                 />
               </div>
 
               <div className="pt-3.5 space-y-2.5">
                 <button 
                   className={cn(
-                    "btn-mobile shadow-xl py-2.5 text-[10.2px]",
+                    "btn-mobile shadow-xl py-2 text-[12.2px]",
                     regRole === 'responsible' ? "btn-primary-mobile" : 
                     regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
                   )}
@@ -748,7 +752,7 @@ export default function App() {
                   Entrar no Painel
                 </button>
                 <button 
-                  className="w-[85%] mx-auto py-1.5 text-[11.9px] font-bold text-white/60 hover:text-white transition-colors"
+                  className="w-[85%] mx-auto py-1.5 text-[13.9px] font-bold text-white/60 hover:text-white transition-colors"
                   onClick={() => setView('register')}
                 >
                   Não tem conta? <span className="text-brand-secondary">Cadastre-se</span>
@@ -775,7 +779,7 @@ export default function App() {
                   referrerPolicy="no-referrer"
                 />
               </button>
-              <h2 className="text-[10.2px] sm:text-[11.9px] font-bold">Dashboard</h2>
+              <h2 className="text-[16px] sm:text-[18px] font-bold">Dashboard</h2>
               <div className="flex items-center gap-1.5 shrink-0">
                 <button className="relative">
                   <Bell className="w-3.5 h-3.5 sm:w-4.25 sm:h-4.25 text-brand-secondary fill-brand-secondary/20" />
@@ -798,14 +802,14 @@ export default function App() {
                   </button>
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-[11.9px] sm:text-[13.6px] text-white truncate font-bold">{userProfile.name}</h3>
-                  <p className="text-white/60 text-[5.8px] sm:text-[6.5px] uppercase tracking-widest">{role === 'responsible' ? 'Responsável' : 'Autoridade'}</p>
+                  <h3 className="text-[18px] sm:text-[20px] text-white truncate font-bold">{userProfile.name}</h3>
+                  <p className="text-white/60 text-[14px] sm:text-[15px] uppercase tracking-widest">{role === 'responsible' ? 'Responsável' : 'Autoridade'}</p>
                 </div>
               </div>
 
               {/* Children List */}
               <div className="space-y-2">
-                <h4 className="text-[5.8px] sm:text-[6.5px] font-bold text-white/40 uppercase tracking-widest ml-1">Minhas Crianças</h4>
+                <h4 className="text-[14px] sm:text-[15px] font-bold text-white/40 uppercase tracking-widest ml-1">Minhas Crianças</h4>
                 <div className="space-y-1.5">
                   {children.filter(child => child.responsibleId === currentUser?.id).map((child) => (
                     <button 
@@ -817,9 +821,9 @@ export default function App() {
                         <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-[8.7px] font-bold truncate">{child.name}</h4>
+                        <h4 className="text-[14px] font-bold truncate">{child.name}</h4>
                         <div className={cn(
-                          "flex items-center gap-1 text-[5.8px] font-bold",
+                          "flex items-center gap-1 text-[10px] font-bold",
                           child.status === 'safe' ? "text-brand-icon-green" : "text-brand-emergency"
                         )}>
                           <div className={cn(
@@ -836,7 +840,7 @@ export default function App() {
                 {children.filter(child => child.responsibleId === currentUser?.id).length === 0 && (
                   <div className="py-5 text-center space-y-1.5 opacity-30">
                     <Plus className="w-6 h-6 mx-auto" />
-                    <p className="text-[7.2px] font-bold">Nenhuma criança cadastrada.</p>
+                    <p className="text-[13px] font-bold">Nenhuma criança cadastrada.</p>
                   </div>
                 )}
               </div>
@@ -856,14 +860,14 @@ export default function App() {
                     alert('Selecione a criança na lista acima para vincular a pulseira.');
                   }
                 }}>
-                  <p className="text-[5.8px] font-bold text-white/60 mb-1">Vincular Pulseira</p>
+                  <p className="text-[14px] font-bold text-white/60 mb-1">Vincular Pulseira</p>
                   <div className="p-1 bg-white/10 rounded-xl">
                     <Camera className="w-4.25 h-4.25 sm:w-6 sm:h-6 text-brand-secondary" />
                   </div>
                 </div>
                 <div className="bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow aspect-square flex flex-col justify-center items-center text-center">
-                  <p className="text-[5.8px] font-bold text-white/60 mb-0.5">Total de Crianças</p>
-                  <div className="text-base sm:text-[17px] font-black text-brand-primary">
+                  <p className="text-[14px] font-bold text-white/60 mb-0.5">Total de Crianças</p>
+                  <div className="text-lg sm:text-[19px] font-black text-brand-primary">
                     {children.filter(child => child.responsibleId === currentUser?.id).length}
                   </div>
                 </div>
@@ -885,24 +889,24 @@ export default function App() {
                 }}
               >
                 <AlertTriangle className="w-4.25 h-4.25 sm:w-6 sm:h-6" />
-                <span className="text-[10.2px] sm:text-[11.9px]">Botão de Emergência</span>
+                <span className="text-[17px] sm:text-[19px]">Botão de Emergência</span>
               </button>
 
               {/* Quick Actions */}
               <div className="grid grid-cols-2 gap-2">
                 <button className="bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow flex items-center gap-1.5 justify-center">
                   <div className="p-1 bg-white/10 rounded-full shrink-0"><History className="w-2.5 h-2.5 text-white/60" /></div>
-                  <span className="text-[7.2px] font-bold truncate">Histórico</span>
+                  <span className="text-[13px] font-bold truncate">Histórico</span>
                 </button>
                 <button className="bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow flex items-center gap-1.5 justify-center" onClick={() => setView('settings')}>
                   <div className="p-1 bg-brand-success/20 rounded-full shrink-0"><Settings className="w-2.5 h-2.5 text-brand-success" /></div>
-                  <span className="text-[7.2px] font-bold truncate">Configurações</span>
+                  <span className="text-[13px] font-bold truncate">Configurações</span>
                 </button>
               </div>
 
               {/* Bottom Sections from Image */}
               <div className="space-y-2 pt-1">
-                <h4 className="text-[5.8px] sm:text-[6.5px] font-bold text-white/40 uppercase tracking-widest ml-1">Para Responsáveis</h4>
+                <h4 className="text-[14px] sm:text-[15px] font-bold text-white/40 uppercase tracking-widest ml-1">Para Responsáveis</h4>
                 <div className="space-y-1.5">
                   <ActionCard 
                     icon={<UserIcon className="text-brand-secondary w-3 h-3" />} 
@@ -955,7 +959,7 @@ export default function App() {
                   referrerPolicy="no-referrer"
                 />
               </button>
-              <h2 className="text-[11.9px] sm:text-[15.3px] font-bold">Painel Autoridade</h2>
+              <h2 className="text-[18px] sm:text-[22px] font-bold">Painel Autoridade</h2>
               <div className="flex items-center gap-2 shrink-0">
                 <button className="relative">
                   <Bell className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-brand-secondary fill-brand-secondary/20" />
@@ -981,8 +985,8 @@ export default function App() {
                     <Shield className={cn("w-4 h-4 sm:w-7 sm:h-7", isAuthorityOnline ? "text-white" : "text-white/40")} />
                   </div>
                   <div className="text-left min-w-0">
-                    <h3 className="text-[11.9px] sm:text-[17.85px] font-bold truncate">Guarda Municipal</h3>
-                    <p className={cn("text-[7.65px] sm:text-[10.2px] truncate", isAuthorityOnline ? "text-blue-200" : "text-white/40")}>
+                    <h3 className="text-[18px] sm:text-[26px] font-bold truncate">Guarda Municipal</h3>
+                    <p className={cn("text-[12px] sm:text-[16px] truncate", isAuthorityOnline ? "text-blue-200" : "text-white/40")}>
                       Unidade Centro • {isAuthorityOnline ? 'Online' : 'Offline'}
                     </p>
                   </div>
@@ -1006,19 +1010,19 @@ export default function App() {
                   <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-red-100/20 text-brand-emergency rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
                     <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <span className="font-bold text-white/80 text-[10.2px] sm:text-[11.9px]">Alertas</span>
+                  <span className="font-bold text-white/80 text-[16px] sm:text-[18px]">Alertas</span>
                 </button>
                 <button className="bg-white/5 p-3.5 sm:p-5 rounded-[20px] sm:rounded-[27px] border border-white/10 card-shadow flex flex-col items-center gap-1.5 sm:gap-2.5 text-center active:bg-white/10 transition-all aspect-square justify-center">
                   <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-blue-100/20 text-brand-primary rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
                     <MapIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <span className="font-bold text-white/80 text-[10.2px] sm:text-[11.9px]">Mapa</span>
+                  <span className="font-bold text-white/80 text-[16px] sm:text-[18px]">Mapa</span>
                 </button>
                 <button className="bg-white/5 p-3.5 sm:p-5 rounded-[20px] sm:rounded-[27px] border border-white/10 card-shadow flex flex-col items-center gap-1.5 sm:gap-2.5 text-center active:bg-white/10 transition-all aspect-square justify-center">
                   <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-orange-100/20 text-brand-secondary rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
                     <UserIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <span className="font-bold text-white/80 text-[10.2px] sm:text-[11.9px]">Atendimentos</span>
+                  <span className="font-bold text-white/80 text-[16px] sm:text-[18px]">Atendimentos</span>
                 </button>
                 <button 
                   onClick={() => setView('authority_reports')}
@@ -1027,14 +1031,14 @@ export default function App() {
                   <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-white/10 text-white/60 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
                     <History className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <span className="font-bold text-white/80 text-[10.2px] sm:text-[11.9px]">Relatórios</span>
+                  <span className="font-bold text-white/80 text-[16px] sm:text-[18px]">Relatórios</span>
                 </button>
               </div>
 
               <div className="space-y-3.5">
                 <div className="flex justify-between items-center px-1">
-                  <h4 className="text-[8.5px] sm:text-[10.2px] font-bold text-white/40 uppercase tracking-widest">Ocorrências Ativas</h4>
-                  <span className="px-1.5 py-0.5 bg-brand-emergency/20 text-brand-emergency text-[8.5px] font-black rounded-full">
+                  <h4 className="text-[13px] sm:text-[16px] font-bold text-white/40 uppercase tracking-widest">Ocorrências Ativas</h4>
+                  <span className="px-1.5 py-0.5 bg-brand-emergency/20 text-brand-emergency text-[13px] font-black rounded-full">
                     {children.filter(c => c.status === 'missing').length} ATIVAS
                   </span>
                 </div>
@@ -1049,8 +1053,8 @@ export default function App() {
                         <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-white text-[11.9px] sm:text-[13.6px] truncate">{child.name}, {child.age} anos</p>
-                        <p className="text-[8.5px] sm:text-[10.2px] text-white/40">Desaparecido há 15 min</p>
+                        <p className="font-bold text-white text-[18px] sm:text-[20px] truncate">{child.name}, {child.age} anos</p>
+                        <p className="text-[13px] sm:text-[16px] text-white/40">Desaparecido há 15 min</p>
                       </div>
                       <div className="p-1.5 bg-brand-primary text-white rounded-lg shrink-0"><Navigation className="w-3.5 h-3.5" /></div>
                     </button>
@@ -1058,7 +1062,7 @@ export default function App() {
                   {children.filter(c => c.status === 'missing').length === 0 && (
                     <div className="py-7 text-center space-y-1.5 opacity-40">
                       <CheckCircle2 className="w-10 h-10 mx-auto" />
-                      <p className="text-[11.9px] font-bold">Nenhuma ocorrência ativa no momento.</p>
+                      <p className="text-[19px] font-bold">Nenhuma ocorrência ativa no momento.</p>
                     </div>
                   )}
                 </div>
@@ -1079,7 +1083,7 @@ export default function App() {
               <button onClick={() => setView('authority_dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10 shrink-0">
                 <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
-              <h2 className="text-[13.6px] sm:text-[15.3px] font-bold leading-tight">Relatórios e Comunicados</h2>
+              <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">Relatórios e Comunicados</h2>
             </div>
 
             <div className="flex-1 flex flex-col gap-1.5 sm:gap-2.5 overflow-y-auto scrollbar-hide">
@@ -1087,28 +1091,28 @@ export default function App() {
                 <div className="flex items-center gap-1.5 border-b border-white/10 pb-1.5 sm:pb-2.5 shrink-0">
                   <div className="p-1.5 bg-brand-secondary/20 rounded-lg"><History className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-secondary" /></div>
                   <div>
-                    <h4 className="font-bold text-[9.35px] sm:text-[10.2px]">Bloco de Notas Compartilhado</h4>
-                    <p className="text-[6.8px] sm:text-[7.65px] opacity-40 uppercase tracking-widest">Atualizado em tempo real</p>
+                    <h4 className="font-bold text-[16px] sm:text-[17px]">Bloco de Notas Compartilhado</h4>
+                    <p className="text-[12px] sm:text-[13px] opacity-40 uppercase tracking-widest">Atualizado em tempo real</p>
                   </div>
                 </div>
                 <textarea 
                   value={authorityNotes}
                   onChange={(e) => setAuthorityNotes(e.target.value)}
                   placeholder="Digite aqui comunicados importantes para outros agentes..."
-                  className="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder:text-white/20 resize-none text-[9.35px] sm:text-[10.2px] leading-relaxed"
+                  className="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder:text-white/20 resize-none text-[16px] sm:text-[17px] leading-relaxed"
                 />
               </div>
               
               <div className="bg-brand-primary/10 p-2 sm:p-2.5 rounded-lg sm:rounded-xl border border-brand-primary/20 flex items-start gap-1.5 sm:gap-2 shrink-0">
                 <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-primary shrink-0 mt-0.5" />
-                <p className="text-[6.8px] sm:text-[7.65px] text-blue-100 leading-relaxed">
+                <p className="text-[12px] sm:text-[13px] text-blue-100 leading-relaxed">
                   Este bloco de notas é visível para todos os agentes da Unidade Centro. Use para informações táticas e avisos rápidos.
                 </p>
               </div>
 
               <button 
                 onClick={() => setView('authority_dashboard')}
-                className="btn-mobile btn-primary-mobile py-2 sm:py-2.5 shadow-xl shrink-0 text-[10.2px] sm:text-[11.9px]"
+                className="btn-mobile btn-primary-mobile py-1.5 sm:py-2 shadow-xl shrink-0 text-[17px] sm:text-[19px]"
               >
                 Salvar e Voltar
               </button>
@@ -1128,7 +1132,7 @@ export default function App() {
               <button onClick={() => setView('authority_dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10 shrink-0">
                 <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
-              <h2 className="text-[13.6px] sm:text-[15.3px] font-bold leading-tight">Alertas de Emergência</h2>
+              <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">Alertas de Emergência</h2>
             </div>
 
             <div className="flex-1 space-y-1.5 sm:space-y-2.5 overflow-y-auto pb-5 scrollbar-hide">
@@ -1139,8 +1143,8 @@ export default function App() {
                       <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="text-[10.2px] sm:text-[13.6px] font-black uppercase tracking-tighter truncate">ALERTA ATIVO</h4>
-                      <p className="text-[6.8px] sm:text-[7.65px] opacity-60">Acionado há 15 min</p>
+                      <h4 className="text-[15px] sm:text-[17px] font-black uppercase tracking-tighter truncate">ALERTA ATIVO</h4>
+                      <p className="text-[12px] sm:text-[13px] opacity-60">Acionado há 15 min</p>
                     </div>
                   </div>
 
@@ -1149,19 +1153,19 @@ export default function App() {
                       <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>
                     <div className="min-w-0">
-                      <h5 className="font-bold text-[9.35px] sm:text-[10.2px] truncate">{child.name}</h5>
-                      <p className="text-[6.8px] sm:text-[7.65px] opacity-60 truncate">{child.age} anos • {child.description?.substring(0, 30)}...</p>
+                      <h5 className="font-bold text-[15px] sm:text-[17px] font-bold truncate">{child.name}</h5>
+                      <p className="text-[12px] sm:text-[13px] opacity-60 truncate">{child.age} anos • {child.description?.substring(0, 30)}...</p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-1.5">
                     <button 
                       onClick={() => { setSelectedChildId(child.id); setView('occurrence_details'); }}
-                      className="py-1.7 sm:py-2.1 bg-white/10 rounded-lg sm:rounded-xl text-[6.8px] sm:text-[7.65px] font-black uppercase tracking-widest border border-white/10 active:bg-white/20 transition-colors"
+                      className="py-1.2 sm:py-1.6 bg-white/10 rounded-lg sm:rounded-xl text-[12px] sm:text-[13px] font-black uppercase tracking-widest border border-white/10 active:bg-white/20 transition-colors"
                     >
                       Ver Detalhes
                     </button>
-                    <button className="py-1.7 sm:py-2.1 bg-brand-primary rounded-lg sm:rounded-xl text-[6.8px] sm:text-[7.65px] font-black uppercase tracking-widest active:bg-brand-primary/80 transition-colors">
+                    <button className="py-1.2 sm:py-1.6 bg-brand-primary rounded-lg sm:rounded-xl text-[12px] sm:text-[13px] font-black uppercase tracking-widest active:bg-brand-primary/80 transition-colors">
                       Traçar Rota
                     </button>
                   </div>
@@ -1170,7 +1174,7 @@ export default function App() {
               {children.filter(c => c.status === 'missing').length === 0 && (
                 <div className="flex-1 flex flex-col items-center justify-center text-center py-10 sm:py-13.5 opacity-30">
                   <Shield className="w-8.5 h-8.5 sm:w-13.5 sm:h-13.5 mb-1.5 sm:mb-2.5" />
-                  <p className="text-[10.2px] sm:text-[13.6px] font-bold">Nenhum alerta de emergência ativo.</p>
+                  <p className="text-[17px] sm:text-[22px] font-bold">Nenhum alerta de emergência ativo.</p>
                 </div>
               )}
             </div>
@@ -1189,7 +1193,7 @@ export default function App() {
               <button onClick={() => setView('authority_dashboard')} className="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <h2 className="text-[13.6px] sm:text-[15.3px] font-bold leading-tight">Detalhes da Ocorrência</h2>
+              <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">Detalhes da Ocorrência</h2>
             </div>
 
             {(() => {
@@ -1204,45 +1208,45 @@ export default function App() {
                     </div>
                     
                     <div className="text-center space-y-0.5">
-                      <h3 className="text-[15.3px] sm:text-[17px] font-black truncate">{child.name}</h3>
-                      <p className="text-brand-emergency font-bold uppercase tracking-[0.2em] text-[6.8px] sm:text-[8.5px]">Desaparecido</p>
+                      <h3 className="text-[17.3px] sm:text-[19px] font-black truncate">{child.name}</h3>
+                      <p className="text-brand-emergency font-bold uppercase tracking-[0.2em] text-[12px] sm:text-[15px]">Desaparecido</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-1.5">
                       <div className="bg-white/5 p-1.5 rounded-xl border border-white/10 text-center">
-                        <p className="text-[6.8px] font-bold opacity-40 uppercase tracking-widest">Idade</p>
-                        <p className="text-[10.2px] sm:text-[11.9px] font-bold">{child.age} anos</p>
+                        <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Idade</p>
+                        <p className="text-[17px] sm:text-[19px] font-bold">{child.age} anos</p>
                       </div>
                       <div className="bg-white/5 p-1.5 rounded-xl border border-white/10 text-center">
-                        <p className="text-[6.8px] font-bold opacity-40 uppercase tracking-widest">Sexo</p>
-                        <p className="text-[10.2px] sm:text-[11.9px] font-bold truncate">{child.gender === 'M' ? 'Masculino' : child.gender === 'F' ? 'Feminino' : child.gender || 'N/A'}</p>
+                        <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Sexo</p>
+                        <p className="text-[17px] sm:text-[19px] font-bold truncate">{child.gender === 'M' ? 'Masculino' : child.gender === 'F' ? 'Feminino' : child.gender || 'N/A'}</p>
                       </div>
                     </div>
 
                     {/* Medical Info */}
                     {(child.allergies || child.medications || child.disability) && (
                       <div className="bg-brand-emergency/10 p-2.5 rounded-xl border border-brand-emergency/20 space-y-1.5">
-                        <p className="text-[7.65px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-1.5">
+                        <p className="text-[13px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-1.5">
                           <AlertTriangle className="w-2.5 h-2.5" />
                           Informações Médicas Críticas
                         </p>
                         <div className="space-y-1.5">
                           {child.allergies && (
                             <div>
-                              <p className="text-[6.8px] font-bold opacity-60 uppercase">Alergias</p>
-                              <p className="text-[8.5px] sm:text-[10.2px] font-bold">{child.allergies}</p>
+                              <p className="text-[12px] font-bold opacity-60 uppercase">Alergias</p>
+                              <p className="text-[15px] sm:text-[17px] font-bold">{child.allergies}</p>
                             </div>
                           )}
                           {child.medications && (
                             <div>
-                              <p className="text-[6.8px] font-bold opacity-60 uppercase">Medicamentos</p>
-                              <p className="text-[8.5px] sm:text-[10.2px] font-bold">{child.medications}</p>
+                              <p className="text-[12px] font-bold opacity-60 uppercase">Medicamentos</p>
+                              <p className="text-[15px] sm:text-[17px] font-bold">{child.medications}</p>
                             </div>
                           )}
                           {child.disability && (
                             <div>
-                              <p className="text-[6.8px] font-bold opacity-60 uppercase">Deficiência / Condição</p>
-                              <p className="text-[8.5px] sm:text-[10.2px] font-bold">{child.disability}</p>
+                              <p className="text-[10px] font-bold opacity-60 uppercase">Deficiência / Condição</p>
+                              <p className="text-[15px] sm:text-[17px] font-bold">{child.disability}</p>
                             </div>
                           )}
                         </div>
@@ -1250,14 +1254,14 @@ export default function App() {
                     )}
 
                     <div className="bg-white/5 p-2.5 rounded-xl border border-white/10 space-y-1">
-                      <p className="text-[6.8px] font-bold opacity-40 uppercase tracking-widest">Características</p>
-                      <p className="text-[8.5px] sm:text-[10.2px] leading-relaxed">{child.description || 'Nenhuma descrição fornecida.'}</p>
+                      <p className="text-[12px] font-bold opacity-40 uppercase tracking-widest">Características</p>
+                      <p className="text-[15px] sm:text-[17px] leading-relaxed">{child.description || 'Nenhuma descrição fornecida.'}</p>
                     </div>
 
                     <div className="bg-brand-primary/10 p-2.5 rounded-xl border border-brand-primary/20 space-y-1.5">
-                      <p className="text-[6.8px] font-bold text-brand-primary uppercase tracking-widest">Responsável</p>
+                      <p className="text-[12px] font-bold text-brand-primary uppercase tracking-widest">Responsável</p>
                       <div className="flex justify-between items-center gap-1.5">
-                        <p className="font-bold text-[8.5px] sm:text-[10.2px] truncate">{child.responsibleName}</p>
+                        <p className="font-bold text-[15px] sm:text-[17px] truncate">{child.responsibleName}</p>
                         <button 
                           onClick={() => {
                             if (child.responsiblePhone) {
@@ -1277,10 +1281,10 @@ export default function App() {
                   <div className="space-y-1.5 pt-1">
                     <button 
                       onClick={() => {
-                        setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: 'safe' } : c));
-                        setView('authority_dashboard');
+                        setSelectedChildId(child.id);
+                        setView('log_found_location');
                       }}
-                      className="btn-mobile btn-success-mobile py-2.5 font-black uppercase tracking-widest text-[8.5px] sm:text-[10.2px]"
+                      className="btn-mobile btn-success-mobile py-1.5 font-black uppercase tracking-widest text-[15px] sm:text-[17px]"
                     >
                       Marcar como Encontrado
                     </button>
@@ -1295,7 +1299,7 @@ export default function App() {
                         }, 1500);
                       }}
                       className={cn(
-                        "btn-mobile py-2.5 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 shadow-xl transition-all text-[8.5px] sm:text-[10.2px]",
+                        "btn-mobile py-1.5 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 shadow-xl transition-all text-[15px] sm:text-[17px]",
                         isSharing ? "bg-white/20 text-white/40 cursor-wait" : "bg-white/10 text-white border border-white/20 active:bg-white/20"
                       )}
                     >
@@ -1303,9 +1307,110 @@ export default function App() {
                     </button>
                     <button 
                       onClick={() => setView('authority_dashboard')}
-                      className="btn-mobile btn-secondary-mobile py-2.5 font-black uppercase tracking-widest opacity-60 mt-1.5 text-[8.5px] sm:text-[10.2px]"
+                      className="btn-mobile btn-secondary-mobile py-1.5 font-black uppercase tracking-widest opacity-60 mt-1.5 text-[15px] sm:text-[17px]"
                     >
                       Voltar
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+          </motion.div>
+        )}
+
+        {view === 'log_found_location' && selectedChildId && (
+          <motion.div 
+            key="log-found"
+            initial={{ y: 300, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 300, opacity: 0 }}
+            className="fixed inset-0 z-50 flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-8 overflow-x-hidden"
+          >
+            <div className="flex items-center gap-2.5 mb-3.5 shrink-0">
+              <button onClick={() => setView('occurrence_details')} className="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <h2 className="text-[15.6px] sm:text-[17.3px] font-bold leading-tight">Registrar Localização</h2>
+            </div>
+
+            {(() => {
+              const child = children.find(c => c.id === selectedChildId);
+              if (!child) return null;
+
+              return (
+                <div className="flex-1 space-y-4 overflow-y-auto pb-5 scrollbar-hide">
+                  <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20">
+                        <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-[17px]">{child.name}</h3>
+                        <p className="text-[13px] opacity-60 uppercase tracking-widest">Registrar Encontro</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <label className="text-[12px] font-bold opacity-60 uppercase tracking-widest ml-1">Localização (Endereço/Ponto de Referência)</label>
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary" />
+                          <input 
+                            type="text"
+                            value={foundLocationForm.address}
+                            onChange={(e) => setFoundLocationForm(prev => ({ ...prev, address: e.target.value }))}
+                            placeholder="Ex: Praça Central, Próximo ao Coreto"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-[15px] focus:border-brand-primary outline-none transition-colors"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-[12px] font-bold opacity-60 uppercase tracking-widest ml-1">Observações Adicionais</label>
+                        <textarea 
+                          value={foundLocationForm.notes}
+                          onChange={(e) => setFoundLocationForm(prev => ({ ...prev, notes: e.target.value }))}
+                          placeholder="Ex: A criança estava bem, acompanhada por um cidadão..."
+                          rows={4}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-[15px] focus:border-brand-primary outline-none transition-colors resize-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <button 
+                      onClick={() => {
+                        if (!foundLocationForm.address) {
+                          alert('Por favor, informe a localização onde a criança foi encontrada.');
+                          return;
+                        }
+                        
+                        setChildren(prev => prev.map(c => c.id === child.id ? { 
+                          ...c, 
+                          status: 'safe',
+                          foundLocation: {
+                            lat: -22.5312, // Mock lat
+                            lng: -43.7289, // Mock lng
+                            address: foundLocationForm.address
+                          },
+                          foundTime: new Date(),
+                          description: c.description + (foundLocationForm.notes ? `\n\nObs Encontro: ${foundLocationForm.notes}` : '')
+                        } : c));
+                        
+                        alert(`SUCESSO!\n\nO encontro de ${child.name} foi registrado. O responsável será notificado imediatamente.`);
+                        setFoundLocationForm({ address: '', notes: '' });
+                        setView('authority_dashboard');
+                      }}
+                      className="btn-mobile btn-primary-mobile py-3 font-black uppercase tracking-widest text-[17px]"
+                    >
+                      Confirmar e Finalizar
+                    </button>
+                    <button 
+                      onClick={() => setView('occurrence_details')}
+                      className="btn-mobile bg-white/5 border border-white/10 py-3 font-black uppercase tracking-widest text-[17px]"
+                    >
+                      Cancelar
                     </button>
                   </div>
                 </div>
@@ -1327,8 +1432,8 @@ export default function App() {
                 <Search className="w-5 h-5 sm:w-7 sm:h-7 text-brand-emergency" />
               </div>
               <div className="space-y-1">
-                <h2 className="text-[17px] sm:text-[20.4px] font-bold">Escanear Pulseira</h2>
-                <p className="text-white/60 text-[10.2px] sm:text-[11.9px]">Aproxime a câmera do QR Code na pulseira da criança encontrada.</p>
+                <h2 className="text-[19px] sm:text-[22.4px] font-bold">Escanear Pulseira</h2>
+                <p className="text-white/60 text-[15px] sm:text-[17px]">Aproxime a câmera do QR Code na pulseira da criança encontrada.</p>
               </div>
               
               <div className="relative aspect-square w-full max-w-[170px] sm:max-w-[204px] mx-auto bg-black/40 rounded-[20px] sm:rounded-[27px] border-2 border-white/10 overflow-hidden flex items-center justify-center shrink-0">
@@ -1337,7 +1442,7 @@ export default function App() {
                     {!isScanning ? (
                       <div className="flex flex-col items-center gap-2.5 text-center p-3.5">
                         <Camera className="w-8.5 h-8.5 sm:w-10 sm:h-10 text-brand-secondary opacity-40" />
-                        <p className="text-[6.8px] sm:text-[8.5px] font-bold opacity-60 uppercase tracking-widest">Câmera Pronta</p>
+                        <p className="text-[11px] sm:text-[13px] font-bold opacity-60 uppercase tracking-widest">Câmera Pronta</p>
                       </div>
                     ) : (
                       <div id="qr-reader" className="w-full h-full" />
@@ -1352,7 +1457,7 @@ export default function App() {
                     <div className="w-10 h-10 sm:w-13.5 sm:h-17 bg-brand-icon-green rounded-full flex items-center justify-center shadow-2xl">
                       <CheckCircle2 className="w-5 h-5 sm:w-7 sm:h-8.5 text-white" />
                     </div>
-                    <p className="font-bold text-brand-icon-green uppercase tracking-widest text-[8.5px] sm:text-[10.2px]">Identificado!</p>
+                    <p className="font-bold text-brand-icon-green uppercase tracking-widest text-[11px] sm:text-[13px]">Identificado!</p>
                   </motion.div>
                 )}
               </div>
@@ -1360,7 +1465,7 @@ export default function App() {
               <div className="mt-3.5 space-y-1.5 shrink-0">
                 {!scanSuccess ? (
                   <button 
-                    className="btn-mobile btn-emergency-mobile py-2.5 text-[10.2px] sm:text-[11.9px]" 
+                    className="btn-mobile btn-emergency-mobile py-2 text-[13px] sm:text-[15px]" 
                     onClick={() => setIsScanning(true)}
                     disabled={isScanning}
                   >
@@ -1370,7 +1475,7 @@ export default function App() {
                 ) : (
                   <div className="flex items-center justify-center gap-1.5 text-brand-secondary animate-pulse">
                     <MapPin className="w-3.5 h-3.5" />
-                    <p className="text-[8.5px] sm:text-[10.2px] font-bold uppercase tracking-widest">Obtendo Localização...</p>
+                    <p className="text-[11px] sm:text-[13px] font-bold uppercase tracking-widest">Obtendo Localização...</p>
                   </div>
                 )}
               </div>
@@ -1388,7 +1493,7 @@ export default function App() {
             <div className="p-2.5 pt-5 sm:p-3.5 sm:pt-7 flex items-center justify-between bg-transparent border-b border-white/10 shrink-0">
               <div className="flex items-center gap-2.5">
                 <button onClick={() => setView('splash')} className="shrink-0"><ChevronLeft className="w-4 h-4" /></button>
-                <h2 className="text-[13.6px] sm:text-[15.3px] font-bold leading-tight">Localização</h2>
+                <h2 className="text-[18px] sm:text-[20px] font-bold leading-tight">Localização</h2>
               </div>
               <div className="flex items-center gap-1.5">
                 <button className="relative shrink-0">
@@ -1411,13 +1516,13 @@ export default function App() {
               {/* Found Child Card */}
               <div className="absolute bottom-2.5 sm:bottom-5 left-2.5 sm:left-5 right-2.5 sm:right-5 bg-blue-900/80 backdrop-blur-xl rounded-[20px] sm:rounded-[27px] p-2.5 sm:p-4.5 shadow-2xl border border-white/10 space-y-2.5 sm:space-y-5">
                 <div className="text-center space-y-1.5">
-                  <h3 className="text-[15.3px] sm:text-[20.4px] text-white font-black">Criança Encontrada!</h3>
+                  <h3 className="text-[20px] sm:text-[26px] text-white font-black">Criança Encontrada!</h3>
                   <div className="flex items-center justify-center gap-1.5">
                     <div className="w-8.5 h-8.5 sm:w-13.5 sm:h-13.5 rounded-xl overflow-hidden border-2 border-brand-secondary shadow-lg shrink-0">
                       <img src={scannedChild?.photo || "https://picsum.photos/seed/lucas/200"} alt={scannedChild?.name || "Criança"} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>
                     <div className="text-left min-w-0">
-                      <p className="text-[13.6px] sm:text-[17.85px] font-bold text-white truncate">{scannedChild?.name || "Lucas"}, {scannedChild?.age || 6} anos</p>
+                      <p className="text-[18px] sm:text-[23px] font-bold text-white truncate">{scannedChild?.name || "Lucas"}, {scannedChild?.age || 6} anos</p>
                       <div className="flex gap-0.5 text-brand-secondary">
                         {[1,2,3,4,5].map(i => <Heart key={i} className="w-2 h-2 fill-current" />)}
                       </div>
@@ -1425,11 +1530,11 @@ export default function App() {
                   </div>
                   {scannedChild && (scannedChild.allergies || scannedChild.medications || scannedChild.disability) && (
                     <div className="bg-brand-emergency/20 p-1.5 rounded-lg border border-brand-emergency/30 text-left mt-1.5">
-                      <p className="text-[6.8px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-1.5 mb-0.5">
+                      <p className="text-[10px] font-bold text-brand-emergency uppercase tracking-widest flex items-center gap-1.5 mb-0.5">
                         <AlertTriangle className="w-2 h-2" />
                         Atenção Médica
                       </p>
-                      <p className="text-[6.8px] text-white/80 line-clamp-2">
+                      <p className="text-[10px] text-white/80 line-clamp-2">
                         {[scannedChild.allergies, scannedChild.medications, scannedChild.disability].filter(Boolean).join(' • ')}
                       </p>
                     </div>
@@ -1438,7 +1543,7 @@ export default function App() {
 
                 <div className="space-y-1.5">
                   <button 
-                    className="btn-mobile btn-success-mobile py-2.5 text-[10.2px] sm:text-[11.9px]"
+                    className="btn-mobile btn-success-mobile py-2 text-[13px] sm:text-[15px]"
                     onClick={() => {
                       if (scannedChild?.responsiblePhone) {
                         window.location.href = `tel:${scannedChild.responsiblePhone}`;
@@ -1451,7 +1556,7 @@ export default function App() {
                     Ligar Responsável
                   </button>
                   <button 
-                    className="btn-mobile btn-primary-mobile py-2.5 text-[10.2px] sm:text-[11.9px]"
+                    className="btn-mobile btn-primary-mobile py-2 text-[13px] sm:text-[15px]"
                     onClick={() => {
                       alert('Guarda Municipal acionada! Uma viatura está a caminho da sua localização.');
                     }}
@@ -1478,7 +1583,7 @@ export default function App() {
               </div>
               <div className="space-y-1 shrink-0">
                 <h2 className="text-xl sm:text-2xl font-bold">Vincular Pulseira</h2>
-                <p className="text-white/60 text-[10px] sm:text-sm">
+                <p className="text-white/60 text-[14px] sm:text-[17px]">
                   {selectedChildId === 'TEMP_REG' 
                     ? 'Escaneie o QR Code da pulseira física para o novo cadastro.' 
                     : `Escaneie o QR Code da pulseira física para registrar ${activeChild?.name}.`}
@@ -1491,7 +1596,7 @@ export default function App() {
                     {!isScanning ? (
                       <div className="flex flex-col items-center gap-3 text-center p-4">
                         <Camera className="w-10 h-10 sm:w-12 sm:h-12 text-brand-secondary opacity-40" />
-                        <p className="text-[8px] sm:text-[10px] font-bold opacity-60 uppercase tracking-widest">Câmera Pronta</p>
+                        <p className="text-[11px] sm:text-[14px] font-bold opacity-60 uppercase tracking-widest">Câmera Pronta</p>
                       </div>
                     ) : (
                       <div id="qr-reader" className="w-full h-full" />
@@ -1506,7 +1611,7 @@ export default function App() {
                     <div className="w-10 h-10 sm:w-14 sm:h-17 bg-brand-icon-green rounded-full flex items-center justify-center shadow-2xl">
                       <CheckCircle2 className="w-5 h-5 sm:w-7 sm:h-8.5 text-white" />
                     </div>
-                    <p className="font-bold text-brand-icon-green text-[7px] sm:text-[10px] uppercase tracking-widest">PULSEIRA VINCULADA!</p>
+                    <p className="font-bold text-brand-icon-green text-[10px] sm:text-[14px] uppercase tracking-widest">PULSEIRA VINCULADA!</p>
                   </motion.div>
                 )}
               </div>
@@ -1514,7 +1619,7 @@ export default function App() {
               <div className="mt-4 space-y-2 shrink-0">
                 {!scanSuccess ? (
                   <button 
-                    className="btn-mobile btn-primary-mobile py-2.5 text-[10px] sm:text-xs" 
+                    className="btn-mobile btn-primary-mobile py-2 text-[14px] sm:text-[16px]" 
                     onClick={() => setIsScanning(true)}
                     disabled={isScanning}
                   >
@@ -1522,12 +1627,12 @@ export default function App() {
                     {isScanning ? 'Escaneando...' : 'Escanear Agora'}
                   </button>
                 ) : (
-                  <button className="btn-mobile btn-success-mobile py-2.5 text-[10px] sm:text-xs" onClick={() => { setView('dashboard'); setScanSuccess(false); }}>
+                  <button className="btn-mobile btn-success-mobile py-2 text-[14px] sm:text-[16px]" onClick={() => { setView('dashboard'); setScanSuccess(false); }}>
                     Voltar ao Painel
                   </button>
                 )}
                 <button 
-                  className="btn-mobile py-2.5 bg-white/10 text-white border border-white/20 active:bg-white/20 transition-colors text-[10px] sm:text-xs"
+                  className="btn-mobile py-2 bg-white/10 text-white border border-white/20 active:bg-white/20 transition-colors text-[14px] sm:text-[16px]"
                   onClick={() => setView('manual_entry')}
                 >
                   Digitar Código Manualmente
@@ -1551,7 +1656,7 @@ export default function App() {
               </div>
               <div className="space-y-1 shrink-0">
                 <h2 className="text-lg sm:text-xl font-bold">Código Manual</h2>
-                <p className="text-white/60 text-[8.5px] sm:text-xs">Digite o código de 8 dígitos impresso na pulseira.</p>
+                <p className="text-white/60 text-[12px] sm:text-[15px]">Digite o código de 8 dígitos impresso na pulseira.</p>
               </div>
 
               <div className="space-y-1.5 shrink-0">
@@ -1562,11 +1667,11 @@ export default function App() {
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value.toUpperCase())}
                   disabled={isScanning}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl py-2 sm:py-3.5 px-2.5 sm:px-3.5 text-center text-sm sm:text-lg font-black tracking-[0.2em] text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
+                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl py-2 sm:py-3.5 px-2.5 sm:px-3.5 text-center text-[17px] sm:text-[21px] font-black tracking-[0.2em] text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
                 />
                 
                 <button 
-                  className="btn-mobile btn-primary-mobile py-2.5 sm:py-3.5 text-[10px] sm:text-xs"
+                  className="btn-mobile btn-primary-mobile py-2 sm:py-3 text-[14px] sm:text-[16px]"
                   disabled={manualCode.length < 8 || isScanning}
                   onClick={() => {
                     if (selectedChildId && manualCode.length >= 4) {
@@ -1607,7 +1712,7 @@ export default function App() {
               <button onClick={() => setView('dashboard')} className="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <h2 className="text-sm sm:text-base font-bold">Configurações</h2>
+              <h2 className="text-[17px] sm:text-[19px] font-bold">Configurações</h2>
             </div>
 
             <div className="flex-1 space-y-5 overflow-y-auto pb-5 scrollbar-hide">
@@ -1633,13 +1738,13 @@ export default function App() {
                     />
                   </label>
                 </div>
-                <p className="text-[6px] sm:text-[8.5px] font-bold text-white/40 uppercase tracking-widest">Toque para alterar foto</p>
+                <p className="text-[9px] sm:text-[12px] font-bold text-white/40 uppercase tracking-widest">Toque para alterar foto</p>
               </div>
 
               {/* Form */}
               <div className="space-y-1.5">
                 <div className="space-y-0.5">
-                  <label className="text-[6px] sm:text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome Exibido</label>
+                  <label className="text-[9px] sm:text-[12px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome Exibido</label>
                   <input 
                     type="text" 
                     value={userProfile.name}
@@ -1648,7 +1753,7 @@ export default function App() {
                   />
                 </div>
                 <div className="space-y-0.5">
-                  <label className="text-[6px] sm:text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
+                  <label className="text-[9px] sm:text-[12px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                   <input 
                     type="email" 
                     value={userProfile.email}
@@ -1660,12 +1765,12 @@ export default function App() {
 
               {/* Preferences */}
               <div className="space-y-1.5">
-                <h4 className="text-[6px] sm:text-[8.5px] font-bold text-white/40 uppercase tracking-widest ml-1">Preferências</h4>
+                <h4 className="text-[9px] sm:text-[12px] font-bold text-white/40 uppercase tracking-widest ml-1">Preferências</h4>
                 <div className="space-y-1.25">
                   <div className="bg-white/5 p-1.5 rounded-lg sm:rounded-xl border border-white/10 flex items-center justify-between">
                     <div className="flex items-center gap-1.25">
                       <Bell className="w-3 h-3 text-brand-secondary" />
-                      <span className="font-bold text-[8.5px] sm:text-[10px]">Notificações Push</span>
+                      <span className="font-bold text-[12px] sm:text-[14px]">Notificações Push</span>
                     </div>
                     <div className="w-6 h-3 sm:w-8.5 sm:h-4.5 bg-brand-icon-green rounded-full relative">
                       <div className="absolute right-0.5 top-0.5 w-2 h-2 sm:w-3.5 sm:h-3.5 bg-white rounded-full" />
@@ -1674,7 +1779,7 @@ export default function App() {
                   <div className="bg-white/5 p-1.5 rounded-lg sm:rounded-xl border border-white/10 flex items-center justify-between">
                     <div className="flex items-center gap-1.25">
                       <MapPin className="w-3 h-3 text-brand-primary" />
-                      <span className="font-bold text-[8.5px] sm:text-[10px]">Localização em Tempo Real</span>
+                      <span className="font-bold text-[12px] sm:text-[14px]">Localização em Tempo Real</span>
                     </div>
                     <div className="w-6 h-3 sm:w-8.5 sm:h-4.5 bg-brand-icon-green rounded-full relative">
                       <div className="absolute right-0.5 top-0.5 w-2 h-2 sm:w-3.5 sm:h-3.5 bg-white rounded-full" />
@@ -1685,7 +1790,7 @@ export default function App() {
 
               <div className="pt-2.5 space-y-1.5 sm:space-y-2.5">
                 <button 
-                  className="btn-mobile btn-primary-mobile shadow-xl py-2.5 sm:py-3.5 text-[10px] sm:text-xs"
+                  className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3 text-[14px] sm:text-[16px]"
                   onClick={() => {
                     if (currentUser) {
                       const updatedUser = {
@@ -1704,7 +1809,7 @@ export default function App() {
                   Salvar Alterações
                 </button>
                 <button 
-                  className="w-[85%] mx-auto py-2 sm:py-2.5 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.5 bg-white/5 rounded-lg sm:rounded-xl border border-white/10 active:bg-white/10 transition-colors text-[8.5px] sm:text-[10px]"
+                  className="w-[85%] mx-auto py-2 sm:py-2.5 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.5 bg-white/5 rounded-lg sm:rounded-xl border border-white/10 active:bg-white/10 transition-colors text-[12px] sm:text-[14px]"
                   onClick={() => {
                     setCurrentUser(null);
                     setRole(null);
@@ -1716,7 +1821,7 @@ export default function App() {
                   Sair da Conta
                 </button>
                 <button 
-                  className="w-[85%] mx-auto py-2.5 text-white/20 font-bold text-[7px] uppercase tracking-[0.3em] hover:text-brand-emergency transition-colors"
+                  className="w-[85%] mx-auto py-2.5 text-white/20 font-bold text-[10px] uppercase tracking-[0.3em] hover:text-brand-emergency transition-colors"
                   onClick={() => {
                     if (confirm('Isso apagará todos os seus dados, crianças cadastradas e usuários. Deseja continuar?')) {
                       localStorage.clear();
@@ -1743,7 +1848,7 @@ export default function App() {
               <button onClick={() => setView('dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10">
                 <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
-              <h2 className="text-sm sm:text-base font-bold">Notificações</h2>
+              <h2 className="text-[17px] sm:text-[19px] font-bold">Notificações</h2>
             </div>
 
             <div className="flex-1 space-y-1.5 overflow-y-auto pb-3.5 scrollbar-hide">
@@ -1753,13 +1858,13 @@ export default function App() {
                 </div>
                 <div className="space-y-0.5 flex-1 min-w-0">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-[8.5px] sm:text-[10px]">Criança Encontrada!</h4>
-                    <span className="text-[6px] sm:text-[7.5px] opacity-40">10 min</span>
+                    <h4 className="font-bold text-[12px] sm:text-[14px]">Criança Encontrada!</h4>
+                    <span className="text-[9px] sm:text-[11px] opacity-40">10 min</span>
                   </div>
-                  <p className="text-[7.5px] sm:text-[9.5px] text-white/70 leading-tight">
+                  <p className="text-[11px] sm:text-[13px] text-white/70 leading-tight">
                     A Guarda Municipal localizou <span className="font-bold text-white">Lucas</span> no Ponto de Apoio 03. Ele está seguro e aguardando você.
                   </p>
-                  <button className="text-brand-secondary text-[6px] sm:text-[7.5px] font-black uppercase tracking-widest mt-1">Ver Localização</button>
+                  <button className="text-brand-secondary text-[9px] sm:text-[11px] font-black uppercase tracking-widest mt-1">Ver Localização</button>
                 </div>
               </div>
 
@@ -1769,10 +1874,10 @@ export default function App() {
                 </div>
                 <div className="space-y-0.5 flex-1 min-w-0">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-[8.5px] sm:text-[10px]">Alerta de Segurança</h4>
-                    <span className="text-[6px] sm:text-[7.5px] opacity-40">1h</span>
+                    <h4 className="font-bold text-[12px] sm:text-[14px]">Alerta de Segurança</h4>
+                    <span className="text-[9px] sm:text-[11px] opacity-40">1h</span>
                   </div>
-                  <p className="text-[7.5px] sm:text-[9.5px] text-white/70 leading-tight">
+                  <p className="text-[11px] sm:text-[13px] text-white/70 leading-tight">
                     O Modo Evento foi ativado para a região do Parque Ibirapuera. Fique atento às notificações.
                   </p>
                 </div>
@@ -1784,10 +1889,10 @@ export default function App() {
                 </div>
                 <div className="space-y-0.5 flex-1 min-w-0">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-[8.5px] sm:text-[10px]">Bem-vindo ao Achei Você</h4>
-                    <span className="text-[6px] sm:text-[7.5px] opacity-40">2h</span>
+                    <h4 className="font-bold text-[12px] sm:text-[14px]">Bem-vindo ao Achei Você</h4>
+                    <span className="text-[9px] sm:text-[11px] opacity-40">2h</span>
                   </div>
-                  <p className="text-[7.5px] sm:text-[9.5px] text-white/70 leading-tight">
+                  <p className="text-[11px] sm:text-[13px] text-white/70 leading-tight">
                     Seu cadastro foi concluído com sucesso. Não esqueça de vincular a pulseira da sua criança.
                   </p>
                 </div>
@@ -1822,7 +1927,7 @@ export default function App() {
               <button onClick={() => setView('dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
                 <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
-              <h2 className="text-sm sm:text-base font-bold">Perfil da Criança</h2>
+              <h2 className="text-base sm:text-lg font-bold">Perfil da Criança</h2>
             </div>
 
             {(() => {
@@ -1844,8 +1949,8 @@ export default function App() {
                         {child.status === 'safe' ? <CheckCircle2 className="w-3 h-3 text-white" /> : <AlertTriangle className="w-3 h-3 text-white" />}
                       </div>
                       <div>
-                        <p className="text-[6px] font-bold opacity-60 uppercase tracking-widest">Status Atual</p>
-                        <h4 className="text-[10px] font-bold">{child.status === 'safe' ? 'Seguro' : 'Desaparecido'}</h4>
+                        <p className="text-[11px] font-bold opacity-60 uppercase tracking-widest">Status Atual</p>
+                        <h4 className="text-[16px] font-bold">{child.status === 'safe' ? 'Seguro' : 'Desaparecido'}</h4>
                       </div>
                     </div>
                     <button 
@@ -1853,7 +1958,7 @@ export default function App() {
                         setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: c.status === 'safe' ? 'missing' : 'safe' } : c));
                       }}
                       className={cn(
-                        "px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-widest border transition-all active:scale-95",
+                        "px-2 py-0.5 rounded-lg text-[12px] font-black uppercase tracking-widest border transition-all active:scale-95",
                         child.status === 'safe' ? "bg-brand-emergency border-brand-emergency text-white" : "bg-brand-icon-green border-brand-icon-green text-white"
                       )}
                     >
@@ -1888,32 +1993,32 @@ export default function App() {
 
                     <div className="space-y-1.5">
                       <div className="space-y-0.5">
-                        <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
+                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
                         <input 
                           type="text" 
                           value={child.name}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, name: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[9.5px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
                       <div className="space-y-0.5">
-                        <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
+                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
                         <input 
                           type="number" 
                           value={child.age}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, age: parseInt(e.target.value) || 0 } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[9.5px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
                       <div className="space-y-0.5">
-                        <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
+                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
                         <div className="grid grid-cols-3 gap-1">
                           {['M', 'F', 'Outro'].map((g) => (
                             <button
                               key={g}
                               onClick={() => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, gender: g as any } : c))}
                               className={cn(
-                                "py-1 rounded-xl border font-bold text-[7.5px] transition-all",
+                                "py-1 rounded-xl border font-bold text-[13px] transition-all",
                                 child.gender === g 
                                   ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
                                   : "bg-white/5 border-white/10 text-white/60"
@@ -1925,39 +2030,39 @@ export default function App() {
                         </div>
                       </div>
                       <div className="space-y-0.5">
-                        <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
+                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
                         <input 
                           type="text" 
                           value={child.allergies || ''}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, allergies: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[9.5px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
                       <div className="space-y-0.5">
-                        <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
+                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
                         <input 
                           type="text" 
                           value={child.medications || ''}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, medications: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[9.5px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
                       <div className="space-y-0.5">
-                        <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
+                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
                         <input 
                           type="text" 
                           value={child.disability || ''}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, disability: e.target.value } : c))}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[9.5px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                         />
                       </div>
                       <div className="space-y-0.5">
-                        <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
+                        <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
                         <textarea 
                           value={child.description}
                           onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, description: e.target.value } : c))}
                           rows={2}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[9.5px] text-white focus:outline-none focus:border-brand-secondary transition-colors resize-none"
+                          className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors resize-none"
                         />
                       </div>
                     </div>
@@ -1965,7 +2070,7 @@ export default function App() {
 
                   {/* QR Code Section */}
                   <div className="space-y-1.5">
-                    <h4 className="text-[7px] font-bold text-white/40 uppercase tracking-widest ml-1">QR Code da Pulseira</h4>
+                    <h4 className="text-[13px] font-bold text-white/40 uppercase tracking-widest ml-1">QR Code da Pulseira</h4>
                     {!child.qrCode ? (
                       <button 
                         onClick={() => {
@@ -1980,8 +2085,8 @@ export default function App() {
                           <QrCode className="w-3.5 h-3.5 text-brand-secondary" />
                         </div>
                         <div className="text-center">
-                          <p className="font-bold text-[10px]">Vincular Pulseira</p>
-                          <p className="text-[6px] opacity-40 uppercase tracking-widest">Nenhum código registrado ainda</p>
+                          <p className="font-bold text-[16px]">Vincular Pulseira</p>
+                          <p className="text-[11px] opacity-40 uppercase tracking-widest">Nenhum código registrado ainda</p>
                         </div>
                       </button>
                     ) : (
@@ -1990,8 +2095,8 @@ export default function App() {
                           <QRCode value={child.qrCode} size={85} />
                         </div>
                         <div className="text-center">
-                          <p className="text-slate-900 font-black tracking-widest text-[10px] uppercase">ID: {child.qrCode.toUpperCase()}</p>
-                          <p className="text-slate-400 text-[6px] font-bold uppercase tracking-widest">Válido em todo território nacional</p>
+                          <p className="text-slate-900 font-black tracking-widest text-[16px] uppercase">ID: {child.qrCode.toUpperCase()}</p>
+                          <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">Válido em todo território nacional</p>
                         </div>
                         <button 
                           onClick={() => {
@@ -2000,7 +2105,7 @@ export default function App() {
                             setScanSuccess(false);
                             setIsScanning(false);
                           }}
-                          className="w-full py-1.5 sm:py-2.5 bg-brand-primary/10 text-brand-primary rounded-xl sm:rounded-2xl font-bold text-[7.5px] sm:text-[10px] uppercase tracking-widest border border-brand-primary/20 flex items-center justify-center gap-1.25"
+                          className="w-full py-1 sm:py-2 bg-brand-primary/10 text-brand-primary rounded-xl sm:rounded-2xl font-bold text-[13px] sm:text-[16px] uppercase tracking-widest border border-brand-primary/20 flex items-center justify-center gap-1.25"
                         >
                           <Camera className="w-3 h-3" />
                           Vincular Nova Pulseira
@@ -2011,13 +2116,13 @@ export default function App() {
 
                   <div className="pt-2.5 space-y-1.5 sm:space-y-3.5">
                     <button 
-                      className="btn-mobile btn-primary-mobile shadow-xl py-2.5 sm:py-4 text-[10px] sm:text-sm"
+                      className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3.5 text-[12px] sm:text-base"
                       onClick={() => setView('dashboard')}
                     >
                       Salvar Alterações
                     </button>
                     <button 
-                      className="w-[85%] mx-auto py-2 sm:py-3.5 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.25 bg-white/5 rounded-xl sm:rounded-2xl border border-white/10 active:bg-white/10 transition-colors text-[8.5px] sm:text-xs"
+                      className="w-[85%] mx-auto py-1.5 sm:py-2.5 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.25 bg-white/5 rounded-xl sm:rounded-2xl border border-white/10 active:bg-white/10 transition-colors text-[15px] sm:text-[17px]"
                       onClick={() => {
                         if (confirm(`Tem certeza que deseja remover ${child.name}?`)) {
                           setChildren(prev => prev.filter(c => c.id !== child.id));
@@ -2047,7 +2152,7 @@ export default function App() {
               <button onClick={() => setView('dashboard')} className="w-7 h-7 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <h2 className="text-sm sm:text-base font-bold">Cadastrar Criança</h2>
+              <h2 className="text-base sm:text-lg font-bold">Cadastrar Criança</h2>
             </div>
 
             <div className="flex-1 space-y-3.5 overflow-y-auto pb-5 scrollbar-hide">
@@ -2076,39 +2181,39 @@ export default function App() {
                     />
                   </label>
                 </div>
-                <p className="text-[7px] font-bold text-white/40 uppercase tracking-widest">Foto da Criança</p>
+                <p className="text-[13px] font-bold text-white/40 uppercase tracking-widest">Foto da Criança</p>
               </div>
 
               <div className="space-y-2.5">
                 <div className="space-y-1">
-                  <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Maria Clara"
                     value={newChild.name}
                     onChange={(e) => setNewChild(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[10px] sm:text-sm"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
                   <input 
                     type="number" 
                     placeholder="Ex: 5"
                     value={newChild.age}
                     onChange={(e) => setNewChild(prev => ({ ...prev, age: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[10px] sm:text-sm"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
                   <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
                     {['M', 'F', 'Outro'].map((g) => (
                       <button
                         key={g}
                         onClick={() => setNewChild(prev => ({ ...prev, gender: g as any }))}
                         className={cn(
-                          "py-1.5 sm:py-2.5 rounded-xl border font-bold text-[8.5px] sm:text-xs transition-all",
+                          "py-1.5 sm:py-2.5 rounded-xl border font-bold text-[15px] sm:text-[17px] transition-all",
                           newChild.gender === g 
                             ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
                             : "bg-white/5 border-white/10 text-white/60"
@@ -2120,48 +2225,48 @@ export default function App() {
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Amendoim, lactose..."
                     value={newChild.allergies}
                     onChange={(e) => setNewChild(prev => ({ ...prev, allergies: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[10px] sm:text-sm"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Insulina, antialérgico..."
                     value={newChild.medications}
                     onChange={(e) => setNewChild(prev => ({ ...prev, medications: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[10px] sm:text-sm"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Autismo, cadeirante..."
                     value={newChild.disability}
                     onChange={(e) => setNewChild(prev => ({ ...prev, disability: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[10px] sm:text-sm"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[7px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
                   <textarea 
                     placeholder="Ex: Cabelo castanho, camiseta rosa..."
                     rows={2}
                     value={newChild.description}
                     onChange={(e) => setNewChild(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors resize-none text-[10px] sm:text-sm"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors resize-none text-[12px] sm:text-base"
                   />
                 </div>
 
                 <div className="space-y-2.5 pt-1.5">
-                  <h4 className="text-[7px] font-bold text-white/40 uppercase tracking-widest ml-1">Pulseira da Criança</h4>
+                  <h4 className="text-[13px] font-bold text-white/40 uppercase tracking-widest ml-1">Pulseira da Criança</h4>
                   {!newChild.qrCode ? (
                     <div className="space-y-2.5">
                       <button 
@@ -2177,8 +2282,8 @@ export default function App() {
                           <QrCode className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-brand-secondary" />
                         </div>
                         <div className="text-center">
-                          <p className="font-bold text-[10px] sm:text-sm">Vincular Pulseira Agora</p>
-                          <p className="text-[7px] sm:text-[8.5px] opacity-40 uppercase tracking-widest">Escaneie o QR Code oficial</p>
+                          <p className="font-bold text-[16px] sm:text-[19px]">Vincular Pulseira Agora</p>
+                          <p className="text-[13px] sm:text-[15px] opacity-40 uppercase tracking-widest">Escaneie o QR Code oficial</p>
                         </div>
                       </button>
                     </div>
@@ -2189,8 +2294,8 @@ export default function App() {
                           <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[7px] sm:text-[8.5px] font-bold text-brand-icon-green uppercase tracking-widest truncate">Pulseira Vinculada</p>
-                          <p className="font-bold text-white tracking-widest truncate text-[10px] sm:text-sm">{newChild.qrCode.toUpperCase()}</p>
+                          <p className="text-[13px] sm:text-[15px] font-bold text-brand-icon-green uppercase tracking-widest truncate">Pulseira Vinculada</p>
+                          <p className="font-bold text-white tracking-widest truncate text-[16px] sm:text-[19px]">{newChild.qrCode.toUpperCase()}</p>
                         </div>
                       </div>
                       <button 
@@ -2206,7 +2311,7 @@ export default function App() {
 
               <div className="pt-3.5 pb-3.5">
                 <button 
-                  className="btn-mobile btn-primary-mobile shadow-xl py-2.5 sm:py-4 text-[10px] sm:text-sm"
+                  className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3.5 text-[12px] sm:text-base"
                   disabled={!newChild.name || !newChild.age}
                   onClick={() => {
                     const child: Child = {
@@ -2265,8 +2370,8 @@ export default function App() {
                   <div className="w-14 h-14 sm:w-17 sm:h-17 bg-brand-emergency/20 rounded-full flex items-center justify-center mx-auto mb-1.5 sm:mb-3.5">
                     <AlertTriangle className="w-7 h-7 sm:w-8.5 sm:h-8.5 text-brand-emergency" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-black uppercase">Qual Criança?</h2>
-                  <p className="text-xs sm:text-sm text-white/60">Selecione quem está desaparecido para acionar o alerta.</p>
+                  <h2 className="text-2xl sm:text-3xl font-black uppercase">Qual Criança?</h2>
+                  <p className="text-sm sm:text-base text-white/60">Selecione quem está desaparecido para acionar o alerta.</p>
                 </div>
 
                 <div className="space-y-2.5 sm:space-y-3.5">
@@ -2284,8 +2389,8 @@ export default function App() {
                         <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-base sm:text-lg font-bold">{child.name}</h4>
-                        <p className="text-[8.5px] sm:text-[10px] opacity-60 uppercase tracking-widest">{child.age} anos</p>
+                        <h4 className="text-lg sm:text-xl font-bold">{child.name}</h4>
+                        <p className="text-[15px] sm:text-[16px] opacity-60 uppercase tracking-widest">{child.age} anos</p>
                       </div>
                       <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 bg-brand-emergency rounded-full flex items-center justify-center">
                         <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
@@ -2296,7 +2401,7 @@ export default function App() {
 
                 <button 
                   onClick={() => setView('dashboard')}
-                  className="mt-auto w-[85%] mx-auto py-2.5 sm:py-3.5 text-white/60 font-bold uppercase tracking-widest text-[10px] sm:text-xs"
+                  className="mt-auto w-[85%] mx-auto py-1.5 sm:py-2.5 text-white/60 font-bold uppercase tracking-widest text-[16px] sm:text-[17px]"
                 >
                   Cancelar
                 </button>
@@ -2307,17 +2412,17 @@ export default function App() {
                   <AlertTriangle className="w-10 h-10 sm:w-14 sm:h-14" />
                 </div>
                 <div className="space-y-1 sm:space-y-1.5">
-                  <h2 className="text-2xl sm:text-3xl font-black uppercase">Alerta Ativado</h2>
-                  <p className="text-xs sm:text-sm text-red-100">
+                  <h2 className="text-3xl sm:text-4xl font-black uppercase">Alerta Ativado</h2>
+                  <p className="text-sm sm:text-base text-red-100">
                     As autoridades e pontos de apoio próximos foram notificados sobre o desaparecimento de <span className="font-black underline">{children.find(c => c.id === emergencyChildId)?.name}</span>.
                   </p>
                 </div>
                 
                 <div className="w-full space-y-2.5 sm:space-y-3.5 mt-3.5 sm:mb-7">
                   <div className="bg-white/10 p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/20">
-                    <p className="text-[8.5px] sm:text-xs font-bold uppercase tracking-widest opacity-60">Status da Busca</p>
-                    <p className="text-base sm:text-lg font-bold mt-1">Guarda Municipal Acionada</p>
-                    <p className="text-[10px] sm:text-xs opacity-80">Viatura a caminho da sua localização.</p>
+                    <p className="text-[15px] sm:text-[17px] font-bold uppercase tracking-widest opacity-60">Status da Busca</p>
+                    <p className="text-lg sm:text-xl font-bold mt-1">Guarda Municipal Acionada</p>
+                    <p className="text-[16px] sm:text-[17px] opacity-80">Viatura a caminho da sua localização.</p>
                   </div>
                   <button 
                     onClick={() => {
@@ -2326,7 +2431,7 @@ export default function App() {
                       }
                       setView('dashboard');
                     }}
-                    className="btn-mobile bg-white text-brand-emergency font-black text-xs sm:text-sm"
+                    className="btn-mobile bg-white text-brand-emergency font-black text-sm sm:text-base"
                   >
                     CANCELAR ALERTA
                   </button>
@@ -2350,7 +2455,7 @@ function ActionCard({ icon, title, onClick }: { icon: React.ReactNode, title: st
         <div className="w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center text-lg shadow-inner">
           {icon}
         </div>
-        <span className="font-bold text-white tracking-wide text-xs">{title}</span>
+        <span className="font-bold text-white tracking-wide text-sm">{title}</span>
       </div>
       <Plus className="w-3.5 h-3.5 text-white/40 group-hover:text-brand-secondary transition-colors" />
     </button>
