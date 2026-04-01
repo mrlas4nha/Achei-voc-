@@ -77,7 +77,7 @@
 
 /* Mobile App Container */
 .app-container {
-  @apply w-full max-w-full md:max-w-[450px] mx-auto h-screen bg-white shadow-2xl relative flex flex-col overflow-hidden;
+  @apply w-full max-w-full md:max-w-[450px] mx-auto h-[100dvh] bg-white shadow-2xl relative flex flex-col overflow-hidden;
 }
 
 .card-shadow {

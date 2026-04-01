@@ -510,7 +510,7 @@ export default function App() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-3.5 pt-7 overflow-x-hidden"
+            className="h-full flex flex-col bg-brand-gradient text-white p-3.5 pt-7 overflow-hidden"
           >
             <div className="flex items-center gap-3.5 mb-4">
               <button onClick={() => setView('splash')} className="w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
@@ -522,7 +522,7 @@ export default function App() {
               </h2>
             </div>
 
-            <div className="flex-1 min-h-0 space-y-2.5 overflow-y-auto pb-3.5 scrollbar-hide">
+            <div className="flex-1 min-h-0 max-h-full space-y-2.5 overflow-y-auto pb-5 scrollbar-hide">
               <div className="space-y-1">
                 <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Nome Completo' : 
@@ -610,59 +610,59 @@ export default function App() {
                   className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
                 />
               </div>
+            </div>
 
-              <div className="pt-2.5 space-y-1.5">
-                <button 
-                  className={cn(
-                    "btn-mobile shadow-xl py-2 text-[12.2px]",
-                    regRole === 'responsible' ? "btn-primary-mobile" : 
-                    regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
-                  )}
-                  onClick={() => { 
-                    if (!regForm.email || !regForm.password || !regForm.name) {
-                      alert('Por favor, preencha os campos obrigatórios.');
-                      return;
-                    }
-                    
-                    if (users.find(u => u.email === regForm.email)) {
-                      alert('Este e-mail já está cadastrado. Por favor, faça login.');
-                      setView('login');
-                      return;
-                    }
+            <div className="pt-2 pb-8 space-y-1.5 shrink-0">
+              <button 
+                className={cn(
+                  "btn-mobile shadow-xl py-2.5 text-[13px]",
+                  regRole === 'responsible' ? "btn-primary-mobile" : 
+                  regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
+                )}
+                onClick={() => { 
+                  if (!regForm.email || !regForm.password || !regForm.name) {
+                    alert('Por favor, preencha os campos obrigatórios.');
+                    return;
+                  }
+                  
+                  if (users.find(u => u.email === regForm.email)) {
+                    alert('Este e-mail já está cadastrado. Por favor, faça login.');
+                    setView('login');
+                    return;
+                  }
 
-                    const newUser: User = {
-                      id: Math.random().toString(36).substr(2, 9),
-                      name: regForm.name,
-                      email: regForm.email,
-                      password: regForm.password,
-                      role: regRole!,
-                      subRole: regSubRole || undefined,
-                      cpf: regForm.cpf,
-                      phone: regForm.phone,
-                      registrationId: regForm.registrationId
-                    };
-                    
-                    const updatedUsers = [...users, newUser];
-                    setUsers(updatedUsers);
-                    localStorage.setItem('achei_voce_users', JSON.stringify(updatedUsers));
-                    
-                    setCurrentUser(newUser);
-                    localStorage.setItem('achei_voce_current_user', JSON.stringify(newUser));
-                    
-                    setRole(newUser.role);
-                    setRegForm({ name: '', cpf: '', phone: '', email: '', password: '', registrationId: '' });
-                    setView('dashboard'); 
-                  }}
-                >
-                  Concluir Cadastro
-                </button>
-                <button 
-                  className="w-[85%] mx-auto py-1.5 text-[13.9px] font-bold text-white/60 hover:text-white transition-colors"
-                  onClick={() => setView('login')}
-                >
-                  Já tem uma conta? <span className="text-brand-secondary">Entrar</span>
-                </button>
-              </div>
+                  const newUser: User = {
+                    id: Math.random().toString(36).substr(2, 9),
+                    name: regForm.name,
+                    email: regForm.email,
+                    password: regForm.password,
+                    role: regRole!,
+                    subRole: regSubRole || undefined,
+                    cpf: regForm.cpf,
+                    phone: regForm.phone,
+                    registrationId: regForm.registrationId
+                  };
+                  
+                  const updatedUsers = [...users, newUser];
+                  setUsers(updatedUsers);
+                  localStorage.setItem('achei_voce_users', JSON.stringify(updatedUsers));
+                  
+                  setCurrentUser(newUser);
+                  localStorage.setItem('achei_voce_current_user', JSON.stringify(newUser));
+                  
+                  setRole(newUser.role);
+                  setRegForm({ name: '', cpf: '', phone: '', email: '', password: '', registrationId: '' });
+                  setView('dashboard'); 
+                }}
+              >
+                Concluir Cadastro
+              </button>
+              <button 
+                className="w-[85%] mx-auto py-1.5 text-[13.9px] font-bold text-white/60 hover:text-white transition-colors"
+                onClick={() => setView('login')}
+              >
+                Já tem uma conta? <span className="text-brand-secondary">Entrar</span>
+              </button>
             </div>
           </motion.div>
         )}
@@ -789,7 +789,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="p-3 space-y-3.5 overflow-y-auto flex-1 scrollbar-hide">
+            <div className="p-3 min-h-0 space-y-2.5 overflow-y-auto flex-1 scrollbar-hide">
               {/* Profile Card */}
               <div className="flex items-center gap-2">
                 <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-full border-2 border-white/20 shadow-lg overflow-hidden relative group shrink-0">
@@ -847,7 +847,7 @@ export default function App() {
 
               {/* QR & Summary Grid */}
               <div className="grid grid-cols-2 gap-2">
-                <div className="qr-container card-shadow p-1.5 aspect-square flex flex-col justify-center items-center text-center" onClick={() => {
+                <div className="qr-container card-shadow p-1.5 h-28 flex flex-col justify-center items-center text-center" onClick={() => {
                   const userChildren = children.filter(c => c.responsibleId === currentUser?.id);
                   if (userChildren.length === 0) {
                     setView('register_child');
@@ -860,13 +860,13 @@ export default function App() {
                     alert('Selecione a criança na lista acima para vincular a pulseira.');
                   }
                 }}>
-                  <p className="text-[14px] font-bold text-white/60 mb-1">Vincular Pulseira</p>
+                  <p className="text-[13px] font-bold text-white/60 mb-1">Vincular Pulseira</p>
                   <div className="p-1 bg-white/10 rounded-xl">
-                    <Camera className="w-4.25 h-4.25 sm:w-6 sm:h-6 text-brand-secondary" />
+                    <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-brand-secondary" />
                   </div>
                 </div>
-                <div className="bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow aspect-square flex flex-col justify-center items-center text-center">
-                  <p className="text-[14px] font-bold text-white/60 mb-0.5">Total de Crianças</p>
+                <div className="bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow h-28 flex flex-col justify-center items-center text-center">
+                  <p className="text-[13px] font-bold text-white/60 mb-0.5">Total de Crianças</p>
                   <div className="text-lg sm:text-[19px] font-black text-brand-primary">
                     {children.filter(child => child.responsibleId === currentUser?.id).length}
                   </div>
@@ -875,7 +875,7 @@ export default function App() {
 
               {/* Emergency Button */}
               <button 
-                className="btn-mobile btn-emergency py-3 sm:py-3.5 flex-col gap-0.5 shadow-2xl shadow-red-900/20"
+                className="btn-mobile btn-emergency py-2 sm:py-2.5 flex-row gap-2 shadow-2xl shadow-red-900/20"
                 onClick={() => {
                   const userChildren = children.filter(c => c.responsibleId === currentUser?.id);
                   if (userChildren.length === 1) {
@@ -888,8 +888,8 @@ export default function App() {
                   setView('emergency');
                 }}
               >
-                <AlertTriangle className="w-4.25 h-4.25 sm:w-6 sm:h-6" />
-                <span className="text-[17px] sm:text-[19px]">Botão de Emergência</span>
+                <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="text-[15px] sm:text-[17px]">Botão de Emergência</span>
               </button>
 
               {/* Quick Actions */}
@@ -969,7 +969,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="p-2.5 sm:p-5 space-y-4 overflow-y-auto flex-1 scrollbar-hide">
+            <div className="p-2.5 sm:p-5 min-h-0 space-y-4 overflow-y-auto flex-1 scrollbar-hide">
               <button 
                 onClick={() => setIsAuthorityOnline(!isAuthorityOnline)}
                 className={cn(
@@ -1338,47 +1338,49 @@ export default function App() {
               if (!child) return null;
 
               return (
-                <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pb-5 scrollbar-hide">
-                  <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20">
-                        <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-[17px]">{child.name}</h3>
-                        <p className="text-[13px] opacity-60 uppercase tracking-widest">Registrar Encontro</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="space-y-1.5">
-                        <label className="text-[12px] font-bold opacity-60 uppercase tracking-widest ml-1">Localização (Endereço/Ponto de Referência)</label>
-                        <div className="relative">
-                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary" />
-                          <input 
-                            type="text"
-                            value={foundLocationForm.address}
-                            onChange={(e) => setFoundLocationForm(prev => ({ ...prev, address: e.target.value }))}
-                            placeholder="Ex: Praça Central, Próximo ao Coreto"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-[15px] focus:border-brand-primary outline-none transition-colors"
-                          />
+                <>
+                  <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pb-5 scrollbar-hide">
+                    <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20">
+                          <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-[17px]">{child.name}</h3>
+                          <p className="text-[13px] opacity-60 uppercase tracking-widest">Registrar Encontro</p>
                         </div>
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-[12px] font-bold opacity-60 uppercase tracking-widest ml-1">Observações Adicionais</label>
-                        <textarea 
-                          value={foundLocationForm.notes}
-                          onChange={(e) => setFoundLocationForm(prev => ({ ...prev, notes: e.target.value }))}
-                          placeholder="Ex: A criança estava bem, acompanhada por um cidadão..."
-                          rows={4}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-[15px] focus:border-brand-primary outline-none transition-colors resize-none"
-                        />
+                      <div className="space-y-3">
+                        <div className="space-y-1.5">
+                          <label className="text-[12px] font-bold opacity-60 uppercase tracking-widest ml-1">Localização (Endereço/Ponto de Referência)</label>
+                          <div className="relative">
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary" />
+                            <input 
+                              type="text"
+                              value={foundLocationForm.address}
+                              onChange={(e) => setFoundLocationForm(prev => ({ ...prev, address: e.target.value }))}
+                              placeholder="Ex: Praça Central, Próximo ao Coreto"
+                              className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-[15px] focus:border-brand-primary outline-none transition-colors"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="text-[12px] font-bold opacity-60 uppercase tracking-widest ml-1">Observações Adicionais</label>
+                          <textarea 
+                            value={foundLocationForm.notes}
+                            onChange={(e) => setFoundLocationForm(prev => ({ ...prev, notes: e.target.value }))}
+                            placeholder="Ex: A criança estava bem, acompanhada por um cidadão..."
+                            rows={4}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-[15px] focus:border-brand-primary outline-none transition-colors resize-none"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-3.5 shrink-0">
                     <button 
                       onClick={() => {
                         if (!foundLocationForm.address) {
@@ -1413,7 +1415,7 @@ export default function App() {
                       Cancelar
                     </button>
                   </div>
-                </div>
+                </>
               );
             })()}
           </motion.div>
@@ -1787,51 +1789,51 @@ export default function App() {
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="pt-2.5 space-y-1.5 sm:space-y-2.5">
-                <button 
-                  className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3 text-[14px] sm:text-[16px]"
-                  onClick={() => {
-                    if (currentUser) {
-                      const updatedUser = {
-                        ...currentUser,
-                        name: userProfile.name,
-                        email: userProfile.email,
-                        photo: userProfile.photo
-                      };
-                      setUsers(prev => prev.map(u => u.id === currentUser.id ? updatedUser : u));
-                      setCurrentUser(updatedUser);
-                      alert('Configurações salvas com sucesso!');
-                      setView('dashboard');
-                    }
-                  }}
-                >
-                  Salvar Alterações
-                </button>
-                <button 
-                  className="w-[85%] mx-auto py-2 sm:py-2.5 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.5 bg-white/5 rounded-lg sm:rounded-xl border border-white/10 active:bg-white/10 transition-colors text-[12px] sm:text-[14px]"
-                  onClick={() => {
-                    setCurrentUser(null);
-                    setRole(null);
-                    setLoginForm({ email: '', password: '' });
-                    setView('selection');
-                  }}
-                >
-                  <LogOut className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                  Sair da Conta
-                </button>
-                <button 
-                  className="w-[85%] mx-auto py-2.5 text-white/20 font-bold text-[10px] uppercase tracking-[0.3em] hover:text-brand-emergency transition-colors"
-                  onClick={() => {
-                    if (confirm('Isso apagará todos os seus dados, crianças cadastradas e usuários. Deseja continuar?')) {
-                      localStorage.clear();
-                      window.location.reload();
-                    }
-                  }}
-                >
-                  Limpar Todos os Dados do App
-                </button>
-              </div>
+            <div className="pt-2.5 space-y-1.5 sm:space-y-2.5 shrink-0">
+              <button 
+                className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3 text-[14px] sm:text-[16px]"
+                onClick={() => {
+                  if (currentUser) {
+                    const updatedUser = {
+                      ...currentUser,
+                      name: userProfile.name,
+                      email: userProfile.email,
+                      photo: userProfile.photo
+                    };
+                    setUsers(prev => prev.map(u => u.id === currentUser.id ? updatedUser : u));
+                    setCurrentUser(updatedUser);
+                    alert('Configurações salvas com sucesso!');
+                    setView('dashboard');
+                  }
+                }}
+              >
+                Salvar Alterações
+              </button>
+              <button 
+                className="w-[85%] mx-auto py-2 sm:py-2.5 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.5 bg-white/5 rounded-lg sm:rounded-xl border border-white/10 active:bg-white/10 transition-colors text-[12px] sm:text-[14px]"
+                onClick={() => {
+                  setCurrentUser(null);
+                  setRole(null);
+                  setLoginForm({ email: '', password: '' });
+                  setView('selection');
+                }}
+              >
+                <LogOut className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                Sair da Conta
+              </button>
+              <button 
+                className="w-[85%] mx-auto py-2.5 text-white/20 font-bold text-[10px] uppercase tracking-[0.3em] hover:text-brand-emergency transition-colors"
+                onClick={() => {
+                  if (confirm('Isso apagará todos os seus dados, crianças cadastradas e usuários. Deseja continuar?')) {
+                    localStorage.clear();
+                    window.location.reload();
+                  }
+                }}
+              >
+                Limpar Todos os Dados do App
+              </button>
             </div>
           </motion.div>
         )}
@@ -2146,7 +2148,7 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-2.5 pt-5 sm:p-3.5 sm:pt-8.5"
+            className="h-full flex flex-col bg-brand-gradient text-white p-2.5 pt-5 sm:p-3.5 sm:pt-8.5 overflow-hidden"
           >
             <div className="flex items-center gap-2.5 mb-3.5 sm:mb-7 shrink-0">
               <button onClick={() => setView('dashboard')} className="w-7 h-7 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
@@ -2155,18 +2157,18 @@ export default function App() {
               <h2 className="text-base sm:text-lg font-bold">Cadastrar Criança</h2>
             </div>
 
-            <div className="flex-1 min-h-0 space-y-3.5 overflow-y-auto pb-5 scrollbar-hide">
-              <div className="flex flex-col items-center gap-2.5">
+            <div className="flex-1 min-h-0 max-h-full space-y-3 overflow-y-auto pb-6 scrollbar-hide">
+              <div className="flex flex-col items-center gap-1.5">
                 <div className="relative">
-                  <div className="w-17 h-17 sm:w-27 sm:h-27 rounded-[20px] sm:rounded-[32px] border-4 border-brand-secondary shadow-2xl overflow-hidden bg-white/10 flex items-center justify-center">
+                  <div className="w-14 h-14 sm:w-24 sm:h-24 rounded-[18px] sm:rounded-[28px] border-4 border-brand-secondary shadow-2xl overflow-hidden bg-white/10 flex items-center justify-center">
                     {newChild.photo ? (
                       <img src={newChild.photo} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
-                      <UserIcon className="w-7 h-7 sm:w-10 sm:h-10 text-white/20" />
+                      <UserIcon className="w-6 h-6 sm:w-9 sm:h-9 text-white/20" />
                     )}
                   </div>
-                  <label className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-8.5 sm:h-8.5 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
-                    <Camera className="w-3 h-3 sm:w-4 h-4 text-white" />
+                  <label className="absolute -bottom-1 -right-1 w-5.5 h-5.5 sm:w-8 sm:h-8 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
+                    <Camera className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-white" />
                     <input 
                       type="file" 
                       className="hidden" 
@@ -2181,10 +2183,10 @@ export default function App() {
                     />
                   </label>
                 </div>
-                <p className="text-[13px] font-bold text-white/40 uppercase tracking-widest">Foto da Criança</p>
+                <p className="text-[12px] font-bold text-white/40 uppercase tracking-widest">Foto da Criança</p>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
                   <input 
@@ -2276,14 +2278,14 @@ export default function App() {
                           setScanSuccess(false);
                           setIsScanning(false);
                         }}
-                        className="w-full py-3.5 sm:py-7 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl sm:rounded-[32px] flex flex-col items-center gap-1.5 active:bg-white/10 transition-all"
+                        className="w-full py-2.5 sm:py-4 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl sm:rounded-[32px] flex flex-col items-center gap-1.5 active:bg-white/10 transition-all"
                       >
                         <div className="w-7 h-7 sm:w-10 sm:h-10 bg-brand-secondary/20 rounded-xl sm:rounded-2xl flex items-center justify-center">
                           <QrCode className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-brand-secondary" />
                         </div>
                         <div className="text-center">
-                          <p className="font-bold text-[16px] sm:text-[19px]">Vincular Pulseira Agora</p>
-                          <p className="text-[13px] sm:text-[15px] opacity-40 uppercase tracking-widest">Escaneie o QR Code oficial</p>
+                          <p className="font-bold text-[14px] sm:text-[16px]">Vincular Pulseira Agora</p>
+                          <p className="text-[11px] sm:text-[13px] opacity-40 uppercase tracking-widest">Escaneie o QR Code oficial</p>
                         </div>
                       </button>
                     </div>
@@ -2308,46 +2310,46 @@ export default function App() {
                   )}
                 </div>
               </div>
+            </div>
 
-              <div className="pt-3.5 pb-3.5">
-                <button 
-                  className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3.5 text-[12px] sm:text-base"
-                  disabled={!newChild.name || !newChild.age}
-                  onClick={() => {
-                    const child: Child = {
-                      id: Math.random().toString(36).substr(2, 9),
-                      name: newChild.name,
-                      age: parseInt(newChild.age),
-                      gender: newChild.gender as any,
-                      allergies: newChild.allergies,
-                      medications: newChild.medications,
-                      disability: newChild.disability,
-                      responsibleName: userProfile.name,
-                      responsiblePhone: '(11) 99999-9999',
-                      responsibleId: currentUser?.id,
-                      status: 'safe',
-                      description: newChild.description,
-                      photo: newChild.photo,
-                      qrCode: newChild.qrCode
-                    };
-                    setChildren(prev => [...prev, child]);
-                    setNewChild({ 
-                      name: '', 
-                      age: '', 
-                      gender: '', 
-                      allergies: '', 
-                      medications: '', 
-                      disability: '', 
-                      description: '', 
-                      photo: 'https://picsum.photos/seed/newchild/200',
-                      qrCode: ''
-                    });
-                    setView('dashboard');
-                  }}
-                >
-                  Salvar Cadastro
-                </button>
-              </div>
+            <div className="pt-2 pb-10 shrink-0">
+              <button 
+                className="btn-mobile btn-primary-mobile shadow-xl py-3 sm:py-4 text-[14px] sm:text-base"
+                disabled={!newChild.name || !newChild.age}
+                onClick={() => {
+                  const child: Child = {
+                    id: Math.random().toString(36).substr(2, 9),
+                    name: newChild.name,
+                    age: parseInt(newChild.age),
+                    gender: newChild.gender as any,
+                    allergies: newChild.allergies,
+                    medications: newChild.medications,
+                    disability: newChild.disability,
+                    responsibleName: userProfile.name,
+                    responsiblePhone: '(11) 99999-9999',
+                    responsibleId: currentUser?.id,
+                    status: 'safe',
+                    description: newChild.description,
+                    photo: newChild.photo,
+                    qrCode: newChild.qrCode
+                  };
+                  setChildren(prev => [...prev, child]);
+                  setNewChild({ 
+                    name: '', 
+                    age: '', 
+                    gender: '', 
+                    allergies: '', 
+                    medications: '', 
+                    disability: '', 
+                    description: '', 
+                    photo: 'https://picsum.photos/seed/newchild/200',
+                    qrCode: ''
+                  });
+                  setView('dashboard');
+                }}
+              >
+                Salvar Cadastro
+              </button>
             </div>
           </motion.div>
         )}
@@ -2449,15 +2451,15 @@ function ActionCard({ icon, title, onClick }: { icon: React.ReactNode, title: st
   return (
     <button 
       onClick={onClick}
-      className="w-[85%] mx-auto bg-white/10 p-2.5 rounded-2xl border border-white/20 card-shadow flex items-center justify-between group active:bg-white/20 transition-all"
+      className="w-[85%] mx-auto bg-white/10 p-2 rounded-2xl border border-white/20 card-shadow flex items-center justify-between group active:bg-white/20 transition-all"
     >
       <div className="flex items-center gap-3">
-        <div className="w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center text-lg shadow-inner">
+        <div className="w-7 h-7 bg-white/10 rounded-xl flex items-center justify-center text-lg shadow-inner">
           {icon}
         </div>
-        <span className="font-bold text-white tracking-wide text-sm">{title}</span>
+        <span className="font-bold text-white tracking-wide text-[13px]">{title}</span>
       </div>
-      <Plus className="w-3.5 h-3.5 text-white/40 group-hover:text-brand-secondary transition-colors" />
+      <Plus className="w-3 h-3 text-white/40 group-hover:text-brand-secondary transition-colors" />
     </button>
   );
 }
