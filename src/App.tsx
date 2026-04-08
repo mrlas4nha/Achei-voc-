@@ -1124,6 +1124,7 @@ export default function App() {
                 <div className="space-y-2.5">
                   {children.filter(c => c.status === 'missing').map(child => (
                     <button 
+                      key={child.id}
                       onClick={() => { setSelectedChildId(child.id); setView('occurrence_details'); }}
                       className="w-[85%] mx-auto bg-white/5 p-3.5 rounded-2xl border border-white/10 card-shadow border-l-4 border-red-500 flex items-center gap-3.5 text-left active:bg-white/10 transition-all"
                     >
