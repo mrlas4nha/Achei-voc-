@@ -28,7 +28,8 @@ import {
   Map as MapIcon,
   Heart,
   Star,
-  LogOut
+  LogOut,
+  MessageCircle
 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { Html5Qrcode } from 'html5-qrcode';
@@ -426,9 +427,9 @@ export default function App() {
                 <div className="flex flex-col items-center text-center gap-1.25">
                   <div className="w-[13vw] h-[13vw] max-w-[51px] max-h-[51px] relative">
                     <img 
-                      src="https://picsum.photos/seed/pets_safety/400/400" 
+                      src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Dog.png" 
                       alt="Pets" 
-                      className="w-full h-full object-cover rounded-xl drop-shadow-[0_6.8px_6.8px_rgba(0,0,0,0.3)]"
+                      className="w-full h-full object-contain drop-shadow-[0_6.8px_6.8px_rgba(0,0,0,0.3)] brightness-110"
                       referrerPolicy="no-referrer"
                     />
                   </div>
@@ -1342,18 +1343,33 @@ export default function App() {
                         <p className="text-[12px] font-bold text-brand-primary uppercase tracking-widest">Responsável</p>
                         <div className="flex justify-between items-center gap-1.5">
                           <p className="font-bold text-[15px] sm:text-[17px] truncate">{child.responsibleName}</p>
-                          <button 
-                            onClick={() => {
-                              if (child.responsiblePhone) {
-                                window.location.href = `tel:${child.responsiblePhone.replace(/\D/g, '')}`;
-                              } else {
-                                alert('Telefone do responsável não cadastrado.');
-                              }
-                            }}
-                            className="p-1.5 bg-brand-primary text-white rounded-lg active:scale-95 transition-transform shrink-0"
-                          >
-                            <Phone className="w-3 h-3" />
-                          </button>
+                          <div className="flex gap-1.5">
+                            <button 
+                              onClick={() => {
+                                if (child.responsiblePhone) {
+                                  window.location.href = `tel:${child.responsiblePhone.replace(/\D/g, '')}`;
+                                } else {
+                                  alert('Telefone do responsável não cadastrado.');
+                                }
+                              }}
+                              className="p-1.5 bg-brand-primary text-white rounded-lg active:scale-95 transition-transform shrink-0"
+                            >
+                              <Phone className="w-3 h-3" />
+                            </button>
+                            <button 
+                              onClick={() => {
+                                if (child.responsiblePhone) {
+                                  const phone = child.responsiblePhone.replace(/\D/g, '');
+                                  window.open(`https://wa.me/55${phone}`, '_blank');
+                                } else {
+                                  alert('Telefone do responsável não cadastrado.');
+                                }
+                              }}
+                              className="p-1.5 bg-[#25D366] text-white rounded-lg active:scale-95 transition-transform shrink-0"
+                            >
+                              <MessageCircle className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1625,19 +1641,35 @@ export default function App() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <button 
-                    className="btn-mobile btn-success-mobile py-2 text-[13px] sm:text-[15px]"
-                    onClick={() => {
-                      if (scannedChild?.responsiblePhone) {
-                        window.location.href = `tel:${scannedChild.responsiblePhone}`;
-                      } else {
-                        alert('Telefone do responsável não cadastrado.');
-                      }
-                    }}
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    Ligar Responsável
-                  </button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button 
+                      className="btn-mobile btn-success-mobile py-2 text-[13px] sm:text-[15px] flex items-center justify-center gap-1.5"
+                      onClick={() => {
+                        if (scannedChild?.responsiblePhone) {
+                          window.location.href = `tel:${scannedChild.responsiblePhone.replace(/\D/g, '')}`;
+                        } else {
+                          alert('Telefone do responsável não cadastrado.');
+                        }
+                      }}
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      Ligar
+                    </button>
+                    <button 
+                      className="btn-mobile bg-[#25D366] text-white py-2 text-[13px] sm:text-[15px] rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-1.5 shadow-xl active:scale-95 transition-all"
+                      onClick={() => {
+                        if (scannedChild?.responsiblePhone) {
+                          const phone = scannedChild.responsiblePhone.replace(/\D/g, '');
+                          window.open(`https://wa.me/55${phone}`, '_blank');
+                        } else {
+                          alert('Telefone do responsável não cadastrado.');
+                        }
+                      }}
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      WhatsApp
+                    </button>
+                  </div>
                   <button 
                     className="btn-mobile btn-primary-mobile py-2 text-[13px] sm:text-[15px]"
                     onClick={() => {
