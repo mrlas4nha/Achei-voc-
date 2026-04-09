@@ -1362,7 +1362,8 @@ export default function App() {
                               onClick={() => {
                                 if (child.responsiblePhone) {
                                   const phone = child.responsiblePhone.replace(/\D/g, '');
-                                  window.open(`https://wa.me/55${phone}`, '_blank');
+                                  const message = encodeURIComponent("Olá! Tudo bem? Encontre a criança neste momento, ela está bem e em segurança. 🙏 Pode me orientar como faço para te encontrar ou me informar onde você está agora? Se preferir, posso te enviar minha localização. Aguardo seu retorno.");
+                                  window.open(`https://wa.me/55${phone}?text=${message}`, '_blank');
                                 } else {
                                   alert('Telefone do responsável não cadastrado.');
                                 }
@@ -1662,7 +1663,8 @@ export default function App() {
                       onClick={() => {
                         if (scannedChild?.responsiblePhone) {
                           const phone = scannedChild.responsiblePhone.replace(/\D/g, '');
-                          window.open(`https://wa.me/55${phone}`, '_blank');
+                          const message = encodeURIComponent("Olá! Tudo bem? Encontre a criança neste momento, ela está bem e em segurança. 🙏 Pode me orientar como faço para te encontrar ou me informar onde você está agora? Se preferir, posso te enviar minha localização. Aguardo seu retorno.");
+                          window.open(`https://wa.me/55${phone}?text=${message}`, '_blank');
                         } else {
                           alert('Telefone do responsável não cadastrado.');
                         }
