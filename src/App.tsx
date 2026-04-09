@@ -176,7 +176,8 @@ export default function App() {
     disability: '',
     description: '',
     photo: 'https://picsum.photos/seed/newchild/200',
-    qrCode: ''
+    qrCode: '',
+    responsiblePhone: ''
   });
   const [userProfile, setUserProfile] = useState(() => {
     const saved = localStorage.getItem('achei_voce_current_user');
@@ -1877,6 +1878,16 @@ export default function App() {
                     className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl py-1.5 sm:py-2.5 px-2.5 sm:px-4 text-[9.5px] sm:text-xs text-white focus:outline-none focus:border-brand-secondary transition-colors"
                   />
                 </div>
+                <div className="space-y-0.5">
+                  <label className="text-[9px] sm:text-[12px] font-bold uppercase opacity-60 ml-1 tracking-widest">Telefone</label>
+                  <input 
+                    type="tel" 
+                    placeholder="(00) 00000-0000"
+                    value={userProfile.phone || ''}
+                    onChange={(e) => setUserProfile(prev => ({ ...prev, phone: e.target.value }))}
+                    className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl py-1.5 sm:py-2.5 px-2.5 sm:px-4 text-[9.5px] sm:text-xs text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                  />
+                </div>
               </div>
 
               {/* Preferences */}
@@ -1914,7 +1925,8 @@ export default function App() {
                       ...currentUser,
                       name: userProfile.name,
                       email: userProfile.email,
-                      photo: userProfile.photo
+                      photo: userProfile.photo,
+                      phone: userProfile.phone
                     };
                     setUsers(prev => prev.map(u => u.id === currentUser.id ? updatedUser : u));
                     setCurrentUser(updatedUser);
@@ -2140,6 +2152,15 @@ export default function App() {
                           />
                         </div>
                         <div className="space-y-0.5">
+                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Telefone do Responsável</label>
+                          <input 
+                            type="tel" 
+                            value={child.responsiblePhone}
+                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, responsiblePhone: e.target.value } : c))}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                          />
+                        </div>
+                        <div className="space-y-0.5">
                           <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
                           <div className="grid grid-cols-3 gap-1">
                             {['M', 'F', 'Outro'].map((g) => (
@@ -2336,6 +2357,16 @@ export default function App() {
                   />
                 </div>
                 <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Telefone do Responsável</label>
+                  <input 
+                    type="tel" 
+                    placeholder="(00) 00000-0000"
+                    value={newChild.responsiblePhone}
+                    onChange={(e) => setNewChild(prev => ({ ...prev, responsiblePhone: e.target.value }))}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
+                  />
+                </div>
+                <div className="space-y-1">
                   <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
                   <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
                     {['M', 'F', 'Outro'].map((g) => (
@@ -2443,7 +2474,7 @@ export default function App() {
             <div className="pt-2 pb-10 shrink-0">
               <button 
                 className="btn-mobile btn-primary-mobile shadow-xl py-3 sm:py-4 text-[14px] sm:text-base"
-                disabled={!newChild.name || !newChild.age}
+                disabled={!newChild.name || !newChild.age || !newChild.responsiblePhone}
                 onClick={() => {
                   const child: Child = {
                     id: Math.random().toString(36).substr(2, 9),
@@ -2454,7 +2485,7 @@ export default function App() {
                     medications: newChild.medications,
                     disability: newChild.disability,
                     responsibleName: userProfile.name,
-                    responsiblePhone: '(11) 99999-9999',
+                    responsiblePhone: newChild.responsiblePhone,
                     responsibleId: currentUser?.id,
                     status: 'safe',
                     description: newChild.description,
@@ -2471,7 +2502,8 @@ export default function App() {
                     disability: '', 
                     description: '', 
                     photo: 'https://picsum.photos/seed/newchild/200',
-                    qrCode: ''
+                    qrCode: '',
+                    responsiblePhone: ''
                   });
                   setView('dashboard');
                 }}
