@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["responsible", "citizen", "authority", "support_point"] },
+        "subRole": { "type": "string", "enum": ["guard", "authority"] },
+        "photo": { "type": "string" },
+        "cpf": { "type": "string" },
+        "phone": { "type": "string" },
+        "registrationId": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "Child": {
+      "title": "Child",
+      "description": "Child information for monitoring",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "age": { "type": "integer" },
+        "gender": { "type": "string", "enum": ["M", "F", "Outro"] },
+        "allergies": { "type": "string" },
+        "medications": { "type": "string" },
+        "disability": { "type": "string" },
+        "photo": { "type": "string" },
+        "responsibleName": { "type": "string" },
+        "responsiblePhone": { "type": "string" },
+        "responsibleId": { "type": "string" },
+        "status": { "type": "string", "enum": ["safe", "missing", "found"] },
+        "lastSeenLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" },
+            "address": { "type": "string" }
+          }
+        },
+        "lastSeenTime": { "type": "string", "format": "date-time" },
+        "foundLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" },
+            "address": { "type": "string" }
+          }
+        },
+        "foundTime": { "type": "string", "format": "date-time" },
+        "description": { "type": "string" },
+        "qrCode": { "type": "string" }
+      },
+      "required": ["id", "name", "age", "status"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notifications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "time": { "type": "string" },
+        "type": { "type": "string", "enum": ["emergency", "info", "success", "alert"] },
+        "read": { "type": "boolean" },
+        "childId": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "title", "message", "time", "type", "read"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/children/{childId}": {
+      "schema": "Child",
+      "description": "Children registry"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "System and shared notifications"
+    }
+  }
+}

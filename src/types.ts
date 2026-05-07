@@ -59,4 +59,5 @@ export interface Notification {
   type: 'emergency' | 'info' | 'success' | 'alert';
   read: boolean;
   childId?: string;
+  userId: string;
 }

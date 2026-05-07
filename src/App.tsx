@@ -36,136 +36,174 @@ import { Html5Qrcode } from 'html5-qrcode';
 import { cn } from './utils';
 import { Child, UserRole, SupportPoint, User, Notification } from './types';
 
-// Mock Data
-const MOCK_CHILDREN: Child[] = [];
-const MOCK_USERS: User[] = [
-  {
-    id: 'admin-1',
-    name: 'Admin Prefeitura',
-    email: 'admin@mendes.rj.gov.br',
-    password: '123',
-    role: 'authority',
-    subRole: 'authority'
-  },
-  {
-    id: 'guard-1',
-    name: 'Guarda Municipal',
-    email: 'guarda@mendes.rj.gov.br',
-    password: '123',
-    role: 'authority',
-    subRole: 'guard'
+import { auth, db } from './lib/firebase';
+import { 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signOut,
+  updateProfile
+} from 'firebase/auth';
+import { 
+  collection, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  getDocs, 
+  query, 
+  where, 
+  onSnapshot,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  serverTimestamp,
+  orderBy
+} from 'firebase/firestore';
+
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
   }
-];
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+    },
+    operationType,
+    path
+  };
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 export default function App() {
-  const [role, setRole] = useState<UserRole | null>(() => {
-    const saved = localStorage.getItem('achei_voce_current_user');
-    if (saved) {
-      return JSON.parse(saved).role;
-    }
-    return null;
-  });
-  const [view, setView] = useState<'selection' | 'splash' | 'dashboard' | 'location' | 'qr_generator' | 'emergency' | 'register' | 'login' | 'settings' | 'manual_entry' | 'register_child' | 'child_details' | 'notifications' | 'authority_reports' | 'authority_alerts' | 'occurrence_details' | 'citizen_scan' | 'log_found_location'>(() => {
-    return 'selection';
-  });
+  const [role, setRole] = useState<UserRole | null>(null);
+  const [view, setView] = useState<'selection' | 'splash' | 'dashboard' | 'location' | 'qr_generator' | 'emergency' | 'register' | 'login' | 'settings' | 'manual_entry' | 'register_child' | 'child_details' | 'notifications' | 'authority_reports' | 'authority_alerts' | 'occurrence_details' | 'citizen_scan' | 'log_found_location'>('selection');
+  
   const [scannedChild, setScannedChild] = useState<Child | null>(null);
   const [citizenLocation, setCitizenLocation] = useState<{lat: number, lng: number, address: string} | null>(null);
   const [foundLocationForm, setFoundLocationForm] = useState({
     address: '',
     notes: ''
   });
-  const [children, setChildren] = useState<Child[]>(() => {
-    const saved = localStorage.getItem('achei_voce_children');
-    return saved ? JSON.parse(saved) : MOCK_CHILDREN;
-  });
-  const [users, setUsers] = useState<User[]>(() => {
-    const saved = localStorage.getItem('achei_voce_users');
-    const parsed = saved ? JSON.parse(saved) : [];
-    // Ensure mock users are always present
-    const combined = [...MOCK_USERS];
-    parsed.forEach((u: User) => {
-      if (!combined.find(m => m.email === u.email)) {
-        combined.push(u);
-      }
-    });
-    return combined;
-  });
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('achei_voce_current_user');
-    return saved ? JSON.parse(saved) : null;
-  });
 
+  const [children, setChildren] = useState<Child[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
   const [emergencyChildId, setEmergencyChildId] = useState<string | null>(null);
   const [emergencyStep, setEmergencyStep] = useState<'select' | 'alert'>('select');
   const [isAuthorityOnline, setIsAuthorityOnline] = useState(true);
-  const [notifications, setNotifications] = useState<Notification[]>(() => {
-    const saved = localStorage.getItem('achei_voce_notifications');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: '1',
-        title: 'Criança Encontrada!',
-        message: 'A Guarda Municipal localizou Lucas no Ponto de Apoio 03. Ele está seguro e aguardando você.',
-        time: '10 min',
-        type: 'success',
-        read: false
-      },
-      {
-        id: '2',
-        title: 'Alerta de Segurança',
-        message: 'O Modo Evento foi ativado para a região do Parque Ibirapuera. Fique atento às notificações.',
-        time: '1h',
-        type: 'alert',
-        read: true
-      },
-      {
-        id: '3',
-        title: 'Bem-vindo ao Achei Você',
-        message: 'Seu cadastro foi concluído com sucesso. Não esqueça de vincular a pulseira da sua criança.',
-        time: '2h',
-        type: 'info',
-        read: true
-      }
-    ];
-  });
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  // Persist notifications
+  // Auth Observer
   React.useEffect(() => {
-    localStorage.setItem('achei_voce_notifications', JSON.stringify(notifications));
-  }, [notifications]);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data() as User;
+            setCurrentUser(userData);
+            setRole(userData.role);
+          } else {
+            // New user signed in but profile not created yet
+            console.log("User doc does not exist");
+          }
+        } catch (error) {
+          handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);
+        }
+      } else {
+        setCurrentUser(null);
+        setRole(null);
+        if (!['splash', 'register', 'login', 'selection'].includes(view)) {
+          setView('selection');
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, [view]);
 
-  // Real-time simulation between tabs
+  // Children Listener
   React.useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'achei_voce_notifications' && e.newValue) {
-        setNotifications(JSON.parse(e.newValue));
-      }
-      if (e.key === 'achei_voce_children' && e.newValue) {
-        setChildren(JSON.parse(e.newValue));
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    if (!currentUser) return;
 
-  const triggerNotification = (notification: Omit<Notification, 'id' | 'time' | 'read'>) => {
-    const newNotif: Notification = {
-      ...notification,
-      id: Math.random().toString(36).substr(2, 9),
-      time: 'Agora',
-      read: false
-    };
-    setNotifications(prev => [newNotif, ...prev]);
+    let childrenQuery;
+    if (currentUser.role === 'authority') {
+      childrenQuery = collection(db, 'children');
+    } else {
+      childrenQuery = query(collection(db, 'children'), where('responsibleId', '==', currentUser.id));
+    }
+
+    const unsubscribe = onSnapshot(childrenQuery, (snapshot) => {
+      const childrenData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Child));
+      setChildren(childrenData);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'children');
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  // Notifications Listener
+  React.useEffect(() => {
+    if (!currentUser) return;
+
+    const notifQuery = query(
+      collection(db, 'notifications'), 
+      where('userId', '==', currentUser.id)
+    );
+
+    const unsubscribe = onSnapshot(notifQuery, (snapshot) => {
+      const notifData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Notification));
+      // Sort in memory for now or add index
+      const sortedNotifs = notifData.sort((a, b) => b.time.localeCompare(a.time));
+      setNotifications(sortedNotifs);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'notifications');
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  const triggerNotification = async (notification: Omit<Notification, 'id' | 'time' | 'read' | 'userId'>, targetUserId?: string) => {
+    const userId = targetUserId || currentUser?.id;
+    if (!userId) return;
     
-    // Also update localStorage immediately to trigger storage event in other tabs
-    const currentNotifs = JSON.parse(localStorage.getItem('achei_voce_notifications') || '[]');
-    localStorage.setItem('achei_voce_notifications', JSON.stringify([newNotif, ...currentNotifs]));
+    const newNotif: Omit<Notification, 'id'> = {
+      ...notification,
+      time: new Date().toLocaleTimeString(),
+      read: false,
+      userId: userId
+    };
+
+    try {
+      await addDoc(collection(db, 'notifications'), newNotif);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, 'notifications');
+    }
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
-  const [authorityNotes, setAuthorityNotes] = useState(() => {
-    return localStorage.getItem('achei_voce_authority_notes') || '';
-  });
+  const [authorityNotes, setAuthorityNotes] = useState('');
   const [isSharing, setIsSharing] = useState(false);
   const [newChild, setNewChild] = useState({
     name: '',
@@ -175,27 +213,29 @@ export default function App() {
     medications: '',
     disability: '',
     description: '',
-    photo: 'https://picsum.photos/seed/newchild/200',
+    photo: '',
     qrCode: '',
     responsiblePhone: ''
   });
-  const [userProfile, setUserProfile] = useState(() => {
-    const saved = localStorage.getItem('achei_voce_current_user');
-    if (saved) {
-      const user = JSON.parse(saved);
-      return {
-        name: user.name,
-        photo: user.photo || 'https://picsum.photos/seed/maria_resp/200',
-        email: user.email
-      };
-    }
-    return {
-      name: 'Maria Silva',
-      photo: 'https://picsum.photos/seed/maria_resp/200',
-      email: 'maria@exemplo.com'
-    };
+  const [userProfile, setUserProfile] = useState({
+    name: '',
+    photo: '',
+    email: '',
+    phone: ''
   });
 
+  React.useEffect(() => {
+    if (currentUser) {
+      setUserProfile({
+        name: currentUser.name,
+        photo: currentUser.photo || '',
+        email: currentUser.email,
+        phone: currentUser.phone || ''
+      });
+    }
+  }, [currentUser]);
+
+  const [isRegistering, setIsRegistering] = useState(false);
   const [regForm, setRegForm] = useState({
     name: '',
     cpf: '',
@@ -210,32 +250,6 @@ export default function App() {
     password: ''
   });
 
-  // Persistence Effects
-  React.useEffect(() => {
-    localStorage.setItem('achei_voce_children', JSON.stringify(children));
-  }, [children]);
-
-  React.useEffect(() => {
-    localStorage.setItem('achei_voce_users', JSON.stringify(users));
-  }, [users]);
-
-  React.useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem('achei_voce_current_user', JSON.stringify(currentUser));
-      setRole(currentUser.role);
-      setUserProfile({
-        name: currentUser.name,
-        photo: currentUser.photo || 'https://picsum.photos/seed/maria_resp/200',
-        email: currentUser.email
-      });
-    } else {
-      localStorage.removeItem('achei_voce_current_user');
-    }
-  }, [currentUser]);
-
-  React.useEffect(() => {
-    localStorage.setItem('achei_voce_authority_notes', authorityNotes);
-  }, [authorityNotes]);
   const [regRole, setRegRole] = useState<UserRole | null>(null);
   const [regSubRole, setRegSubRole] = useState<'guard' | 'authority' | null>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -257,14 +271,30 @@ export default function App() {
               await html5QrCode?.start(
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 250, height: 250 } },
-                (decodedText) => {
+                async (decodedText) => {
                   if (html5QrCode) {
-                    html5QrCode.stop().then(() => {
+                    try {
+                      await html5QrCode.stop();
                       setIsScanning(false);
                       setScanSuccess(true);
 
                       if (view === 'citizen_scan') {
-                        const child = children.find(c => c.id === decodedText || (decodedText.startsWith('child_id:') && c.id === decodedText.split(':')[1]) || c.qrCode === decodedText);
+                        // Look for child in existing missing list, or query by QR code
+                        let child = children.find(c => c.id === decodedText || c.qrCode === decodedText);
+                        
+                        if (!child) {
+                          try {
+                            const q = query(collection(db, 'children'), where('qrCode', '==', decodedText));
+                            const querySnapshot = await getDocs(q);
+                            if (!querySnapshot.empty) {
+                              const docSnap = querySnapshot.docs[0];
+                              child = { id: docSnap.id, ...docSnap.data() } as Child;
+                            }
+                          } catch (e) {
+                            console.error("Direct fetch failed", e);
+                          }
+                        }
+
                         if (child) {
                           setScannedChild(child);
                           if (navigator.geolocation) {
@@ -280,6 +310,7 @@ export default function App() {
                         } else {
                           alert('Criança não encontrada no sistema.');
                           setView('splash');
+                          setScanSuccess(false);
                         }
                       } else if (view === 'qr_generator' && selectedChildId) {
                         if (selectedChildId === 'TEMP_REG') {
@@ -289,14 +320,20 @@ export default function App() {
                             setScanSuccess(false);
                           }, 2000);
                         } else {
-                          setChildren(prev => prev.map(c => c.id === selectedChildId ? { ...c, qrCode: decodedText } : c));
-                          setTimeout(() => {
-                            setView('dashboard');
-                            setScanSuccess(false);
-                          }, 2000);
+                          try {
+                            await updateDoc(doc(db, 'children', selectedChildId), { qrCode: decodedText });
+                            setTimeout(() => {
+                              setView('dashboard');
+                              setScanSuccess(false);
+                            }, 2000);
+                          } catch (error) {
+                            handleFirestoreError(error, OperationType.UPDATE, `children/${selectedChildId}`);
+                          }
                         }
                       }
-                    }).catch(err => console.error("Stop failed", err));
+                    } catch (err) {
+                      console.error("Scanner stop/process failed", err);
+                    }
                   }
                 },
                 () => {}
@@ -476,28 +513,28 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 bg-brand-gradient flex flex-col p-3.5 pt-7 overflow-x-hidden"
+            className="flex-1 bg-brand-gradient flex flex-col p-2.5 pt-6 overflow-x-hidden"
           >
-            <div className="absolute top-3.5 left-3.5 z-10">
+            <div className="absolute top-2.5 left-2.5 z-10">
               <button 
                 onClick={() => setView('selection')}
-                className="w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all"
+                className="w-6 h-6 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all"
               >
-                <ChevronLeft className="w-4 h-4 text-white" />
+                <ChevronLeft className="w-3.5 h-3.5 text-white" />
               </button>
             </div>
 
-            <div className="absolute top-3.5 right-3.5 z-10">
-              <button onClick={() => setView('notifications')} className="relative w-7.5 h-7.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
-                <Bell className="w-3.5 h-3.5 text-brand-secondary fill-brand-secondary/20" />
+            <div className="absolute top-2.5 right-2.5 z-10">
+              <button onClick={() => setView('notifications')} className="relative w-6 h-6 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg active:scale-95 transition-all">
+                <Bell className="w-3 h-3 text-brand-secondary fill-brand-secondary/20" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-brand-emergency rounded-full border border-brand-dark" />
                 )}
               </button>
             </div>
 
-            <div className="flex flex-col items-center gap-1.25 mb-3.5 flex-1 justify-center overflow-y-auto scrollbar-hide">
-              <div className="w-[34vw] h-[34vw] max-w-[127px] max-h-[127px] bg-transparent flex items-center justify-center overflow-hidden relative logo-glow shrink-0">
+            <div className="flex flex-col items-center gap-1 mb-3 flex-1 justify-center overflow-y-auto scrollbar-hide">
+              <div className="w-[30vw] h-[30vw] max-w-[110px] max-h-[110px] bg-transparent flex items-center justify-center overflow-hidden relative logo-glow shrink-0">
                 <img 
                   src="https://i.postimg.cc/8ThNw3rh/teste.png" 
                   alt="Achei Você Logo" 
@@ -506,45 +543,45 @@ export default function App() {
                 />
               </div>
               <div className="text-center space-y-0.5">
-                <h1 className="text-[28px] sm:text-[34px] text-white font-black tracking-tighter">
+                <h1 className="text-[24px] sm:text-[30px] text-white font-black tracking-tighter">
                   ACHEI <span className="text-brand-secondary">VOCÊ</span>
                 </h1>
-                <p className="text-blue-100 text-[12px] font-bold tracking-[0.2em] uppercase opacity-80">Segurança Infantil</p>
+                <p className="text-blue-100 text-[10px] font-bold tracking-[0.2em] uppercase opacity-70">Segurança Infantil</p>
               </div>
-              <div className="bg-brand-icon-green text-white px-3.5 py-1 rounded-full text-[14px] sm:text-[16px] font-black flex items-center gap-1.5 mt-1 shadow-[0_0_17px_rgba(24,165,88,0.4)] border border-white/20 animate-pulse-subtle text-center">
-                <CheckCircle2 className="w-2.5 h-2.5 shrink-0" /> Localização Rápida de Crianças
+              <div className="bg-brand-icon-green text-white px-3 py-0.5 rounded-full text-[12px] font-black flex items-center gap-1.5 mt-1 shadow-lg border border-white/10 animate-pulse-subtle text-center">
+                <CheckCircle2 className="w-2.5 h-2.5 shrink-0" /> Localização Rápida
               </div>
 
-              <div className="w-full space-y-1.5 mt-3.5">
+              <div className="w-full space-y-1.25 mt-3">
                 <button 
-                  className="btn-mobile btn-emergency py-1.5 text-[15px] sm:text-[17px] animate-emergency"
+                  className="btn-mobile btn-emergency py-1.5 text-[14px] animate-emergency"
                   onClick={() => { setRole('citizen'); setView('citizen_scan'); }}
                 >
                   <Search className="w-3 h-3" />
                   ENCONTROU UMA CRIANÇA?
                 </button>
 
-                <div className="grid grid-cols-1 gap-1.5 w-full">
+                <div className="grid grid-cols-1 gap-1.25 w-full">
                   <button 
-                    className="btn-mobile btn-primary-mobile py-1.5 text-[15px]"
+                    className="btn-mobile btn-primary-mobile py-1 font-bold text-[13px]"
                     onClick={() => { setRegRole('responsible'); setView('login'); }}
                   >
                     <UserIcon className="w-3 h-3" />
                     Sou Responsável
                   </button>
                   <button 
-                    className="btn-mobile btn-success-mobile py-1.5 text-[15px]"
+                    className="btn-mobile btn-success-mobile py-1 font-bold text-[13px]"
                     onClick={() => { setRegRole('authority'); setRegSubRole('guard'); setView('login'); }}
                   >
                     <Shield className="w-3 h-3" />
                     Prefeitura / Guarda
                   </button>
                   <button 
-                    className="btn-mobile btn-secondary-mobile py-1.5 text-[15px]"
+                    className="btn-mobile btn-secondary-mobile py-1 font-bold text-[13px]"
                     onClick={() => { setRegRole('authority'); setRegSubRole('authority'); setView('login'); }}
                   >
                     <Siren className="w-3 h-3" />
-                    Autoridades
+                    Autoridade Policial
                   </button>
                 </div>
               </div>
@@ -603,24 +640,24 @@ export default function App() {
                   value={regForm.name}
                   onChange={(e) => setRegForm({...regForm, name: e.target.value})}
                   placeholder={regRole === 'responsible' ? "Digite seu nome" : "Ex: Guarda Municipal / Polícia"}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[14px]"
                 />
               </div>
 
               {regRole === 'responsible' ? (
                 <div className="space-y-1">
-                  <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">CPF</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">CPF</label>
                   <input 
                     type="text" 
                     value={regForm.cpf}
                     onChange={(e) => setRegForm({...regForm, cpf: e.target.value})}
                     placeholder="000.000.000-00"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-2 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[14px]"
                   />
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                     {regSubRole === 'guard' ? 'CNPJ' : 'Departamento'}
                   </label>
                   <input 
@@ -628,13 +665,13 @@ export default function App() {
                     value={regForm.registrationId}
                     onChange={(e) => setRegForm({...regForm, registrationId: e.target.value})}
                     placeholder={regSubRole === 'guard' ? "00.000.000/0000-00" : "Ex: Divisão de Busca"}
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-2 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[14px]"
                   />
                 </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">
+                <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">
                   {regRole === 'responsible' ? 'Celular' : 'Nome do Responsável / Agente'}
                 </label>
                 <input 
@@ -642,42 +679,42 @@ export default function App() {
                   value={regForm.phone}
                   onChange={(e) => setRegForm({...regForm, phone: e.target.value})}
                   placeholder={regRole === 'responsible' ? "(00) 00000-0000" : "Digite o nome completo"}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[14px]"
                 />
               </div>
 
               {regRole !== 'responsible' && (
                 <div className="space-y-1">
-                  <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">Matrícula / ID Funcional</label>
+                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Matrícula / ID Funcional</label>
                   <input 
                     type="text" 
                     value={regForm.registrationId}
                     onChange={(e) => setRegForm({...regForm, registrationId: e.target.value})}
                     placeholder="Digite seu ID"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
+                    className="w-full bg-white/10 border border-white/20 rounded-2xl py-2 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[14px]"
                   />
                 </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
+                <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">E-mail</label>
                 <input 
                   type="email" 
                   value={regForm.email}
                   onChange={(e) => setRegForm({...regForm, email: e.target.value})}
                   placeholder="seu@email.com"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[14px]"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[8.5px] font-bold uppercase opacity-60 ml-1 tracking-widest">Senha</label>
+                <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Senha</label>
                 <input 
                   type="password" 
                   value={regForm.password}
                   onChange={(e) => setRegForm({...regForm, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-1.5 px-3.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[10.7px]"
+                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-2 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-brand-secondary transition-colors text-[14px]"
                 />
               </div>
             </div>
@@ -689,43 +726,63 @@ export default function App() {
                   regRole === 'responsible' ? "btn-primary-mobile" : 
                   regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
                 )}
-                onClick={() => { 
+                disabled={isRegistering}
+                onClick={async () => { 
                   if (!regForm.email || !regForm.password || !regForm.name) {
-                    alert('Por favor, preencha os campos obrigatórios.');
-                    return;
-                  }
-                  
-                  if (users.find(u => u.email === regForm.email)) {
-                    alert('Este e-mail já está cadastrado. Por favor, faça login.');
-                    setView('login');
+                    alert('Por favor, preencha os campos obrigatórios (E-mail, Senha e Nome).');
                     return;
                   }
 
-                  const newUser: User = {
-                    id: Math.random().toString(36).substr(2, 9),
-                    name: regForm.name,
-                    email: regForm.email,
-                    password: regForm.password,
-                    role: regRole!,
-                    subRole: regSubRole || undefined,
-                    cpf: regForm.cpf,
-                    phone: regForm.phone,
-                    registrationId: regForm.registrationId
-                  };
+                  if (regForm.password.length < 6) {
+                    alert('A senha deve ter pelo menos 6 caracteres.');
+                    return;
+                  }
                   
-                  const updatedUsers = [...users, newUser];
-                  setUsers(updatedUsers);
-                  localStorage.setItem('achei_voce_users', JSON.stringify(updatedUsers));
-                  
-                  setCurrentUser(newUser);
-                  localStorage.setItem('achei_voce_current_user', JSON.stringify(newUser));
-                  
-                  setRole(newUser.role);
-                  setRegForm({ name: '', cpf: '', phone: '', email: '', password: '', registrationId: '' });
-                  setView('dashboard'); 
+                  setIsRegistering(true);
+                  try {
+                    const cleanEmail = regForm.email.trim();
+                    const cleanName = regForm.name.trim();
+
+                    const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, regForm.password);
+                    const firebaseUser = userCredential.user;
+                    
+                    const newUser: User = {
+                      id: firebaseUser.uid,
+                      name: cleanName,
+                      email: cleanEmail,
+                      role: regRole!,
+                      cpf: regForm.cpf.trim(),
+                      phone: regForm.phone.trim(),
+                      registrationId: regForm.registrationId.trim()
+                    };
+
+                    if (regSubRole) {
+                      newUser.subRole = regSubRole;
+                    }
+                    
+                    await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
+                    setCurrentUser(newUser);
+                    setRole(regRole);
+                    setRegForm({ name: '', cpf: '', phone: '', email: '', password: '', registrationId: '' });
+                    setView('dashboard'); 
+                  } catch (error: any) {
+                    console.error("Registration error:", error);
+                    if (error.code === 'auth/email-already-in-use') {
+                      alert('Este e-mail já está cadastrado. Por favor, faça login.');
+                      setView('login');
+                    } else if (error.code === 'auth/invalid-email') {
+                      alert('E-mail inválido.');
+                    } else if (error.code === 'auth/weak-password') {
+                      alert('A senha é muito fraca.');
+                    } else {
+                      alert('Erro ao criar conta: ' + (error.message || 'Erro desconhecido'));
+                    }
+                  } finally {
+                    setIsRegistering(false);
+                  }
                 }}
               >
-                Concluir Cadastro
+                {isRegistering ? 'Criando Conta...' : 'Concluir Cadastro'}
               </button>
               <button 
                 className="w-[85%] mx-auto py-1.5 text-[13.9px] font-bold text-white/60 hover:text-white transition-colors"
@@ -788,33 +845,41 @@ export default function App() {
                     regRole === 'responsible' ? "btn-primary-mobile" : 
                     regSubRole === 'guard' ? "btn-success-mobile" : "btn-secondary-mobile"
                   )}
-                  onClick={() => { 
-                    const user = users.find(u => u.email === loginForm.email && u.password === loginForm.password);
-                    if (user) {
-                      // Check if user role matches the intended login panel
-                      if (user.role !== regRole) {
-                        const roleName = user.role === 'responsible' ? 'Responsável' : 'Autoridade';
-                        alert(`Acesso Negado: Esta conta foi cadastrada como "${roleName}". Por favor, use o botão correto na tela inicial.`);
-                        return;
-                      }
+                  onClick={async () => { 
+                    try {
+                      const userCredential = await signInWithEmailAndPassword(auth, loginForm.email, loginForm.password);
+                      const firebaseUser = userCredential.user;
                       
-                      // If it's an authority, check if subRole matches (Guard vs Authority)
-                      if (user.role === 'authority' && user.subRole !== regSubRole) {
-                        const subRoleName = user.subRole === 'guard' ? 'Prefeitura / Guarda' : 'Autoridades';
-                        alert(`Acesso Negado: Esta conta pertence ao painel de "${subRoleName}".`);
-                        return;
-                      }
+                      const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+                      if (userDoc.exists()) {
+                        const user = userDoc.data() as User;
+                        
+                        if (user.role !== regRole) {
+                          const roleName = user.role === 'responsible' ? 'Responsável' : 'Autoridade';
+                          alert(`Acesso Negado: Esta conta foi cadastrada como "${roleName}". Por favor, use o botão correto na tela inicial.`);
+                          await signOut(auth);
+                          return;
+                        }
+                        
+                        if (user.role === 'authority' && user.subRole !== regSubRole) {
+                          const subRoleName = user.subRole === 'guard' ? 'Prefeitura / Guarda' : 'Autoridades';
+                          alert(`Acesso Negado: Esta conta pertence ao painel de "${subRoleName}".`);
+                          await signOut(auth);
+                          return;
+                        }
 
-                      setCurrentUser(user);
-                      setRole(user.role);
-                      setView('dashboard');
-                    } else {
-                      // Check if email exists but password is wrong
-                      const emailExists = users.find(u => u.email === loginForm.email);
-                      if (emailExists) {
-                        alert('Senha incorreta. Por favor, tente novamente.');
+                        setCurrentUser(user);
+                        setRole(user.role);
+                        setView('dashboard');
                       } else {
-                        alert('E-mail não encontrado. Por favor, cadastre-se primeiro.');
+                        alert('Cadastro incompleto. Por favor, entre em contato com o suporte.');
+                        await signOut(auth);
+                      }
+                    } catch (error: any) {
+                      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                        alert('E-mail ou senha incorretos.');
+                      } else {
+                        alert('Erro ao fazer login: ' + error.message);
                       }
                     }
                   }}
@@ -840,86 +905,95 @@ export default function App() {
             className="flex-1 flex flex-col bg-brand-gradient text-white overflow-x-hidden"
           >
             {/* Header */}
-            <div className="p-2.5 pt-6 flex justify-between items-center bg-transparent border-b border-white/10 shrink-0">
-              <button onClick={() => setView('splash')} className="w-6.5 h-6.5 sm:w-8.5 sm:h-8.5 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shadow-inner group active:scale-95 transition-all overflow-hidden shrink-0">
+            <div className="p-2 pt-4 flex justify-between items-center bg-transparent border-b border-white/5 shrink-0">
+              <button onClick={() => setView('splash')} className="w-6 h-6 sm:w-7.5 sm:h-7.5 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shadow-inner group active:scale-95 transition-all overflow-hidden shrink-0">
                 <img 
                   src="https://i.postimg.cc/8ThNw3rh/teste.png" 
                   alt="Logo" 
-                  className="w-5 h-5 sm:w-6.5 sm:h-6.5 object-contain"
+                  className="w-4.5 h-4.5 sm:w-6 sm:h-6 object-contain"
                   referrerPolicy="no-referrer"
                 />
               </button>
-              <h2 className="text-[16px] sm:text-[18px] font-bold">Dashboard</h2>
+              <h2 className="text-[14px] sm:text-[16px] font-bold opacity-80 uppercase tracking-widest text-white/90">Painel de Controle</h2>
               <div className="flex items-center gap-1.5 shrink-0">
                 <button onClick={() => setView('notifications')} className="relative">
-                  <Bell className="w-3.5 h-3.5 sm:w-4.25 sm:h-4.25 text-brand-secondary fill-brand-secondary/20" />
+                  <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-secondary fill-brand-secondary/20" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 w-1.25 h-1.25 bg-brand-emergency rounded-full border border-brand-dark" />
                   )}
                 </button>
-                <button onClick={() => setView('settings')}><Settings className="w-3.5 h-3.5 sm:w-4.25 sm:h-4.25 text-white/60" /></button>
+                <button onClick={() => setView('settings')}><Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/60" /></button>
               </div>
             </div>
 
-            <div className="p-3 min-h-0 space-y-2.5 overflow-y-auto flex-1 scrollbar-hide">
+            <div className="p-2.5 min-h-0 space-y-2 overflow-y-auto flex-1 scrollbar-hide">
               {/* Profile Card */}
-              <div className="flex items-center gap-2">
-                <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-full border-2 border-white/20 shadow-lg overflow-hidden relative group shrink-0">
-                  <img src={userProfile.photo} alt={userProfile.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-full border border-white/20 shadow-lg overflow-hidden relative group shrink-0">
+                  {userProfile.photo ? (
+                    <img src={userProfile.photo} alt={userProfile.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  ) : (
+                    <div className="w-full h-full bg-brand-primary/10 flex items-center justify-center">
+                      <UserIcon className="w-4 h-4 text-brand-primary" />
+                    </div>
+                  )}
                   <button 
                     onClick={() => setView('settings')}
                     className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <Camera className="w-2.5 h-2.5 text-white" />
+                    <Camera className="w-2 h-2 text-white" />
                   </button>
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-[18px] sm:text-[20px] text-white truncate font-bold">{userProfile.name}</h3>
-                  <p className="text-white/60 text-[14px] sm:text-[15px] uppercase tracking-widest">{role === 'responsible' ? 'Responsável' : 'Autoridade'}</p>
+                  <h3 className="text-[15px] sm:text-[17px] text-white truncate font-bold leading-tight">{userProfile.name}</h3>
+                  <p className="text-white/40 text-[10px] sm:text-[11px] uppercase tracking-[0.2em]">{role === 'responsible' ? 'Responsável' : 'Autoridade'}</p>
                 </div>
               </div>
 
               {/* Children List */}
-              <div className="space-y-2">
-                <h4 className="text-[14px] sm:text-[15px] font-bold text-white/40 uppercase tracking-widest ml-1">Minhas Crianças</h4>
-                <div className="space-y-1.5">
+              <div className="space-y-1.5">
+                <div className="flex items-baseline justify-between ml-1">
+                  <h4 className="text-[11px] sm:text-[12px] font-black text-white/30 uppercase tracking-[0.25em]">Crianças e Pets</h4>
+                  <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{children.filter(child => child.responsibleId === currentUser?.id).length} Cadastros</span>
+                </div>
+                <div className="space-y-1">
                   {children.filter(child => child.responsibleId === currentUser?.id).map((child) => (
                     <button 
                       key={child.id} 
                       onClick={() => { setSelectedChildId(child.id); setView('child_details'); }}
-                      className="w-[85%] mx-auto bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow flex items-center gap-2 text-left active:bg-white/10 transition-colors"
+                      className="w-full bg-white/5 p-1 rounded-xl border border-white/10 card-shadow flex items-center gap-2 text-left active:bg-white/10 transition-colors"
                     >
-                      <div className="w-7 h-7 rounded-lg overflow-hidden border border-white/20 shrink-0">
+                      <div className="w-6 h-6 rounded-lg overflow-hidden border border-white/10 shrink-0">
                         <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-[14px] font-bold truncate">{child.name}</h4>
+                        <h4 className="text-[13px] font-bold truncate leading-none mb-0.5">{child.name}</h4>
                         <div className={cn(
-                          "flex items-center gap-1 text-[10px] font-bold",
-                          child.status === 'safe' ? "text-brand-icon-green" : "text-brand-emergency"
+                          "flex items-center gap-1 text-[9px] font-bold",
+                          child.status === 'safe' ? "text-brand-icon-green/80" : "text-brand-emergency"
                         )}>
                           <div className={cn(
-                            "w-0.75 h-0.75 rounded-full",
+                            "w-1 h-1 rounded-full",
                             child.status === 'safe' ? "bg-brand-icon-green animate-pulse" : "bg-brand-emergency animate-pulse"
                           )} />
-                          {child.status === 'safe' ? 'Seguro • Pulseira Ativa' : 'DESAPARECIDO'}
+                          {child.status === 'safe' ? 'Seguro • Ativo' : 'DESAPARECIDO'}
                         </div>
                       </div>
-                      <div className="p-1 bg-white/10 rounded-lg shrink-0"><ChevronLeft className="w-2 h-2 rotate-180" /></div>
+                      <div className="p-1 bg-white/5 rounded-lg shrink-0"><ChevronLeft className="w-1.5 h-1.5 rotate-180 opacity-30" /></div>
                     </button>
                   ))}
                 </div>
                 {children.filter(child => child.responsibleId === currentUser?.id).length === 0 && (
-                  <div className="py-5 text-center space-y-1.5 opacity-30">
-                    <Plus className="w-6 h-6 mx-auto" />
-                    <p className="text-[13px] font-bold">Nenhuma criança cadastrada.</p>
+                  <div className="py-3 text-center space-y-1 opacity-20 border border-dashed border-white/10 rounded-xl">
+                    <Plus className="w-4 h-4 mx-auto" />
+                    <p className="text-[11px] font-bold">Nenhum cadastro ativo.</p>
                   </div>
                 )}
               </div>
 
               {/* QR & Summary Grid */}
-              <div className="grid grid-cols-2 gap-2">
-                <div className="qr-container card-shadow p-1.5 h-28 flex flex-col justify-center items-center text-center" onClick={() => {
+              <div className="grid grid-cols-2 gap-1.5">
+                <div className="bg-white/5 border border-white/10 rounded-xl card-shadow p-2 h-20 flex flex-col justify-center items-center text-center active:scale-95 transition-transform" onClick={() => {
                   const userChildren = children.filter(c => c.responsibleId === currentUser?.id);
                   if (userChildren.length === 0) {
                     setView('register_child');
@@ -932,14 +1006,14 @@ export default function App() {
                     alert('Selecione a criança na lista acima para vincular a pulseira.');
                   }
                 }}>
-                  <p className="text-[13px] font-bold text-white/60 mb-1">Vincular Pulseira</p>
-                  <div className="p-1 bg-white/10 rounded-xl">
-                    <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-brand-secondary" />
+                  <p className="text-[11px] font-bold text-white/40 mb-1.5 uppercase tracking-widest">Vincular QR</p>
+                  <div className="p-1.5 bg-white/5 rounded-lg border border-white/10">
+                    <QrCode className="w-3.5 h-3.5 text-brand-secondary" />
                   </div>
                 </div>
-                <div className="bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow h-28 flex flex-col justify-center items-center text-center">
-                  <p className="text-[13px] font-bold text-white/60 mb-0.5">Total de Crianças</p>
-                  <div className="text-lg sm:text-[19px] font-black text-brand-primary">
+                <div className="bg-white/5 p-2 rounded-xl border border-white/10 card-shadow h-20 flex flex-col justify-center items-center text-center">
+                  <p className="text-[11px] font-bold text-white/40 mb-0.5 uppercase tracking-widest">Cadastrados</p>
+                  <div className="text-xl font-black text-brand-secondary/80">
                     {children.filter(child => child.responsibleId === currentUser?.id).length}
                   </div>
                 </div>
@@ -947,7 +1021,7 @@ export default function App() {
 
               {/* Emergency Button */}
               <button 
-                className="btn-mobile btn-emergency py-2 sm:py-2.5 flex-row gap-2 shadow-2xl shadow-red-900/20"
+                className="btn-mobile !bg-brand-emergency/10 border border-brand-emergency/20 text-brand-emergency py-2 flex-row gap-2 shadow-lg active:scale-95 transition-all w-[90%] mx-auto rounded-2xl"
                 onClick={() => {
                   const userChildren = children.filter(c => c.responsibleId === currentUser?.id);
                   if (userChildren.length === 1) {
@@ -960,62 +1034,58 @@ export default function App() {
                   setView('emergency');
                 }}
               >
-                <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="text-[15px] sm:text-[17px]">Botão de Emergência</span>
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span className="text-[14px] font-bold uppercase tracking-wider">Pânico / Emergência</span>
               </button>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-2 gap-2">
-                <button className="bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow flex items-center gap-1.5 justify-center">
-                  <div className="p-1 bg-white/10 rounded-full shrink-0"><History className="w-2.5 h-2.5 text-white/60" /></div>
-                  <span className="text-[13px] font-bold truncate">Histórico</span>
+              <div className="grid grid-cols-2 gap-1.5 w-[90%] mx-auto">
+                <button className="bg-white/5 p-1 rounded-xl border border-white/10 card-shadow flex items-center gap-1.5 justify-center opacity-60">
+                  <History className="w-2.5 h-2.5 text-white/40" />
+                  <span className="text-[11px] font-bold truncate">Histórico</span>
                 </button>
-                <button className="bg-white/5 p-1.5 rounded-2xl border border-white/10 card-shadow flex items-center gap-1.5 justify-center" onClick={() => setView('settings')}>
-                  <div className="p-1 bg-brand-success/20 rounded-full shrink-0"><Settings className="w-2.5 h-2.5 text-brand-success" /></div>
-                  <span className="text-[13px] font-bold truncate">Configurações</span>
+                <button className="bg-white/5 p-1 rounded-xl border border-white/10 card-shadow flex items-center gap-1.5 justify-center" onClick={() => setView('settings')}>
+                  <Settings className="w-2.5 h-2.5 text-white/40" />
+                  <span className="text-[11px] font-bold truncate">Configurações</span>
                 </button>
               </div>
 
               {/* Bottom Sections from Image */}
-              <div className="space-y-2 pt-1">
-                <h4 className="text-[14px] sm:text-[15px] font-bold text-white/40 uppercase tracking-widest ml-1">Para Responsáveis</h4>
-                <div className="space-y-1.5">
+              <div className="space-y-1.5 pt-0.5 pb-2">
+                <h4 className="text-[11px] font-black text-white/30 uppercase tracking-[0.25em] ml-2">Ações Rápidas</h4>
+                <div className="space-y-1">
                   <ActionCard 
-                    icon={<UserIcon className="text-brand-secondary w-3 h-3" />} 
-                    title="Cadastrar Criança" 
+                    icon={<UserIcon className="text-brand-secondary w-2.5 h-2.5" />} 
+                    title="Adicionar Novo Perfil" 
                     onClick={() => setView('register_child')}
                   />
                   <ActionCard 
-                    icon={<QrCode className="text-brand-icon-green w-3 h-3" />} 
-                    title="Vincular QR Code" 
+                    icon={<QrCode className="text-brand-icon-green w-2.5 h-2.5" />} 
+                    title="Configurar Pulseira" 
                     onClick={() => setView('qr_generator')}
-                  />
-                  <ActionCard 
-                    icon={<MapIcon className="text-brand-primary w-3 h-3" />} 
-                    title="Modo Evento" 
-                    onClick={() => {}}
                   />
                 </div>
               </div>
             </div>
 
             {/* Bottom Nav */}
-            <div className="glass-nav p-1.5 sm:p-2.5 flex justify-around items-center shrink-0">
-              <button onClick={() => setView('dashboard')} className={cn(view === 'dashboard' ? "text-white" : "text-white/40")}><MapIcon className="w-3.5 h-3.5" /></button>
-              <button onClick={() => setView('notifications')} className={cn("relative", view === 'notifications' ? "text-white" : "text-white/40")}>
-                <Bell className="w-3.5 h-3.5" />
+            <div className="glass-nav p-1 flex justify-around items-center shrink-0 border-t border-white/5 h-12">
+              <button onClick={() => setView('dashboard')} className={cn(view === 'dashboard' ? "text-brand-primary" : "text-white/20")}><MapIcon className="w-4 h-4" /></button>
+              <button onClick={() => setView('notifications')} className={cn("relative", view === 'notifications' ? "text-brand-primary" : "text-white/20")}>
+                <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-brand-emergency rounded-full border border-brand-dark" />
+                  <span className="absolute top-0 -right-0.5 w-1.5 h-1.5 bg-brand-emergency rounded-full border border-brand-dark" />
                 )}
               </button>
+              <div className="w-10" /> {/* Spacer for Floating Button */}
               <button 
                 onClick={() => setView('register_child')}
-                className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-brand-primary rounded-full flex items-center justify-center -mt-6 sm:-mt-7.5 shadow-2xl border-4 border-brand-dark active:scale-90 transition-transform shrink-0"
+                className="absolute left-1/2 -translate-x-1/2 -top-4 w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center shadow-xl border-4 border-brand-dark active:scale-90 transition-transform z-10"
               >
-                <Plus className="text-white w-4.25 h-4.25 sm:w-5 sm:h-5" />
+                <Plus className="text-white w-5 h-5" />
               </button>
-              <button className="text-white/40"><History className="w-3.5 h-3.5" /></button>
-              <button onClick={() => setView('settings')} className={cn(view === 'settings' ? "text-white" : "text-white/40")}><UserIcon className="w-3.5 h-3.5" /></button>
+              <button className="text-white/20"><History className="w-4 h-4" /></button>
+              <button onClick={() => setView('settings')} className={cn(view === 'settings' ? "text-brand-primary" : "text-white/20")}><UserIcon className="w-4 h-4" /></button>
             </div>
           </motion.div>
         )}
@@ -1048,76 +1118,79 @@ export default function App() {
               </div>
             </div>
 
-            <div className="p-2.5 sm:p-5 min-h-0 space-y-4 overflow-y-auto flex-1 scrollbar-hide">
+            <div className="p-2.5 sm:p-5 min-h-0 space-y-3 overflow-y-auto flex-1 scrollbar-hide">
               <button 
                 onClick={() => setIsAuthorityOnline(!isAuthorityOnline)}
                 className={cn(
-                  "w-[85%] mx-auto p-3.5 sm:p-5 rounded-[17px] sm:rounded-[27px] shadow-xl flex items-center justify-between transition-all active:scale-95",
-                  isAuthorityOnline ? "bg-brand-primary" : "bg-white/10 border border-white/20"
+                  "w-[90%] mx-auto p-2.5 rounded-2xl shadow-xl flex items-center justify-between transition-all active:scale-95",
+                  isAuthorityOnline ? "bg-brand-primary" : "bg-white/5 border border-white/10"
                 )}
               >
-                <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+                <div className="flex items-center gap-2.5 min-w-0">
                   <div className={cn(
-                    "w-8.5 h-8.5 sm:w-13.5 sm:h-13.5 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0",
+                    "w-8 h-8 rounded-xl flex items-center justify-center shrink-0",
                     isAuthorityOnline ? "bg-white/20" : "bg-white/5"
                   )}>
-                    <Shield className={cn("w-4 h-4 sm:w-7 sm:h-7", isAuthorityOnline ? "text-white" : "text-white/40")} />
+                    <Shield className={cn("w-4 h-4", isAuthorityOnline ? "text-white" : "text-white/40")} />
                   </div>
                   <div className="text-left min-w-0">
-                    <h3 className="text-[18px] sm:text-[26px] font-bold truncate">Guarda Municipal</h3>
-                    <p className={cn("text-[12px] sm:text-[16px] truncate", isAuthorityOnline ? "text-blue-200" : "text-white/40")}>
+                    <h3 className="text-[15px] font-bold truncate leading-tight">Guarda Municipal</h3>
+                    <p className={cn("text-[11px] truncate opacity-60", isAuthorityOnline ? "text-blue-100" : "text-white/40")}>
                       Unidade Centro • {isAuthorityOnline ? 'Online' : 'Offline'}
                     </p>
                   </div>
                 </div>
                 <div className={cn(
-                  "w-7.5 h-3.5 sm:w-10 sm:h-5 rounded-full relative transition-colors shrink-0",
+                  "w-8 h-4 rounded-full relative transition-colors shrink-0",
                   isAuthorityOnline ? "bg-brand-icon-green" : "bg-white/20"
                 )}>
                   <motion.div 
-                    animate={{ x: isAuthorityOnline ? (window.innerWidth < 400 ? 15 : 20) : 3 }}
-                    className="absolute top-1 w-2 h-2 sm:w-3.5 sm:h-3.5 bg-white rounded-full shadow-md"
+                    animate={{ x: isAuthorityOnline ? 18 : 3 }}
+                    className="absolute top-0.75 w-2.5 h-2.5 bg-white rounded-full shadow-md"
                   />
                 </div>
               </button>
 
-              <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+              <div className="grid grid-cols-1 gap-1.5 w-[90%] mx-auto">
                 <button 
                   onClick={() => setView('authority_alerts')}
-                  className="bg-white/5 p-3.5 sm:p-5 rounded-[20px] sm:rounded-[27px] border border-white/10 card-shadow flex flex-col items-center gap-1.5 sm:gap-2.5 text-center active:bg-white/10 transition-all aspect-square justify-center"
+                  className="bg-white/5 p-1.5 rounded-xl border border-white/10 card-shadow flex items-center gap-2 active:bg-white/10 transition-all"
                 >
-                  <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-red-100/20 text-brand-emergency rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
-                    <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <div className="w-7 h-7 bg-brand-emergency/20 text-brand-emergency rounded-lg flex items-center justify-center shrink-0">
+                    <AlertTriangle className="w-3.5 h-3.5" />
                   </div>
-                  <span className="font-bold text-white/80 text-[16px] sm:text-[18px]">Alertas</span>
+                  <div className="text-left">
+                    <span className="font-bold text-white/90 text-[13px]">Alertas Ativos</span>
+                    <p className="text-[9px] text-white/40 uppercase tracking-widest leading-none mt-0.5">Verificar Ocorrências</p>
+                  </div>
                 </button>
-                <button className="bg-white/5 p-3.5 sm:p-5 rounded-[20px] sm:rounded-[27px] border border-white/10 card-shadow flex flex-col items-center gap-1.5 sm:gap-2.5 text-center active:bg-white/10 transition-all aspect-square justify-center">
-                  <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-blue-100/20 text-brand-primary rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
-                    <MapIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <button className="bg-white/5 p-1.5 rounded-xl border border-white/10 card-shadow flex items-center gap-2 active:bg-white/10 transition-all">
+                  <div className="w-7 h-7 bg-brand-primary/20 text-brand-primary rounded-lg flex items-center justify-center shrink-0">
+                    <MapIcon className="w-3.5 h-3.5" />
                   </div>
-                  <span className="font-bold text-white/80 text-[16px] sm:text-[18px]">Mapa</span>
-                </button>
-                <button className="bg-white/5 p-3.5 sm:p-5 rounded-[20px] sm:rounded-[27px] border border-white/10 card-shadow flex flex-col items-center gap-1.5 sm:gap-2.5 text-center active:bg-white/10 transition-all aspect-square justify-center">
-                  <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-orange-100/20 text-brand-secondary rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
-                    <UserIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <div className="text-left">
+                    <span className="font-bold text-white/90 text-[13px]">Mapa de Calor</span>
+                    <p className="text-[9px] text-white/40 uppercase tracking-widest leading-none mt-0.5">Visualizar Região</p>
                   </div>
-                  <span className="font-bold text-white/80 text-[16px] sm:text-[18px]">Atendimentos</span>
                 </button>
                 <button 
                   onClick={() => setView('authority_reports')}
-                  className="bg-white/5 p-3.5 sm:p-5 rounded-[20px] sm:rounded-[27px] border border-white/10 card-shadow flex flex-col items-center gap-1.5 sm:gap-2.5 text-center active:bg-white/10 transition-all aspect-square justify-center"
+                  className="bg-white/5 p-1.5 rounded-xl border border-white/10 card-shadow flex items-center gap-2 active:bg-white/10 transition-all"
                 >
-                  <div className="w-8.5 h-8.5 sm:w-10 sm:h-10 bg-white/10 text-white/60 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
-                    <History className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <div className="w-7 h-7 bg-brand-secondary/20 text-brand-secondary rounded-lg flex items-center justify-center shrink-0">
+                    <UserIcon className="w-3.5 h-3.5" />
                   </div>
-                  <span className="font-bold text-white/80 text-[16px] sm:text-[18px]">Relatórios</span>
+                  <div className="text-left">
+                    <span className="font-bold text-white/90 text-[13px]">Atendimentos</span>
+                    <p className="text-[9px] text-white/40 uppercase tracking-widest leading-none mt-0.5">Relatórios do Turno</p>
+                  </div>
                 </button>
               </div>
 
-              <div className="space-y-3.5">
+              <div className="space-y-2 mt-2">
                 <div className="flex justify-between items-center px-1">
-                  <h4 className="text-[13px] sm:text-[16px] font-bold text-white/40 uppercase tracking-widest">Ocorrências Ativas</h4>
-                  <span className="px-1.5 py-0.5 bg-brand-emergency/20 text-brand-emergency text-[13px] font-black rounded-full">
+                  <h4 className="text-[12px] font-bold text-white/40 uppercase tracking-widest">Ocorrências Ativas</h4>
+                  <span className="px-1.5 py-0.5 bg-brand-emergency/20 text-brand-emergency text-[10px] font-black rounded-full">
                     {children.filter(c => c.status === 'missing').length} ATIVAS
                   </span>
                 </div>
@@ -1482,27 +1555,40 @@ export default function App() {
 
                   <div className="pt-3.5 pb-10 shrink-0">
                     <button 
-                      onClick={() => {
+                      onClick={async () => {
                         if (!foundLocationForm.address) {
                           alert('Por favor, informe a localização onde a criança foi encontrada.');
                           return;
                         }
                         
-                        setChildren(prev => prev.map(c => c.id === child.id ? { 
-                          ...c, 
-                          status: 'safe',
-                          foundLocation: {
-                            lat: -22.5312, // Mock lat
-                            lng: -43.7289, // Mock lng
-                            address: foundLocationForm.address
-                          },
-                          foundTime: new Date(),
-                          description: c.description + (foundLocationForm.notes ? `\n\nObs Encontro: ${foundLocationForm.notes}` : '')
-                        } : c));
-                        
-                        alert(`SUCESSO!\n\nO encontro de ${child.name} foi registrado. O responsável será notificado imediatamente.`);
-                        setFoundLocationForm({ address: '', notes: '' });
-                        setView('authority_dashboard');
+                        try {
+                          await updateDoc(doc(db, 'children', child.id), { 
+                            status: 'safe',
+                            foundLocation: {
+                              lat: -22.5312, // Mock lat
+                              lng: -43.7289, // Mock lng
+                              address: foundLocationForm.address
+                            },
+                            foundTime: new Date().toISOString(),
+                            description: child.description + (foundLocationForm.notes ? `\n\nObs Encontro: ${foundLocationForm.notes}` : '')
+                          });
+                          
+                          // Notify parent
+                          if (child.responsibleId) {
+                            await triggerNotification({
+                              title: 'CRIANÇA ENCONTRADA!',
+                              message: `${child.name} foi localizado e está em segurança.`,
+                              type: 'success',
+                              childId: child.id
+                            }, child.responsibleId);
+                          }
+
+                          alert(`SUCESSO!\n\nO encontro de ${child.name} foi registrado. O responsável será notificado imediatamente.`);
+                          setFoundLocationForm({ address: '', notes: '' });
+                          setView('authority_dashboard');
+                        } catch (error) {
+                          handleFirestoreError(error, OperationType.UPDATE, `children/${child.id}`);
+                        }
                       }}
                       className="btn-mobile btn-success-mobile py-2.5 font-black uppercase tracking-widest text-[17px] sm:text-[19px] shadow-xl"
                     >
@@ -1792,16 +1878,32 @@ export default function App() {
                 <button 
                   className="btn-mobile btn-primary-mobile py-2 sm:py-3 text-[14px] sm:text-[16px]"
                   disabled={manualCode.length < 8 || isScanning}
-                  onClick={() => {
+                  onClick={async () => {
                     if (selectedChildId && manualCode.length >= 4) {
-                      setChildren(prev => prev.map(c => c.id === selectedChildId ? { ...c, qrCode: manualCode } : c));
                       setIsScanning(true);
-                      setTimeout(() => {
+                      
+                      try {
+                        if (selectedChildId === 'TEMP_REG') {
+                          setNewChild(prev => ({ ...prev, qrCode: manualCode }));
+                          setTimeout(() => {
+                            setIsScanning(false);
+                            setScanSuccess(true);
+                            setManualCode('');
+                            setView('register_child');
+                          }, 1500);
+                        } else {
+                          await updateDoc(doc(db, 'children', selectedChildId), { qrCode: manualCode });
+                          setTimeout(() => {
+                            setIsScanning(false);
+                            setScanSuccess(true);
+                            setManualCode('');
+                            setView('dashboard');
+                          }, 1500);
+                        }
+                      } catch (error) {
                         setIsScanning(false);
-                        setScanSuccess(true);
-                        setManualCode('');
-                        setView('qr_generator');
-                      }, 1500);
+                        handleFirestoreError(error, OperationType.UPDATE, `children/${selectedChildId}`);
+                      }
                     } else {
                       alert('Por favor, digite um código válido.');
                     }
@@ -1839,7 +1941,13 @@ export default function App() {
               <div className="flex flex-col items-center gap-1.5">
                 <div className="relative">
                   <div className="w-17 h-17 sm:w-24 sm:h-24 rounded-full border-4 border-brand-secondary shadow-2xl overflow-hidden bg-white/10">
-                    <img src={userProfile.photo} alt="Profile" className="w-full h-full object-cover" />
+                    {userProfile.photo ? (
+                      <img src={userProfile.photo} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <UserIcon className="w-8 h-8 opacity-20" />
+                      </div>
+                    )}
                   </div>
                   <label className="absolute bottom-0 right-0 w-5 h-5 sm:w-7 sm:h-7 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
                     <Camera className="w-2 h-2 sm:w-3.5 sm:h-3.5 text-white" />
@@ -1850,8 +1958,12 @@ export default function App() {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const url = URL.createObjectURL(file);
-                          setUserProfile(prev => ({ ...prev, photo: url }));
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            const base64String = reader.result as string;
+                            setUserProfile(prev => ({ ...prev, photo: base64String }));
+                          };
+                          reader.readAsDataURL(file);
                         }
                       }}
                     />
@@ -1921,46 +2033,39 @@ export default function App() {
             <div className="pt-2.5 space-y-1.5 sm:space-y-2.5 shrink-0">
               <button 
                 className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3 text-[14px] sm:text-[16px]"
-                onClick={() => {
+                onClick={async () => {
                   if (currentUser) {
-                    const updatedUser = {
-                      ...currentUser,
-                      name: userProfile.name,
-                      email: userProfile.email,
-                      photo: userProfile.photo,
-                      phone: userProfile.phone
-                    };
-                    setUsers(prev => prev.map(u => u.id === currentUser.id ? updatedUser : u));
-                    setCurrentUser(updatedUser);
-                    alert('Configurações salvas com sucesso!');
-                    setView('dashboard');
+                    try {
+                      const updatedData = {
+                        name: userProfile.name,
+                        photo: userProfile.photo,
+                        phone: userProfile.phone
+                      };
+                      await updateDoc(doc(db, 'users', currentUser.id), updatedData);
+                      setCurrentUser(prev => prev ? { ...prev, ...updatedData } : null);
+                      alert('Configurações salvas com sucesso!');
+                      setView('dashboard');
+                    } catch (error) {
+                      handleFirestoreError(error, OperationType.UPDATE, `users/${currentUser.id}`);
+                    }
                   }
                 }}
               >
                 Salvar Alterações
               </button>
               <button 
-                className="w-[85%] mx-auto py-2 sm:py-2.5 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.5 bg-white/5 rounded-lg sm:rounded-xl border border-white/10 active:bg-white/10 transition-colors text-[12px] sm:text-[14px]"
-                onClick={() => {
-                  setCurrentUser(null);
-                  setRole(null);
-                  setLoginForm({ email: '', password: '' });
-                  setView('selection');
-                }}
-              >
-                <LogOut className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                Sair da Conta
-              </button>
-              <button 
-                className="w-[85%] mx-auto py-2.5 text-white/20 font-bold text-[10px] uppercase tracking-[0.3em] hover:text-brand-emergency transition-colors"
-                onClick={() => {
-                  if (confirm('Isso apagará todos os seus dados, crianças cadastradas e usuários. Deseja continuar?')) {
-                    localStorage.clear();
-                    window.location.reload();
+                className="w-full py-2 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.5 bg-brand-emergency/5 rounded-lg border border-brand-emergency/10 active:bg-brand-emergency/10 transition-colors text-[12px]"
+                onClick={async () => {
+                  try {
+                    await signOut(auth);
+                    setView('selection');
+                  } catch (error) {
+                    console.error("Logout failed", error);
                   }
                 }}
               >
-                Limpar Todos os Dados do App
+                <LogOut className="w-3 h-3" />
+                Sair da Conta
               </button>
             </div>
           </motion.div>
@@ -1972,104 +2077,102 @@ export default function App() {
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="flex-1 flex flex-col bg-brand-gradient text-white p-2.5 pt-5 sm:p-3.5 sm:pt-8.5"
+            className="flex-1 flex flex-col bg-brand-gradient text-white p-2.5 pt-5 overflow-hidden"
           >
-            <div className="flex items-center gap-1.5 sm:gap-2.5 mb-2.5 sm:mb-5">
-              <button onClick={() => setView('dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <div className="flex items-center gap-2 mb-3">
+              <button onClick={() => setView('dashboard')} className="w-6 h-6 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
+                <ChevronLeft className="w-3.5 h-3.5" />
               </button>
-              <h2 className="text-[17px] sm:text-[19px] font-bold">Notificações</h2>
+              <h2 className="text-[14px] font-bold uppercase tracking-widest opacity-80">Notificações</h2>
             </div>
 
-            <div className="flex-1 space-y-1.5 overflow-y-auto pb-3.5 scrollbar-hide">
+            <div className="flex-1 space-y-1 overflow-y-auto pb-4 scrollbar-hide">
               {notifications.length > 0 ? (
                 notifications.map(notif => (
                   <div 
                     key={notif.id} 
                     className={cn(
-                      "p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border flex gap-1.5 sm:gap-2.5 transition-all",
+                      "p-1.5 rounded-xl border flex gap-1.5 transition-all",
                       notif.read ? "bg-white/5 border-white/10 opacity-60" : "bg-white/10 border-white/20 shadow-lg",
                       notif.type === 'emergency' && !notif.read && "bg-brand-emergency/20 border-brand-emergency/40"
                     )}
-                    onClick={() => {
-                      setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
-                      if (notif.childId) {
-                        setSelectedChildId(notif.childId);
-                        setView(currentUser?.role === 'authority' ? 'occurrence_details' : 'child_details');
+                    onClick={async () => {
+                      try {
+                        await updateDoc(doc(db, 'notifications', notif.id), { read: true });
+                        if (notif.childId) {
+                          setSelectedChildId(notif.childId);
+                          setView(currentUser?.role === 'authority' ? 'occurrence_details' : 'child_details');
+                        }
+                      } catch (error) {
+                        handleFirestoreError(error, OperationType.UPDATE, `notifications/${notif.id}`);
                       }
                     }}
                   >
                     <div className={cn(
-                      "w-6 h-6 sm:w-8.5 sm:h-8.5 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0",
+                      "w-5 h-5 rounded-lg flex items-center justify-center shrink-0",
                       notif.type === 'success' ? "bg-brand-icon-green/20" : 
                       notif.type === 'emergency' ? "bg-brand-emergency/20" :
                       notif.type === 'alert' ? "bg-brand-secondary/20" : "bg-brand-primary/20"
                     )}>
-                      {notif.type === 'success' ? <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-brand-icon-green" /> :
-                       notif.type === 'emergency' ? <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-brand-emergency" /> :
-                       notif.type === 'alert' ? <Bell className="w-3 h-3 sm:w-4 sm:h-4 text-brand-secondary" /> :
-                       <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-brand-primary" />}
+                      {notif.type === 'success' ? <CheckCircle2 className="w-2.5 h-2.5 text-brand-icon-green" /> :
+                       notif.type === 'emergency' ? <AlertTriangle className="w-2.5 h-2.5 text-brand-emergency" /> :
+                       notif.type === 'alert' ? <Bell className="w-2.5 h-2.5 text-brand-secondary" /> :
+                       <Shield className="w-2.5 h-2.5 text-brand-primary" />}
                     </div>
                     <div className="space-y-0.5 flex-1 min-w-0">
                       <div className="flex justify-between items-start">
-                        <h4 className={cn("font-bold text-[12px] sm:text-[14px]", notif.type === 'emergency' && "text-brand-emergency")}>
+                        <h4 className={cn("font-bold text-[12px]", notif.type === 'emergency' && "text-brand-emergency")}>
                           {notif.title}
                         </h4>
-                        <span className="text-[9px] sm:text-[11px] opacity-40">{notif.time}</span>
+                        <span className="text-[8px] opacity-30">{notif.time}</span>
                       </div>
-                      <p className="text-[11px] sm:text-[13px] text-white/70 leading-tight">
+                      <p className="text-[11px] text-white/50 leading-tight">
                         {notif.message}
                       </p>
-                      {notif.childId && (
-                        <button className="text-brand-secondary text-[9px] sm:text-[11px] font-black uppercase tracking-widest mt-1">
-                          Ver Detalhes
-                        </button>
-                      )}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-10 opacity-30">
-                  <Bell className="w-10 h-10 mb-2" />
-                  <p className="text-lg font-bold">Nenhuma notificação.</p>
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-6 opacity-20">
+                  <Bell className="w-8 h-8 mb-2" />
+                  <p className="text-[14px] font-bold uppercase tracking-widest">Sem Notificações</p>
                 </div>
               )}
             </div>
             
-            {/* Bottom Nav inside notifications too for consistency */}
-            <div className="glass-nav p-1 sm:p-2.5 flex justify-around items-center -mx-2.5 sm:-mx-3.5 -mb-2.5 sm:-mb-3.5 shrink-0">
-              <button onClick={() => setView('dashboard')} className="text-white/40"><MapIcon className="w-3 h-3 sm:w-4 sm:h-4" /></button>
-              <button onClick={() => setView('notifications')} className="relative text-white">
-                <Bell className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            <div className="glass-nav p-1 flex justify-around items-center -mx-2.5 -mb-2.5 shrink-0 border-t border-white/5 h-12">
+              <button onClick={() => setView('dashboard')} className="text-white/20"><MapIcon className="w-4 h-4" /></button>
+              <button onClick={() => setView('notifications')} className={cn("relative", view === 'notifications' ? "text-brand-primary" : "text-white/20")}>
+                <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand-emergency rounded-full border-2 border-brand-dark" />
+                  <span className="absolute top-0 -right-0.5 w-1.5 h-1.5 bg-brand-emergency rounded-full border border-brand-dark" />
                 )}
               </button>
+              <div className="w-10" />
               <button 
                 onClick={() => setView('register_child')}
-                className="w-8.5 h-8.5 sm:w-12 sm:h-12 bg-brand-primary rounded-full flex items-center justify-center -mt-7 sm:-mt-10 shadow-2xl border-4 border-brand-dark"
+                className="absolute left-1/2 -translate-x-1/2 -top-4 w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center shadow-xl border-4 border-brand-dark active:scale-90 transition-transform z-10"
               >
-                <Plus className="text-white w-4 h-4 sm:w-7 sm:h-7" />
+                <Plus className="text-white w-5 h-5" />
               </button>
-              <button className="text-white/40"><History className="w-3.5 h-3.5 sm:w-5 sm:h-5" /></button>
-              <button onClick={() => setView('settings')} className="text-white/40"><UserIcon className="w-3.5 h-3.5 sm:w-5 sm:h-5" /></button>
+              <button className="text-white/20"><History className="w-4 h-4" /></button>
+              <button onClick={() => setView('settings')} className="text-white/20"><UserIcon className="w-4 h-4" /></button>
             </div>
           </motion.div>
         )}
-
         {view === 'child_details' && selectedChildId && (
           <motion.div 
             key="child-details"
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="h-full flex flex-col bg-brand-gradient text-white p-3 pt-6 sm:p-4 sm:pt-10 overflow-hidden"
+            className="h-full flex flex-col bg-brand-gradient text-white p-2.5 pt-4 sm:pt-10 overflow-hidden"
           >
-            <div className="flex items-center gap-1.5 sm:gap-2.5 mb-3.5 sm:mb-5 shrink-0">
-              <button onClick={() => setView('dashboard')} className="w-6 h-6 sm:w-7 sm:h-7 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
-                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <div className="flex items-center gap-2 mb-2 shrink-0">
+              <button onClick={() => setView('dashboard')} className="w-6 h-6 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
+                <ChevronLeft className="w-3.5 h-3.5" />
               </button>
-              <h2 className="text-base sm:text-lg font-bold">Perfil da Criança</h2>
+              <h2 className="text-[14px] font-bold opacity-80 uppercase tracking-widest">Perfil da Criança</h2>
             </div>
 
             {(() => {
@@ -2078,22 +2181,22 @@ export default function App() {
 
               return (
                 <>
-                  <div className="flex-1 min-h-0 max-h-full space-y-4 overflow-y-auto pb-4 scrollbar-hide">
+                  <div className="flex-1 min-h-0 max-h-full space-y-3 overflow-y-auto pb-4 scrollbar-hide">
                     {/* Status Toggle */}
                     <div className={cn(
-                      "p-2.5 rounded-2xl border flex items-center justify-between transition-colors",
+                      "p-2 rounded-xl border flex items-center justify-between transition-colors",
                       child.status === 'safe' ? "bg-brand-icon-green/10 border-brand-icon-green/20" : "bg-brand-emergency/10 border-brand-emergency/20"
                     )}>
                       <div className="flex items-center gap-2">
                         <div className={cn(
-                          "w-7 h-7 rounded-xl flex items-center justify-center shadow-lg",
+                          "w-6 h-6 rounded-lg flex items-center justify-center shadow-lg",
                           child.status === 'safe' ? "bg-brand-icon-green" : "bg-brand-emergency"
                         )}>
                           {child.status === 'safe' ? <CheckCircle2 className="w-3 h-3 text-white" /> : <AlertTriangle className="w-3 h-3 text-white" />}
                         </div>
                         <div>
-                          <p className="text-[11px] font-bold opacity-60 uppercase tracking-widest">Status Atual</p>
-                          <h4 className="text-[16px] font-bold">{child.status === 'safe' ? 'Seguro' : 'Desaparecido'}</h4>
+                          <p className="text-[9px] font-bold opacity-40 uppercase tracking-widest">Status Atual</p>
+                          <h4 className="text-[14px] font-bold leading-none">{child.status === 'safe' ? 'Seguro' : 'Desaparecido'}</h4>
                         </div>
                       </div>
                       <button 
@@ -2101,23 +2204,23 @@ export default function App() {
                           setChildren(prev => prev.map(c => c.id === child.id ? { ...c, status: c.status === 'safe' ? 'missing' : 'safe' } : c));
                         }}
                         className={cn(
-                          "px-2 py-0.5 rounded-lg text-[12px] font-black uppercase tracking-widest border transition-all active:scale-95",
+                          "px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all active:scale-95",
                           child.status === 'safe' ? "bg-brand-emergency border-brand-emergency text-white" : "bg-brand-icon-green border-brand-icon-green text-white"
                         )}
                       >
-                        Alterar para {child.status === 'safe' ? 'Desaparecido' : 'Seguro'}
+                        {child.status === 'safe' ? 'Alertar Sumiço' : 'Confirmar Encontro'}
                       </button>
                     </div>
 
                     {/* Profile Edit */}
-                    <div className="space-y-2.5">
-                      <div className="flex flex-col items-center gap-1.5">
+                    <div className="space-y-2">
+                      <div className="flex flex-col items-center">
                         <div className="relative">
-                          <div className="w-17 h-17 rounded-2xl border-4 border-brand-secondary shadow-2xl overflow-hidden">
+                          <div className="w-14 h-14 rounded-2xl border-2 border-brand-secondary shadow-2xl overflow-hidden">
                             <img src={child.photo || `https://picsum.photos/seed/${child.name}/200`} alt={child.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                           </div>
-                          <label className="absolute -bottom-1 -right-1 w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
-                            <Camera className="w-3 h-3 text-white" />
+                          <label className="absolute -bottom-1 -right-1 w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center border-2 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
+                            <Camera className="w-2.5 h-2.5 text-white" />
                             <input 
                               type="file" 
                               className="hidden" 
@@ -2125,8 +2228,12 @@ export default function App() {
                               onChange={(e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
-                                  const url = URL.createObjectURL(file);
-                                  setChildren(prev => prev.map(c => c.id === child.id ? { ...c, photo: url } : c));
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    const base64String = reader.result as string;
+                                    setChildren(prev => prev.map(c => c.id === child.id ? { ...c, photo: base64String } : c));
+                                  };
+                                  reader.readAsDataURL(file);
                                 }
                               }}
                             />
@@ -2136,85 +2243,78 @@ export default function App() {
 
                       <div className="space-y-1.5">
                         <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
+                          <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Nome da Criança</label>
                           <input 
                             type="text" 
                             value={child.name}
                             onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, name: e.target.value } : c))}
-                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg py-1 px-3 text-[13px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                           />
                         </div>
-                        <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
-                          <input 
-                            type="number" 
-                            value={child.age}
-                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, age: parseInt(e.target.value) || 0 } : c))}
-                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                          />
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-0.5">
+                            <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Idade</label>
+                            <input 
+                              type="number" 
+                              value={child.age}
+                              onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, age: parseInt(e.target.value) || 0 } : c))}
+                              className="w-full bg-white/5 border border-white/10 rounded-lg py-1 px-3 text-[13px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                            />
+                          </div>
+                          <div className="space-y-0.5">
+                            <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Sexo</label>
+                            <div className="grid grid-cols-2 gap-1">
+                              {['M', 'F'].map((g) => (
+                                <button
+                                  key={g}
+                                  onClick={() => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, gender: g as any } : c))}
+                                  className={cn(
+                                    "py-1 rounded-lg border font-bold text-[11px] transition-all",
+                                    child.gender === g 
+                                      ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
+                                      : "bg-white/5 border-white/10 text-white/40"
+                                  )}
+                                >
+                                  {g === 'M' ? 'Masc.' : 'Fem.'}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                         <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Telefone do Responsável</label>
+                          <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Telefone p/ Emergência</label>
                           <input 
                             type="tel" 
                             value={child.responsiblePhone}
                             onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, responsiblePhone: e.target.value } : c))}
-                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg py-1 px-3 text-[13px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
                           />
                         </div>
+                        
                         <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
-                          <div className="grid grid-cols-3 gap-1">
-                            {['M', 'F', 'Outro'].map((g) => (
-                              <button
-                                key={g}
-                                onClick={() => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, gender: g as any } : c))}
-                                className={cn(
-                                  "py-1 rounded-xl border font-bold text-[13px] transition-all",
-                                  child.gender === g 
-                                    ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
-                                    : "bg-white/5 border-white/10 text-white/60"
-                                )}
-                              >
-                                {g === 'M' ? 'Masc.' : g === 'F' ? 'Fem.' : 'Outro'}
-                              </button>
-                            ))}
+                          <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Saúde & Descrição</label>
+                          <div className="grid grid-cols-2 gap-2">
+                            <input 
+                              type="text" 
+                              placeholder="Alergias"
+                              value={child.allergies || ''}
+                              onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, allergies: e.target.value } : c))}
+                              className="w-full bg-white/5 border border-white/10 rounded-lg py-1 px-3 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                            />
+                            <input 
+                              type="text" 
+                              placeholder="Medicamentos"
+                              value={child.medications || ''}
+                              onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, medications: e.target.value } : c))}
+                              className="w-full bg-white/5 border border-white/10 rounded-lg py-1 px-3 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
+                            />
                           </div>
-                        </div>
-                        <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
-                          <input 
-                            type="text" 
-                            value={child.allergies || ''}
-                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, allergies: e.target.value } : c))}
-                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                          />
-                        </div>
-                        <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
-                          <input 
-                            type="text" 
-                            value={child.medications || ''}
-                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, medications: e.target.value } : c))}
-                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                          />
-                        </div>
-                        <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
-                          <input 
-                            type="text" 
-                            value={child.disability || ''}
-                            onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, disability: e.target.value } : c))}
-                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors"
-                          />
-                        </div>
-                        <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
                           <textarea 
                             value={child.description}
                             onChange={(e) => setChildren(prev => prev.map(c => c.id === child.id ? { ...c, description: e.target.value } : c))}
-                            rows={2}
-                            className="w-full bg-white/10 border border-white/20 rounded-xl py-1.5 px-2.5 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors resize-none"
+                            rows={1}
+                            placeholder="Descrição física..."
+                            className="w-full mt-1 bg-white/5 border border-white/10 rounded-lg py-1 px-3 text-[12px] text-white focus:outline-none focus:border-brand-secondary transition-colors resize-none"
                           />
                         </div>
                       </div>
@@ -2222,7 +2322,7 @@ export default function App() {
 
                     {/* QR Code Section */}
                     <div className="space-y-1.5">
-                      <h4 className="text-[13px] font-bold text-white/40 uppercase tracking-widest ml-1">QR Code da Pulseira</h4>
+                      <h4 className="text-[11px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">Vínculo de Pulseira</h4>
                       {!child.qrCode ? (
                         <button 
                           onClick={() => {
@@ -2231,60 +2331,57 @@ export default function App() {
                             setScanSuccess(false);
                             setIsScanning(false);
                           }}
-                          className="w-full py-3.5 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center gap-1.5 active:bg-white/10 transition-all"
+                          className="w-full py-3 bg-white/5 border border-dashed border-white/20 rounded-xl flex items-center justify-center gap-2 active:bg-white/10 transition-all"
                         >
-                          <div className="w-7 h-7 bg-brand-secondary/20 rounded-xl flex items-center justify-center">
-                            <QrCode className="w-3.5 h-3.5 text-brand-secondary" />
-                          </div>
-                          <div className="text-center">
-                            <p className="font-bold text-[16px]">Vincular Pulseira</p>
-                            <p className="text-[11px] opacity-40 uppercase tracking-widest">Nenhum código registrado ainda</p>
+                          <QrCode className="w-3.5 h-3.5 text-brand-secondary" />
+                          <div className="text-left">
+                            <p className="font-bold text-[14px] leading-tight">Vincular Agora</p>
+                            <p className="text-[9px] opacity-30 uppercase tracking-widest">Toque para configurar</p>
                           </div>
                         </button>
                       ) : (
-                        <div className="bg-white p-2.5 rounded-2xl flex flex-col items-center gap-1.5 shadow-2xl">
-                          <div className="p-1 bg-slate-50 rounded-xl border border-slate-100">
-                            <QRCode value={child.qrCode} size={85} />
+                        <div className="bg-white p-2 rounded-xl flex flex-col items-center gap-1.5 shadow-xl">
+                          <div className="p-1 bg-slate-50 rounded-lg border border-slate-100">
+                            <QRCode value={child.qrCode} size={65} />
                           </div>
                           <div className="text-center">
-                            <p className="text-slate-900 font-black tracking-widest text-[16px] uppercase">ID: {child.qrCode.toUpperCase()}</p>
-                            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">Válido em todo território nacional</p>
+                            <p className="text-slate-900 font-black tracking-widest text-[14px] uppercase leading-none">ID: {child.qrCode.toUpperCase()}</p>
+                            <p className="text-slate-400 text-[9px] font-bold uppercase tracking-widest mt-1">Pulseira Validada</p>
                           </div>
-                          <button 
-                            onClick={() => {
-                              setSelectedChildId(child.id);
-                              setView('qr_generator');
-                              setScanSuccess(false);
-                              setIsScanning(false);
-                            }}
-                            className="w-full py-1 sm:py-2 bg-brand-primary/10 text-brand-primary rounded-xl sm:rounded-2xl font-bold text-[13px] sm:text-[16px] uppercase tracking-widest border border-brand-primary/20 flex items-center justify-center gap-1.25"
-                          >
-                            <Camera className="w-3 h-3" />
-                            Vincular Nova Pulseira
-                          </button>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="pt-2.5 pb-10 shrink-0 space-y-1.5 sm:space-y-3.5">
+                  <div className="pt-2 pb-6 shrink-0 space-y-1.5">
                     <button 
-                      className="btn-mobile btn-primary-mobile shadow-xl py-2 sm:py-3.5 text-[12px] sm:text-base"
-                      onClick={() => setView('dashboard')}
+                      className="btn-mobile btn-primary-mobile shadow-xl py-2.5 text-[14px]"
+                      onClick={async () => {
+                        try {
+                          await updateDoc(doc(db, 'children', child.id), { ...child });
+                          setView('dashboard');
+                        } catch (error) {
+                          handleFirestoreError(error, OperationType.UPDATE, `children/${child.id}`);
+                        }
+                      }}
                     >
                       Salvar Alterações
                     </button>
                     <button 
-                      className="w-[85%] mx-auto py-1.5 sm:py-2.5 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-1.25 bg-white/5 rounded-xl sm:rounded-2xl border border-white/10 active:bg-white/10 transition-colors text-[15px] sm:text-[17px]"
-                      onClick={() => {
+                      className="w-full py-2 text-brand-emergency font-black uppercase tracking-widest flex items-center justify-center gap-2 bg-brand-emergency/5 rounded-xl border border-brand-emergency/10 active:bg-brand-emergency/10 transition-colors text-[12px]"
+                      onClick={async () => {
                         if (confirm(`Tem certeza que deseja remover ${child.name}?`)) {
-                          setChildren(prev => prev.filter(c => c.id !== child.id));
-                          setView('dashboard');
+                          try {
+                            await deleteDoc(doc(db, 'children', child.id));
+                            setView('dashboard');
+                          } catch (error) {
+                            handleFirestoreError(error, OperationType.DELETE, `children/${child.id}`);
+                          }
                         }
                       }}
                     >
-                      <X className="w-3 h-3 sm:w-4 sm:h-4" />
-                      Remover Criança
+                      <X className="w-3 h-3" />
+                      Remover Cadastro
                     </button>
                   </div>
                 </>
@@ -2301,25 +2398,25 @@ export default function App() {
             exit={{ y: 300, opacity: 0 }}
             className="h-full flex flex-col bg-brand-gradient text-white p-2.5 pt-5 sm:p-3.5 sm:pt-8.5 overflow-hidden"
           >
-            <div className="flex items-center gap-2.5 mb-3.5 sm:mb-7 shrink-0">
-              <button onClick={() => setView('dashboard')} className="w-7 h-7 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
-                <ChevronLeft className="w-4 h-4" />
+            <div className="flex items-center gap-2 mb-2 shrink-0">
+              <button onClick={() => setView('dashboard')} className="w-6 h-6 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 shrink-0">
+                <ChevronLeft className="w-3.5 h-3.5" />
               </button>
-              <h2 className="text-base sm:text-lg font-bold">Cadastrar Criança</h2>
+              <h2 className="text-[14px] font-bold opacity-80 uppercase tracking-widest">Cadastrar Criança</h2>
             </div>
 
-            <div className="flex-1 min-h-0 max-h-full space-y-3 overflow-y-auto pb-6 scrollbar-hide">
-              <div className="flex flex-col items-center gap-1.5">
+            <div className="flex-1 min-h-0 max-h-full space-y-2 overflow-y-auto pb-4 scrollbar-hide">
+              <div className="flex flex-col items-center gap-1">
                 <div className="relative">
-                  <div className="w-14 h-14 sm:w-24 sm:h-24 rounded-[18px] sm:rounded-[28px] border-4 border-brand-secondary shadow-2xl overflow-hidden bg-white/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl border-2 border-brand-secondary shadow-xl overflow-hidden bg-white/10 flex items-center justify-center">
                     {newChild.photo ? (
                       <img src={newChild.photo} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
-                      <UserIcon className="w-6 h-6 sm:w-9 sm:h-9 text-white/20" />
+                      <UserIcon className="w-5 h-5 text-white/20" />
                     )}
                   </div>
-                  <label className="absolute -bottom-1 -right-1 w-5.5 h-5.5 sm:w-8 sm:h-8 bg-brand-primary rounded-full flex items-center justify-center border-4 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
-                    <Camera className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-white" />
+                  <label className="absolute -bottom-1 -right-1 w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center border-2 border-brand-dark cursor-pointer shadow-lg active:scale-90 transition-transform">
+                    <Camera className="w-2.5 h-2.5 text-white" />
                     <input 
                       type="file" 
                       className="hidden" 
@@ -2327,159 +2424,145 @@ export default function App() {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const url = URL.createObjectURL(file);
-                          setNewChild(prev => ({ ...prev, photo: url }));
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            const base64String = reader.result as string;
+                            setNewChild(prev => ({ ...prev, photo: base64String }));
+                          };
+                          reader.readAsDataURL(file);
                         }
                       }}
                     />
                   </label>
                 </div>
-                <p className="text-[12px] font-bold text-white/40 uppercase tracking-widest">Foto da Criança</p>
+                <p className="text-[9px] font-bold text-white/30 uppercase tracking-[0.2em]">Foto do Perfil</p>
               </div>
 
-              <div className="space-y-2">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Nome da Criança</label>
+              <div className="space-y-1.5">
+                <div className="space-y-0.5">
+                  <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Nome da Criança</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Maria Clara"
                     value={newChild.name}
                     onChange={(e) => setNewChild(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
+                    className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 px-3 text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors text-[13px]"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Idade</label>
-                  <input 
-                    type="number" 
-                    placeholder="Ex: 5"
-                    value={newChild.age}
-                    onChange={(e) => setNewChild(prev => ({ ...prev, age: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
-                  />
+                <div className="grid grid-cols-2 gap-1.5">
+                  <div className="space-y-0.5">
+                    <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Idade</label>
+                    <input 
+                      type="number" 
+                      placeholder="Ex: 5"
+                      value={newChild.age}
+                      onChange={(e) => setNewChild(prev => ({ ...prev, age: e.target.value }))}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 px-3 text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors text-[13px]"
+                    />
+                  </div>
+                  <div className="space-y-0.5">
+                    <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Sexo</label>
+                    <div className="grid grid-cols-2 gap-1">
+                      {['M', 'F'].map((g) => (
+                        <button
+                          key={g}
+                          onClick={() => setNewChild(prev => ({ ...prev, gender: g as any }))}
+                          className={cn(
+                            "py-1.5 rounded-lg border font-bold text-[12px] transition-all",
+                            newChild.gender === g 
+                              ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
+                              : "bg-white/5 border-white/10 text-white/40"
+                          )}
+                        >
+                          {g === 'M' ? 'Masc.' : 'Fem.'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Telefone do Responsável</label>
+                <div className="space-y-0.5">
+                  <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Telefone p/ Emergência</label>
                   <input 
                     type="tel" 
                     placeholder="(00) 00000-0000"
                     value={newChild.responsiblePhone}
                     onChange={(e) => setNewChild(prev => ({ ...prev, responsiblePhone: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
+                    className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 px-3 text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors text-[13px]"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Sexo</label>
-                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
-                    {['M', 'F', 'Outro'].map((g) => (
-                      <button
-                        key={g}
-                        onClick={() => setNewChild(prev => ({ ...prev, gender: g as any }))}
-                        className={cn(
-                          "py-1.5 sm:py-2.5 rounded-xl border font-bold text-[15px] sm:text-[17px] transition-all",
-                          newChild.gender === g 
-                            ? "bg-brand-secondary border-brand-secondary text-brand-dark" 
-                            : "bg-white/5 border-white/10 text-white/60"
-                        )}
-                      >
-                        {g === 'M' ? 'Masc.' : g === 'F' ? 'Fem.' : 'Outro'}
-                      </button>
-                    ))}
+                
+                <div className="space-y-0.5">
+                  <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Informações de Saúde (Opcional)</label>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <input 
+                      type="text" 
+                      placeholder="Alergias"
+                      value={newChild.allergies}
+                      onChange={(e) => setNewChild(prev => ({ ...prev, allergies: e.target.value }))}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 px-3 text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors text-[13px]"
+                    />
+                    <input 
+                      type="text" 
+                      placeholder="Medicamentos"
+                      value={newChild.medications}
+                      onChange={(e) => setNewChild(prev => ({ ...prev, medications: e.target.value }))}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 px-3 text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors text-[13px]"
+                    />
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Alergias</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: Amendoim, lactose..."
-                    value={newChild.allergies}
-                    onChange={(e) => setNewChild(prev => ({ ...prev, allergies: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Uso de Medicamentos</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: Insulina, antialérgico..."
-                    value={newChild.medications}
-                    onChange={(e) => setNewChild(prev => ({ ...prev, medications: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Deficiência / Condição Especial</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: Autismo, cadeirante..."
-                    value={newChild.disability}
-                    onChange={(e) => setNewChild(prev => ({ ...prev, disability: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors text-[12px] sm:text-base"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase opacity-60 ml-1 tracking-widest">Descrição / Características</label>
+
+                <div className="space-y-0.5">
+                  <label className="text-[9px] font-bold uppercase opacity-40 ml-1 tracking-widest">Descrição</label>
                   <textarea 
                     placeholder="Ex: Cabelo castanho, camiseta rosa..."
-                    rows={2}
+                    rows={1}
                     value={newChild.description}
                     onChange={(e) => setNewChild(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-brand-secondary transition-colors resize-none text-[12px] sm:text-base"
+                    className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 px-3 text-white placeholder:text-white/10 focus:outline-none focus:border-brand-secondary transition-colors resize-none text-[13px]"
                   />
                 </div>
 
-                <div className="space-y-2.5 pt-1.5">
-                  <h4 className="text-[13px] font-bold text-white/40 uppercase tracking-widest ml-1">Pulseira da Criança</h4>
+                <div className="space-y-1.5 pt-1">
                   {!newChild.qrCode ? (
-                    <div className="space-y-2.5">
-                      <button 
-                        onClick={() => {
-                          setSelectedChildId('TEMP_REG'); 
-                          setView('qr_generator');
-                          setScanSuccess(false);
-                          setIsScanning(false);
-                        }}
-                        className="w-full py-2.5 sm:py-4 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl sm:rounded-[32px] flex flex-col items-center gap-1.5 active:bg-white/10 transition-all"
-                      >
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 bg-brand-secondary/20 rounded-xl sm:rounded-2xl flex items-center justify-center">
-                          <QrCode className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-brand-secondary" />
-                        </div>
-                        <div className="text-center">
-                          <p className="font-bold text-[14px] sm:text-[16px]">Vincular Pulseira Agora</p>
-                          <p className="text-[11px] sm:text-[13px] opacity-40 uppercase tracking-widest">Escaneie o QR Code oficial</p>
-                        </div>
-                      </button>
-                    </div>
+                    <button 
+                      onClick={() => {
+                        setSelectedChildId('TEMP_REG'); 
+                        setView('qr_generator');
+                        setScanSuccess(false);
+                        setIsScanning(false);
+                      }}
+                      className="w-full py-2 bg-white/5 border border-dashed border-white/20 rounded-xl flex items-center justify-center gap-2 active:bg-white/10 transition-all"
+                    >
+                      <QrCode className="w-3 h-3 text-brand-secondary" />
+                      <div className="text-left">
+                        <p className="font-bold text-[12px] leading-none">Vincular Pulseira</p>
+                        <p className="text-[9px] opacity-30 uppercase tracking-widest">Toque para escanear</p>
+                      </div>
+                    </button>
                   ) : (
-                    <div className="bg-brand-icon-green/10 border border-brand-icon-green/20 p-2.5 sm:p-5 rounded-2xl sm:rounded-[32px] flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 sm:gap-3.5">
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 bg-brand-icon-green rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
-                          <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-[13px] sm:text-[15px] font-bold text-brand-icon-green uppercase tracking-widest truncate">Pulseira Vinculada</p>
-                          <p className="font-bold text-white tracking-widest truncate text-[16px] sm:text-[19px]">{newChild.qrCode.toUpperCase()}</p>
+                    <div className="bg-brand-icon-green/10 border border-brand-icon-green/20 p-2 rounded-xl flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-brand-icon-green" />
+                        <div>
+                          <p className="text-[9px] font-bold text-brand-icon-green uppercase tracking-widest">Pulseira Vinculada</p>
+                          <p className="font-black text-white text-[12px] tracking-widest">{newChild.qrCode.toUpperCase()}</p>
                         </div>
                       </div>
-                      <button 
-                        onClick={() => setNewChild(prev => ({ ...prev, qrCode: '' }))}
-                        className="p-1 bg-white/10 rounded-lg text-white/40 hover:text-white transition-colors shrink-0"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
+                      <button onClick={() => setNewChild(prev => ({ ...prev, qrCode: '' }))} className="p-1 bg-white/10 rounded-lg text-white/40"><X className="w-3 h-3" /></button>
                     </div>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="pt-2 pb-10 shrink-0">
+            <div className="pt-2 pb-6 shrink-0">
               <button 
-                className="btn-mobile btn-primary-mobile shadow-xl py-3 sm:py-4 text-[14px] sm:text-base"
+                className="btn-mobile btn-primary-mobile shadow-xl py-2.5 text-[14px]"
                 disabled={!newChild.name || !newChild.age || !newChild.responsiblePhone}
-                onClick={() => {
-                  const child: Child = {
-                    id: Math.random().toString(36).substr(2, 9),
+                onClick={async () => {
+                  if (!currentUser) return;
+                  
+                  const childData: Omit<Child, 'id'> = {
                     name: newChild.name,
                     age: parseInt(newChild.age),
                     gender: newChild.gender as any,
@@ -2488,26 +2571,31 @@ export default function App() {
                     disability: newChild.disability,
                     responsibleName: userProfile.name,
                     responsiblePhone: newChild.responsiblePhone,
-                    responsibleId: currentUser?.id,
+                    responsibleId: currentUser.id,
                     status: 'safe',
                     description: newChild.description,
                     photo: newChild.photo,
                     qrCode: newChild.qrCode
                   };
-                  setChildren(prev => [...prev, child]);
-                  setNewChild({ 
-                    name: '', 
-                    age: '', 
-                    gender: '', 
-                    allergies: '', 
-                    medications: '', 
-                    disability: '', 
-                    description: '', 
-                    photo: 'https://picsum.photos/seed/newchild/200',
-                    qrCode: '',
-                    responsiblePhone: ''
-                  });
-                  setView('dashboard');
+
+                  try {
+                    await addDoc(collection(db, 'children'), childData);
+                    setNewChild({ 
+                      name: '', 
+                      age: '', 
+                      gender: '', 
+                      allergies: '', 
+                      medications: '', 
+                      disability: '', 
+                      description: '', 
+                      photo: '',
+                      qrCode: '',
+                      responsiblePhone: ''
+                    });
+                    setView('dashboard');
+                  } catch (error) {
+                    handleFirestoreError(error, OperationType.CREATE, 'children');
+                  }
                 }}
               >
                 Salvar Cadastro
@@ -2542,22 +2630,23 @@ export default function App() {
                   {children.filter(c => c.responsibleId === currentUser?.id).map(child => (
                     <button 
                       key={child.id}
-                      onClick={() => {
+                      onClick={async () => {
                         setEmergencyChildId(child.id);
                         setEmergencyStep('alert');
-                        setChildren(prev => {
-                          const updated = prev.map(c => c.id === child.id ? { ...c, status: 'missing' } : c);
-                          localStorage.setItem('achei_voce_children', JSON.stringify(updated));
-                          return updated;
-                        });
                         
-                        // Trigger notification for authorities
-                        triggerNotification({
-                          title: 'NOVO ALERTA DE EMERGÊNCIA!',
-                          message: `A criança ${child.name} foi marcada como desaparecida. Verifique os detalhes na aba de alertas.`,
-                          type: 'emergency',
-                          childId: child.id
-                        });
+                        try {
+                          await updateDoc(doc(db, 'children', child.id), { status: 'missing' });
+                          
+                          // Trigger notification for authorities - in a real app would notify all nearby authorities
+                          await triggerNotification({
+                            title: 'NOVO ALERTA DE EMERGÊNCIA!',
+                            message: `A criança ${child.name} foi marcada como desaparecida. Verifique os detalhes na aba de alertas.`,
+                            type: 'emergency',
+                            childId: child.id
+                          });
+                        } catch (error) {
+                          handleFirestoreError(error, OperationType.UPDATE, `children/${child.id}`);
+                        }
                       }}
                       className="w-[85%] mx-auto bg-white/10 p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl border border-white/20 flex items-center gap-2.5 sm:gap-3.5 text-left active:scale-95 transition-all"
                     >
@@ -2601,9 +2690,13 @@ export default function App() {
                     <p className="text-[16px] sm:text-[17px] opacity-80">Viatura a caminho da sua localização.</p>
                   </div>
                   <button 
-                    onClick={() => {
+                    onClick={async () => {
                       if (emergencyChildId) {
-                        setChildren(prev => prev.map(c => c.id === emergencyChildId ? { ...c, status: 'safe' } : c));
+                        try {
+                          await updateDoc(doc(db, 'children', emergencyChildId), { status: 'safe' });
+                        } catch (error) {
+                          handleFirestoreError(error, OperationType.UPDATE, `children/${emergencyChildId}`);
+                        }
                       }
                       setView('dashboard');
                     }}
@@ -2625,15 +2718,15 @@ function ActionCard({ icon, title, onClick }: { icon: React.ReactNode, title: st
   return (
     <button 
       onClick={onClick}
-      className="w-[85%] mx-auto bg-white/10 p-2 rounded-2xl border border-white/20 card-shadow flex items-center justify-between group active:bg-white/20 transition-all"
+      className="w-[85%] mx-auto bg-white/5 p-1.5 rounded-xl border border-white/10 card-shadow flex items-center justify-between group active:bg-white/10 transition-all"
     >
-      <div className="flex items-center gap-3">
-        <div className="w-7 h-7 bg-white/10 rounded-xl flex items-center justify-center text-lg shadow-inner">
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-6 bg-white/10 rounded-lg flex items-center justify-center shadow-inner">
           {icon}
         </div>
-        <span className="font-bold text-white tracking-wide text-[13px]">{title}</span>
+        <span className="font-bold text-white tracking-wide text-[12px]">{title}</span>
       </div>
-      <Plus className="w-3 h-3 text-white/40 group-hover:text-brand-secondary transition-colors" />
+      <Plus className="w-2.5 h-2.5 text-white/20 group-hover:text-brand-secondary transition-colors" />
     </button>
   );
 }

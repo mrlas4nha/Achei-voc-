@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isEmailVerified() {
+      return request.auth.token.email_verified == true;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAuthority() {
+      return isSignedIn() && getUserData().role == 'authority';
+    }
+
+    function isOwner(data) {
+      return isSignedIn() && data.responsibleId == request.auth.uid;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAuthority());
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Children registry
+    match /children/{childId} {
+      // Allow read if owner, authority, or if the child is missing (for citizens to help)
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && (isOwner(resource.data) || isAuthority() || resource.data.status == 'missing');
+      
+      allow create: if isSignedIn() && request.resource.data.responsibleId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        isOwner(resource.data) || 
+        isAuthority() ||
+        (resource.data.status == 'missing' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'foundLocation', 'foundTime']))
+      );
+      allow delete: if isSignedIn() && isOwner(resource.data);
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAuthority());
+      allow create: if isSignedIn(); // For now, citizens can trigger alerts
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

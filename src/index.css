@@ -88,7 +88,7 @@
 }
 
 .btn-mobile {
-  @apply w-[85%] mx-auto py-2.5 px-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95;
+  @apply w-[85%] mx-auto py-2.5 px-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
 }
 
 .btn-emergency {
