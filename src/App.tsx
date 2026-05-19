@@ -106,6 +106,46 @@ export default function App() {
     notes: ''
   });
 
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 400;
+          const MAX_HEIGHT = 400;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Comprimir para JPEG com qualidade 0.7 (70%)
+          const dataurl = canvas.toDataURL('image/jpeg', 0.7);
+          resolve(dataurl);
+        };
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const [children, setChildren] = useState<Child[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
@@ -1955,15 +1995,15 @@ export default function App() {
                       type="file" 
                       className="hidden" 
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            const base64String = reader.result as string;
-                            setUserProfile(prev => ({ ...prev, photo: base64String }));
-                          };
-                          reader.readAsDataURL(file);
+                          try {
+                            const compressedUrl = await compressImage(file);
+                            setUserProfile(prev => ({ ...prev, photo: compressedUrl }));
+                          } catch (error) {
+                            console.error("Erro ao processar imagem:", error);
+                          }
                         }
                       }}
                     />
@@ -2225,15 +2265,15 @@ export default function App() {
                               type="file" 
                               className="hidden" 
                               accept="image/*"
-                              onChange={(e) => {
+                              onChange={async (e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
-                                  const reader = new FileReader();
-                                  reader.onloadend = () => {
-                                    const base64String = reader.result as string;
-                                    setChildren(prev => prev.map(c => c.id === child.id ? { ...c, photo: base64String } : c));
-                                  };
-                                  reader.readAsDataURL(file);
+                                  try {
+                                    const compressedUrl = await compressImage(file);
+                                    setChildren(prev => prev.map(c => c.id === child.id ? { ...c, photo: compressedUrl } : c));
+                                  } catch (error) {
+                                    console.error("Erro ao processar imagem:", error);
+                                  }
                                 }
                               }}
                             />
@@ -2421,15 +2461,15 @@ export default function App() {
                       type="file" 
                       className="hidden" 
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            const base64String = reader.result as string;
-                            setNewChild(prev => ({ ...prev, photo: base64String }));
-                          };
-                          reader.readAsDataURL(file);
+                          try {
+                            const compressedUrl = await compressImage(file);
+                            setNewChild(prev => ({ ...prev, photo: compressedUrl }));
+                          } catch (error) {
+                            console.error("Erro ao processar imagem:", error);
+                          }
                         }
                       }}
                     />
